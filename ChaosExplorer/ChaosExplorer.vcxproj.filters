@@ -18,9 +18,15 @@
     <ClInclude Include="ChaosExplorerApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ChaosExplorerWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChaosExplorerWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

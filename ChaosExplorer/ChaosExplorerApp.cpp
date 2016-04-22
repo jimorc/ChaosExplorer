@@ -1,5 +1,6 @@
 #include "wx/wxprec.h"
 #include "ChaosExplorerApp.h"
+#include "ChaosExplorerWindow.h"
 
 #ifdef _UNICODE
 #ifdef NDEBUG
@@ -26,7 +27,7 @@ ChaosExplorerApp::~ChaosExplorerApp()
 
 bool ChaosExplorerApp::OnInit()
 {
-    wxFrame* mainFrame = new wxFrame(nullptr, wxID_ANY, L"ChaosExplorer");
+    ChaosExplorerWindow* mainFrame = new ChaosExplorerWindow(nullptr, wxID_ANY, L"ChaosExplorer");
     mainFrame->Show(true);
     return true;
 }
