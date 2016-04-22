@@ -1,4 +1,5 @@
 #pragma once
+#include "wx/notebook.h"
 class ChaosExplorerWindow :
     public wxFrame
 {
@@ -11,5 +12,7 @@ public:
     virtual ~ChaosExplorerWindow();
     ChaosExplorerWindow& operator=(const ChaosExplorerWindow&) = delete;
     ChaosExplorerWindow& operator=(ChaosExplorerWindow&&) = delete;
+private:
+    wxNotebook* m_notebook;
 };
 
