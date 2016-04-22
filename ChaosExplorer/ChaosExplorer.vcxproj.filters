@@ -24,6 +24,9 @@
     <ClInclude Include="MultibrotPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GLShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
@@ -33,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MultibrotPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

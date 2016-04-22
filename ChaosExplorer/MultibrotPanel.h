@@ -16,6 +16,8 @@ public:
         std::complex<double> ul = -2.5 + 2.0i,
         std::complex<double> lr =  1.5 - 2.0i);
     virtual ~MultibrotPanel();
+
+    wxGLContext* GetContext() { return &(*m_context); }
 private:
     void InitializeGLEW();
     void OnPaint(wxPaintEvent& event);

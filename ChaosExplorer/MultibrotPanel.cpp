@@ -44,7 +44,7 @@ void MultibrotPanel::InitializeGLEW()
     GLenum err = glewInit();
     if (err != GLEW_OK) {
         const GLubyte* msg = glewGetErrorString(err);
-        throw std::exception(reinterpret_cast<const char*>(msg));
+        throw std::runtime_error(reinterpret_cast<const char*>(msg));
     }
 }
 
