@@ -29,6 +29,8 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     m_context = std::make_unique<wxGLContext>(this);
     SetCurrent(*m_context);
     InitializeGLEW();
+
+    Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
 }
 
 
@@ -44,5 +46,16 @@ void MultibrotPanel::InitializeGLEW()
         const GLubyte* msg = glewGetErrorString(err);
         throw std::exception(reinterpret_cast<const char*>(msg));
     }
+}
+
+void MultibrotPanel::OnPaint(wxPaintEvent& event)
+{
+    SetCurrent(*m_context);
+    // set background to black
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glFlush();
+    SwapBuffers();
 }
 

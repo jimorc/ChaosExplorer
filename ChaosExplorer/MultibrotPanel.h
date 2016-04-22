@@ -18,10 +18,11 @@ public:
     virtual ~MultibrotPanel();
 private:
     void InitializeGLEW();
+    void OnPaint(wxPaintEvent& event);
+
     std::complex<double> m_power;
     std::complex<double> m_upperLeft;
     std::complex<double> m_lowerRight;
-
     std::unique_ptr<wxGLContext> m_context;
 };
 
