@@ -1,6 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdexcept>
+#include <vector>
 #include "GL/glew.h"
+#include "GLShaderProgram.h"
 #include "MultibrotPanel.h"
 
 
@@ -28,6 +30,9 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     }
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
+
+    BuildVertexShader();
+    BuildFragmentShader();
 }
 
 
@@ -44,5 +49,39 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
     glFlush();
     SwapBuffers();
+}
+
+void MultibrotPanel::BuildVertexShader()
+{
+    std::string vertexSource =
+        "#version 330 core\n"
+        "in vec4 position;"
+        "void main()"
+        "{"
+        "    gl_Position = position;"
+        "}";
+    m_vertexShader = std::make_unique<GLShader>(*this, GL_VERTEX_SHADER, vertexSource,
+        "Multibrot vertex shader did not compile.");
+}
+
+void MultibrotPanel::BuildFragmentShader()
+{
+    std::string fragmentSource =
+        "#version 330 core\n"
+        "out vec4 OutColor;"
+        "void main()"
+        "{"
+        "	OutColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);"
+        "}";
+    m_fragmentShader = std::make_unique<GLShader>(*this, GL_FRAGMENT_SHADER, fragmentSource,
+        "Multibrot fragment shader did not compile.");
+}
+
+void MultibrotPanel::BuildShaderProgram()
+{
+    std::vector<GLuint> shaders;
+    shaders.push_back(m_vertexShader->GetShaderHandle());
+    shaders.push_back(m_fragmentShader->GetShaderHandle());
+    m_program = std::make_unique<GLShaderProgram>(*this, shaders);
 }
 

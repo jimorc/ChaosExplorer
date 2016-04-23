@@ -2,24 +2,28 @@
 #include <string>
 #include <memory>
 #include "GL/glew.h"
-#include "MultibrotPanel.h"
+
+class ChaosPanel;
+//#include "ChaosPanel.h"
+
 class GLShader
 {
 public:
-    GLShader(MultibrotPanel& canvas, const GLenum shaderType,
+    GLShader(ChaosPanel& canvas, const GLenum shaderType,
         const std::string& shaderSource,
         const std::string& compileErrorString);
     GLShader(const GLShader&) = delete;
     GLShader(GLShader&&) = delete;
-    virtual ~GLShader() noexcept;
+    virtual ~GLShader();
 
     GLShader& operator=(const GLShader&) = delete;
     GLShader& operator=(GLShader&&) = delete;
+    GLuint GetShaderHandle() { return m_shader; }
 
 private:
     void CheckShaderCompileStatus(GLuint shader, const std::string& errorMsg);
 
-    MultibrotPanel* m_canvas;
+    ChaosPanel* m_canvas;
     GLuint m_shader;
 };
 

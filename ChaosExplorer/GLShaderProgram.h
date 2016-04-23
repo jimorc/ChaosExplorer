@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 #include "GLShader.h"
-#include "MultibrotPanel.h"
+#include "ChaosPanel.h"
 
 class GLShaderProgram
 {
 public:
-    GLShaderProgram(MultibrotPanel& canvas, std::vector<GLuint>& shaders);
+    GLShaderProgram(ChaosPanel& canvas, std::vector<GLuint>& shaders);
     GLShaderProgram(const GLShaderProgram&) = delete;
     GLShaderProgram(GLShaderProgram&&) = delete;
     virtual ~GLShaderProgram();
@@ -21,7 +21,7 @@ public:
 private:
     void Link();
 
-    MultibrotPanel* m_canvas;
+    ChaosPanel* m_canvas;
     GLuint m_program;
 };
 

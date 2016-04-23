@@ -1,4 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "GL/glew.h"
+#include "GLShaderProgram.h"
 #include "ChaosPanel.h"
 
 ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,

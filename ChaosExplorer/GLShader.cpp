@@ -1,23 +1,24 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLShader.h"
+#include "ChaosPanel.h"
 
-GLShader::GLShader(MultibrotPanel& canvas, GLenum shaderType,
+GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
     const std::string& shaderSource,
     const std::string& compileErrorString)
     : m_canvas(&canvas)
 {
     m_canvas->SetContext();
-    m_shader = glCreateShader(GL_VERTEX_SHADER);
+    m_shader = glCreateShader(shaderType);
     const char *source = shaderSource.c_str();
     glShaderSource(m_shader, 1, &source, NULL);
     glCompileShader(m_shader);
-    CheckShaderCompileStatus(m_shader, "Circle Vertex Shader did not compile.");
+    CheckShaderCompileStatus(m_shader, compileErrorString);
 }
 
 
-GLShader::~GLShader() noexcept
+GLShader::~GLShader()
 {
-    m_canvas->SetContext();
+//    m_canvas->SetContext();
     glDeleteShader(m_shader);
 }
 

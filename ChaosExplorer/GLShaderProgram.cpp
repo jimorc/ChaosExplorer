@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLShaderProgram.h"
 
-GLShaderProgram::GLShaderProgram(MultibrotPanel& canvas, std::vector<GLuint>& shaders)
+GLShaderProgram::GLShaderProgram(ChaosPanel& canvas, std::vector<GLuint>& shaders)
     : m_canvas(&canvas)
 {
     m_canvas->SetContext();

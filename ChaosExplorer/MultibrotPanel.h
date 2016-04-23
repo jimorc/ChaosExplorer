@@ -17,6 +17,11 @@ public:
         std::complex<double> lr =  1.5 - 2.0i);
     virtual ~MultibrotPanel();
 
+protected:
+    virtual void BuildVertexShader() override;
+    virtual void BuildFragmentShader() override;
+    virtual void BuildShaderProgram() override;
+
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
 
