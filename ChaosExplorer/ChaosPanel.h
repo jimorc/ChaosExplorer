@@ -15,7 +15,7 @@ public:
     ChaosPanel& operator=(const ChaosPanel&) = delete;
     ChaosPanel& operator=(ChaosPanel&&) = delete;
     void InitializeGLEW();
-    void SetContext() { SetCurrent(*m_context); }
+    void SetContext() const noexcept { SetCurrent(*m_context); }
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
