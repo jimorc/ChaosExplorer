@@ -9,7 +9,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<double> power,
     std::complex<double> ul,
     std::complex<double> lr)
-    : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size),
+    : ChaosPanel(parent, id, attribList, size),
     m_power(power)
 {
     if (power.real() < 1.0) {
@@ -26,9 +26,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
         throw std::invalid_argument(
             "The imag portions of the upper-left and lower-right corners of the Multibrot display are equal.");
     }
-    m_context = std::make_unique<wxGLContext>(this);
-    SetCurrent(*m_context);
-    InitializeGLEW();
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
 }
@@ -38,19 +35,9 @@ MultibrotPanel::~MultibrotPanel()
 {
 }
 
-void MultibrotPanel::InitializeGLEW()
-{
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        const GLubyte* msg = glewGetErrorString(err);
-        throw std::runtime_error(reinterpret_cast<const char*>(msg));
-    }
-}
-
 void MultibrotPanel::OnPaint(wxPaintEvent& event)
 {
-    SetCurrent(*m_context);
+    SetContext();
     // set background to black
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

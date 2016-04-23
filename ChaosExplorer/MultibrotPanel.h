@@ -2,12 +2,12 @@
 #include <complex>
 #include <memory>
 #include "wx/panel.h"
-#include "wx/glcanvas.h"
+#include "ChaosPanel.h"
 
 using namespace std::complex_literals;
 
 class MultibrotPanel :
-    public wxGLCanvas
+    public ChaosPanel
 {
 public:
     MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,
@@ -17,14 +17,11 @@ public:
         std::complex<double> lr =  1.5 - 2.0i);
     virtual ~MultibrotPanel();
 
-    void SetContext() { SetCurrent(*m_context); }
 private:
-    void InitializeGLEW();
     void OnPaint(wxPaintEvent& event);
 
     std::complex<double> m_power;
     std::complex<double> m_upperLeft;
     std::complex<double> m_lowerRight;
-    std::unique_ptr<wxGLContext> m_context;
 };
 
