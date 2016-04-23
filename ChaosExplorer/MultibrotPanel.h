@@ -18,7 +18,7 @@ public:
     virtual ~MultibrotPanel();
 
 private:
-    void OnPaint(wxPaintEvent& event);
+    virtual void OnPaint(wxPaintEvent& event) override;
 
     std::complex<double> m_power;
     std::complex<double> m_upperLeft;
