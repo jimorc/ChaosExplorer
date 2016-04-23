@@ -113,12 +113,14 @@
     <ClInclude Include="ChaosExplorerApp.h" />
     <ClInclude Include="ChaosExplorerWindow.h" />
     <ClInclude Include="GLShader.h" />
+    <ClInclude Include="GLShaderProgram.h" />
     <ClInclude Include="MultibrotPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp" />
     <ClCompile Include="ChaosExplorerWindow.cpp" />
     <ClCompile Include="GLShader.cpp" />
+    <ClCompile Include="GLShaderProgram.cpp" />
     <ClCompile Include="MultibrotPanel.cpp" />
   </ItemGroup>
   <ItemGroup>

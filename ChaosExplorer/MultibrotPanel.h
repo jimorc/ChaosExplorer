@@ -17,7 +17,7 @@ public:
         std::complex<double> lr =  1.5 - 2.0i);
     virtual ~MultibrotPanel();
 
-    wxGLContext* GetContext() { return &(*m_context); }
+    void SetContext() { SetCurrent(*m_context); }
 private:
     void InitializeGLEW();
     void OnPaint(wxPaintEvent& event);

@@ -6,7 +6,7 @@ GLShader::GLShader(MultibrotPanel& canvas, GLenum shaderType,
     const std::string& compileErrorString)
     : m_canvas(&canvas)
 {
-    m_canvas->SetCurrent(*m_canvas->GetContext());
+    m_canvas->SetContext();
     m_shader = glCreateShader(GL_VERTEX_SHADER);
     const char *source = shaderSource.c_str();
     glShaderSource(m_shader, 1, &source, NULL);
@@ -17,7 +17,7 @@ GLShader::GLShader(MultibrotPanel& canvas, GLenum shaderType,
 
 GLShader::~GLShader() noexcept
 {
-    m_canvas->SetCurrent(*m_canvas->GetContext());
+    m_canvas->SetContext();
     glDeleteShader(m_shader);
 }
 
