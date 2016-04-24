@@ -17,9 +17,10 @@ public:
     GLShaderProgram& operator=(const GLShaderProgram) = delete;
     GLShaderProgram& operator=(GLShaderProgram&&) = delete;
     void BindFragmentDataLocations(const std::vector<std::string>& varName);
+    void Link();
+    GLuint GetProgramHandle() { return m_program; }
 
 private:
-    void Link();
 
     ChaosPanel* m_canvas;
     GLuint m_program;

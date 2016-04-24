@@ -1,6 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdexcept>
 #include <vector>
+#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "GL/glew.h"
 #include "GLShaderProgram.h"
 #include "MultibrotPanel.h"
@@ -31,8 +34,13 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
 
-    BuildVertexShader();
-    BuildFragmentShader();
+    std::vector<glm::vec4> vertices;
+    vertices.push_back({ 1.0f, 1.0f, 0.0f, 1.0f });
+    vertices.push_back({ -1.0f, 1.0f, 0.0f, 1.0f });
+    vertices.push_back({ 1.0f, -1.0f, 0.0f, 1.0f });
+    vertices.push_back({ -1.0f, -1.0f, 0.0f, 1.0f });
+    BuildShaderProgram();
+    SetupTriangles(vertices, m_program->GetProgramHandle());
 }
 
 
@@ -46,6 +54,9 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     // set background to black
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glUseProgram(m_program->GetProgramHandle());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glFlush();
     SwapBuffers();
@@ -79,9 +90,13 @@ void MultibrotPanel::BuildFragmentShader()
 
 void MultibrotPanel::BuildShaderProgram()
 {
+    BuildVertexShader();
+    BuildFragmentShader();
     std::vector<GLuint> shaders;
     shaders.push_back(m_vertexShader->GetShaderHandle());
     shaders.push_back(m_fragmentShader->GetShaderHandle());
     m_program = std::make_unique<GLShaderProgram>(*this, shaders);
+    std::vector<std::string> locations;
+    locations.push_back("OutColor");
+    m_program->BindFragmentDataLocations(locations);
 }
-

@@ -15,7 +15,6 @@ GLShaderProgram::GLShaderProgram(ChaosPanel& canvas, std::vector<GLuint>& shader
 
 GLShaderProgram::~GLShaderProgram()
 {
-    m_canvas->SetContext();
     glDeleteProgram(m_program);
 }
 
@@ -32,9 +31,11 @@ void GLShaderProgram::Link()
 {
     glLinkProgram(m_program);
     // check shader compile status, and throw exception if compile failed
-    GLint status;
+    GLint status = GL_TRUE;
     glGetShaderiv(m_program, GL_LINK_STATUS, &status);
     if (status != GL_TRUE) {
+        // Program Info Log is empty
+        // so don't try to read it
         throw std::logic_error("Linking of shader program failed.");
     }
 

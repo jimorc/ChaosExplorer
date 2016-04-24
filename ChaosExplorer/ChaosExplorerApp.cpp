@@ -32,16 +32,17 @@ ChaosExplorerApp::~ChaosExplorerApp()
 
 bool ChaosExplorerApp::OnInit()
 {
+    ChaosExplorerWindow* mainFrame = nullptr;
     try {
-        ChaosExplorerWindow* mainFrame = new ChaosExplorerWindow(nullptr, wxID_ANY, L"ChaosExplorer");
+        mainFrame = new ChaosExplorerWindow(nullptr, wxID_ANY, L"ChaosExplorer");
         mainFrame->Show(true);
+        return true;
     }
     catch (std::exception& e) {
         std::string error = std::string(e.what()) + "\nProgram will terminate.";
         wxMessageBox(error.c_str(), "Error");
+        return false;
     }
-    return true;
-
 }
 
 wxIMPLEMENT_APP(ChaosExplorerApp);

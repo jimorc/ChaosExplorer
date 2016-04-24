@@ -1,7 +1,7 @@
 #pragma once
 #include "wx/wxprec.h"
 #include <memory>
-//#include "GLShaderProgram.h"
+#include <glm/gtc/type_ptr.hpp>
 #include "GLShader.h"
 #include "wx/glcanvas.h"
 
@@ -21,6 +21,7 @@ public:
     void InitializeGLEW();
     void SetContext() const noexcept { SetCurrent(*m_context); }
 
+
 protected:
     virtual void BuildVertexShader() = 0;
     virtual void BuildFragmentShader() = 0;
@@ -28,9 +29,12 @@ protected:
     std::unique_ptr<GLShader> m_vertexShader;
     std::unique_ptr<GLShader> m_fragmentShader;
     std::unique_ptr<GLShaderProgram> m_program;
+    void SetupTriangles(std::vector<glm::vec4>& vert, GLint prog);
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
     std::unique_ptr<wxGLContext> m_context;
+    GLuint m_vbo;
+    GLuint m_vao;
 };
 
