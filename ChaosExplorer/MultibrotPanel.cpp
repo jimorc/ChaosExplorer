@@ -5,7 +5,7 @@
 //#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "GL/glew.h"
-#include "GLShaderProgram.h"
+#include "GLMultibrotShaderProgram.h"
 #include "MultibrotPanel.h"
 
 
@@ -56,12 +56,13 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_program->GetProgramHandle());
-    glUniform2f(m_program->GetZ0Handle(), 0.0f, 0.0f);
-    glUniform2f(m_program->GetPHandle(), m_power.real(), m_power.imag());
-    glUniform2f(m_program->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(m_program->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
-    glUniform2f(m_program->GetViewDimensionsHandle(), size.x, size.y);
-    glUniform3f(m_program->GetColorHandle(), 1.0f, 0.5f, 0.0f);
+    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
+    glUniform2f(prog->GetZ0Handle(), 0.0f, 0.0f);
+    glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
+    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
+    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
+    glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
+    glUniform3f(prog->GetColorHandle(), 1.0f, 0.5f, 0.0f);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glFlush();
@@ -71,5 +72,5 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
 void MultibrotPanel::BuildShaderProgram()
 {
-    m_program = std::make_unique<GLShaderProgram>(*this);
+    m_program = std::make_shared<GLMultibrotShaderProgram>(*this);
 }

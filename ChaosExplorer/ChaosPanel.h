@@ -23,7 +23,7 @@ public:
 
 protected:
     virtual void BuildShaderProgram() = 0;
-    std::unique_ptr<GLShaderProgram> m_program;
+    std::shared_ptr<GLShaderProgram> m_program;
     void SetupTriangles(std::vector<glm::vec4>& vert, GLint prog);
 
 private:

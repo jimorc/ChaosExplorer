@@ -33,6 +33,9 @@
     <ClInclude Include="ChaosPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GLMultibrotShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChaosExplorerWindow.cpp" />
+    <ClCompile Include="GLMultibrotShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
