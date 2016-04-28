@@ -72,5 +72,5 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
 void MultibrotPanel::BuildShaderProgram()
 {
-    m_program = std::make_shared<GLMultibrotShaderProgram>(*this);
+    m_program = std::make_unique<GLMultibrotShaderProgram>(*this);
 }

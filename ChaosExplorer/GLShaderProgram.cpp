@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLShaderProgram.h"
 
-GLShaderProgram::GLShaderProgram(ChaosPanel& canvas)
+GLShaderProgram::GLShaderProgram(ChaosPanel& canvas) 
     : m_canvas(&canvas)
 {
 }
@@ -26,5 +26,3 @@ void GLShaderProgram::Link()
     }
 
 }
-
-
