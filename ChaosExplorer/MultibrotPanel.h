@@ -12,14 +12,12 @@ class MultibrotPanel :
 public:
     MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,
         const wxSize& size = { 800, 600 },
-        std::complex<double> power = { 2.0L, 0.0L },
-        std::complex<double> ul = -2.5 + 2.0i,
-        std::complex<double> lr =  1.5 - 2.0i);
+        std::complex<float> power = 2.0f,
+        std::complex<float> ul = -2.5f + 2.0if,
+        std::complex<float> lr =  1.5f - 2.0if);
     virtual ~MultibrotPanel();
 
 protected:
-    virtual void BuildVertexShader() override;
-    virtual void BuildFragmentShader() override;
     virtual void BuildShaderProgram() override;
 
 private:
@@ -28,5 +26,6 @@ private:
     std::complex<double> m_power;
     std::complex<double> m_upperLeft;
     std::complex<double> m_lowerRight;
+
 };
 

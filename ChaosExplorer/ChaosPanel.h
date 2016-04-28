@@ -2,7 +2,6 @@
 #include "wx/wxprec.h"
 #include <memory>
 #include <glm/gtc/type_ptr.hpp>
-#include "GLShader.h"
 #include "wx/glcanvas.h"
 
 class GLShaderProgram;
@@ -23,11 +22,7 @@ public:
 
 
 protected:
-    virtual void BuildVertexShader() = 0;
-    virtual void BuildFragmentShader() = 0;
     virtual void BuildShaderProgram() = 0;
-    std::unique_ptr<GLShader> m_vertexShader;
-    std::unique_ptr<GLShader> m_fragmentShader;
     std::unique_ptr<GLShaderProgram> m_program;
     void SetupTriangles(std::vector<glm::vec4>& vert, GLint prog);
 

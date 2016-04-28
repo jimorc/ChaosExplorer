@@ -11,7 +11,7 @@ ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const 
 {
     m_notebook = new wxNotebook(this, wxID_ANY, wxPoint(0, 0), wxDefaultSize, wxTop | wxNB_MULTILINE);
     MultibrotPanel* win = new MultibrotPanel(m_notebook, wxID_ANY, nullptr,
-        { 800, 800 }, 2.0l, 362);
+    { 800, 800 });
     m_notebook->AddPage(win, L"Mandelbrot-1", true);
     m_notebook->Fit();
 

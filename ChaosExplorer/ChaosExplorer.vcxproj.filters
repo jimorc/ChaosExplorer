@@ -38,9 +38,6 @@
     <ClCompile Include="ChaosExplorerApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChaosExplorerWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MultibrotPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,6 +50,7 @@
     <ClCompile Include="ChaosPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ChaosExplorerWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
