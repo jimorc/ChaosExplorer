@@ -15,7 +15,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> ul,
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, size),
-    m_power(power)
+    m_power(power), m_leftButtonDown(false)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -33,6 +33,9 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     }
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
+    Bind(wxEVT_LEFT_DOWN, &MultibrotPanel::OnLeftButtonDown, this);
+    Bind(wxEVT_LEFT_UP, &MultibrotPanel::OnLeftButtonUp, this);
+    Bind(wxEVT_MOTION, &MultibrotPanel::OnMouseMove, this);
 
     std::vector<glm::vec4> vertices;
     vertices.push_back({ 1.0f, 1.0f, 0.0f, 1.0f });
@@ -73,4 +76,35 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 void MultibrotPanel::BuildShaderProgram()
 {
     m_program = std::make_unique<GLMultibrotShaderProgram>(*this);
+}
+
+void MultibrotPanel::OnLeftButtonDown(wxMouseEvent& event)
+{
+    m_leftButtonDown = true;
+    m_leftDown = event.GetPosition();
+    m_leftUp = m_leftDown;
+}
+
+void MultibrotPanel::OnMouseMove(wxMouseEvent& event)
+{
+    if (m_leftButtonDown) {
+        m_leftUp = event.GetPosition();
+        Refresh();
+    }
+}
+
+void MultibrotPanel::OnLeftButtonUp(wxMouseEvent& event)
+{
+    m_leftUp = event.GetPosition();
+    m_leftButtonDown = false;
+    if (m_leftDown.x > m_leftUp.x) {
+        int temp = m_leftDown.x;
+        m_leftDown.x = m_leftUp.x;
+        m_leftUp.x = temp;
+    }
+    if (m_leftDown.y > m_leftUp.y) {
+        m_leftDown.y = m_leftUp.y;
+    }
+    m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+    Refresh();
 }

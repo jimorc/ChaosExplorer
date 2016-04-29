@@ -22,10 +22,16 @@ protected:
 
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
+    virtual void OnLeftButtonDown(wxMouseEvent& event);
+    virtual void OnMouseMove(wxMouseEvent& event);
+    virtual void OnLeftButtonUp(wxMouseEvent& event);
 
     std::complex<double> m_power;
     std::complex<double> m_upperLeft;
     std::complex<double> m_lowerRight;
 
+    bool m_leftButtonDown;
+    wxPoint m_leftDown;
+    wxPoint m_leftUp;
 };
 
