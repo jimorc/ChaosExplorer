@@ -39,6 +39,7 @@ void GLSquareShaderProgram::BuildFragmentShader()
 {
     std::string fragmentSource =
         "#version 430 core\n"
+        "out vec4 OutColor;"
         "void main()"
         "{"
         "    OutColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);"

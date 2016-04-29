@@ -25,6 +25,11 @@ private:
     virtual void OnLeftButtonDown(wxMouseEvent& event);
     virtual void OnMouseMove(wxMouseEvent& event);
     virtual void OnLeftButtonUp(wxMouseEvent& event);
+    void SetupSquareArrays();
+
+    std::unique_ptr<GLShaderProgram> m_squareProgram;
+    GLuint m_squareVbo;
+    GLuint m_squareVao;
 
     std::complex<double> m_power;
     std::complex<double> m_upperLeft;

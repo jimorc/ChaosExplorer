@@ -25,6 +25,7 @@ protected:
     virtual void BuildShaderProgram() = 0;
     std::unique_ptr<GLShaderProgram> m_program;
     void SetupTriangles(std::vector<glm::vec4>& vert, GLint prog);
+    GLuint GetVao() { return m_vao; }
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
