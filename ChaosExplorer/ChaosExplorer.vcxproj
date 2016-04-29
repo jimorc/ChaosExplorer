@@ -116,6 +116,7 @@
     <ClInclude Include="GLMultibrotShaderProgram.h" />
     <ClInclude Include="GLShader.h" />
     <ClInclude Include="GLShaderProgram.h" />
+    <ClInclude Include="GLSquareShaderProgram.h" />
     <ClInclude Include="MultibrotPanel.h" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +126,7 @@
     <ClCompile Include="GLMultibrotShaderProgram.cpp" />
     <ClCompile Include="GLShader.cpp" />
     <ClCompile Include="GLShaderProgram.cpp" />
+    <ClCompile Include="GLSquareShaderProgram.cpp" />
     <ClCompile Include="MultibrotPanel.cpp" />
   </ItemGroup>
   <ItemGroup>

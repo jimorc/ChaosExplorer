@@ -36,6 +36,9 @@
     <ClInclude Include="GLMultibrotShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GLSquareShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="ChaosExplorerWindow.cpp" />
     <ClCompile Include="GLMultibrotShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLSquareShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
