@@ -9,8 +9,6 @@ public:
     GLMultibrotShaderProgram(ChaosPanel& canvas);
     virtual ~GLMultibrotShaderProgram();
 
-    GLint GetUniformLocation(std::string& uniform) { 
-        glGetUniformLocation(GetProgramHandle(), uniform.c_str()); }
     GLint GetZ0Handle() { return m_z0; }
     GLint GetPHandle() { return m_p; }
     GLint GetULHandle() { return m_ul; }

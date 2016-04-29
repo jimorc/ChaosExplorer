@@ -18,6 +18,9 @@ public:
     GLShaderProgram& operator=(GLShaderProgram&&) = delete;
     void Link();
     void Use() { glUseProgram(m_program); }
+    GLint GetUniformLocation(std::string& uniform) {
+        glGetUniformLocation(GetProgramHandle(), uniform.c_str());
+    }
     GLuint GetProgramHandle() { return m_program; }
     void SetProgramHandle(GLuint handle) { m_program = handle; }
     ChaosPanel* GetCanvas() { return m_canvas; }
