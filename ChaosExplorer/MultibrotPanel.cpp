@@ -170,7 +170,7 @@ void MultibrotPanel::CreateMainMenu()
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
-//    Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
+    Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
 void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
@@ -184,5 +184,5 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 
 void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 {
-        
+    m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
 }
