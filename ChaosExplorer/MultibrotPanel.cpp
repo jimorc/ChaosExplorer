@@ -16,7 +16,8 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> ul,
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, size),
-    m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 })
+    m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
+    m_popup(nullptr)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -32,6 +33,8 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
         throw std::invalid_argument(
             "The imag portions of the upper-left and lower-right corners of the Multibrot display are equal.");
     }
+
+    CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
     Bind(wxEVT_LEFT_DOWN, &MultibrotPanel::OnLeftButtonDown, this);
@@ -53,6 +56,10 @@ MultibrotPanel::~MultibrotPanel()
 {
     glDeleteBuffers(1, &m_squareVbo);
     glDeleteVertexArrays(1, &m_squareVao);
+
+    if (m_popup != nullptr) {
+        delete m_popup;
+    }
 }
 
 void MultibrotPanel::OnPaint(wxPaintEvent& event)
@@ -151,4 +158,31 @@ void MultibrotPanel::SetupSquareArrays()
     glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(posAttrib);
 
+}
+
+void MultibrotPanel::CreateMainMenu()
+{
+    m_popup = new wxMenu;
+    m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
+    m_popup->Enable(ID_DRAWFROMSELECTION, false);
+
+
+    Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
+        this, ID_DRAWFROMSELECTION);
+//    Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
+}
+
+void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
+{
+    PopupMenu(m_popup);
+}
+
+void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
+{
+}
+
+void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
+{
+        
 }

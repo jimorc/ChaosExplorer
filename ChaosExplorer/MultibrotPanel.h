@@ -6,6 +6,8 @@
 
 using namespace std::complex_literals;
 
+const int ID_DRAWFROMSELECTION = 2002;
+
 class MultibrotPanel :
     public ChaosPanel
 {
@@ -25,7 +27,11 @@ private:
     virtual void OnLeftButtonDown(wxMouseEvent& event);
     virtual void OnMouseMove(wxMouseEvent& event);
     virtual void OnLeftButtonUp(wxMouseEvent& event);
+    virtual void OnRightButtonDown(wxMouseEvent& event);
+    virtual void OnDrawFromSelection(wxCommandEvent& event);
+    virtual void OnMenuOpen(wxMenuEvent& event);
     void SetupSquareArrays();
+    void CreateMainMenu();
 
     std::unique_ptr<GLShaderProgram> m_squareProgram;
     GLuint m_squareVbo;
@@ -38,5 +44,7 @@ private:
     bool m_leftButtonDown;
     wxPoint m_leftDown;
     wxPoint m_leftUp;
+
+    wxMenu* m_popup;
 };
 
