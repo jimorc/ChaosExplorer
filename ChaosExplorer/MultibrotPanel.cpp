@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include "wx/notebook.h"
 #include <stdexcept>
 #include <vector>
 #include <glm/glm.hpp>
@@ -180,6 +181,20 @@ void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
 
 void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
+    wxSize size = GetSize();
+    float ulReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftDown.x / size.x;
+    float ulImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftDown.y / size.y;
+    float lrReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftUp.x / size.x;
+    float lrImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftUp.y / size.y;
+
+    std::complex<float> ul(ulReal, ulImag);
+    std::complex<float> lr(lrReal, lrImag);
+    wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
+    if (nBook == nullptr) {
+        throw std::logic_error("Could not retrieve the Notebook for the new MultibrotPanel.");
+    }
+    MultibrotPanel* mPanel = new MultibrotPanel(nBook, wxID_ANY, nullptr, size, m_power, ul, lr);
+    nBook->AddPage(mPanel, L"Multibrot", true);
 }
 
 void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
