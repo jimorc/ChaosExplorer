@@ -87,15 +87,15 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
         float halfSize = static_cast<float>(size.x) / 2.0f;
         float downX = m_leftDown.x - halfSize;
         float downY = halfSize - m_leftDown.y;
-        float upX = m_leftUp.x - halfSize;
-        float upY = halfSize - m_leftUp.y;
-        std::vector<glm::vec4> points;
-        points.push_back({ downX, downY, 0.0f, halfSize });
-        points.push_back({ downX, upY, 0.0f, halfSize });
-        points.push_back({ upX, upY, 0.0f, halfSize });
-        points.push_back({ upX, downY, 0.0f, halfSize });
-        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
-        glDrawArrays(GL_LINE_LOOP, 0, points.size());
+float upX = m_leftUp.x - halfSize;
+float upY = halfSize - m_leftUp.y;
+std::vector<glm::vec4> points;
+points.push_back({ downX, downY, 0.0f, halfSize });
+points.push_back({ downX, upY, 0.0f, halfSize });
+points.push_back({ upX, upY, 0.0f, halfSize });
+points.push_back({ upX, downY, 0.0f, halfSize });
+glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
+glDrawArrays(GL_LINE_LOOP, 0, points.size());
     }
 
     glFlush();
@@ -186,6 +186,16 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
     float ulImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftDown.y / size.y;
     float lrReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftUp.x / size.x;
     float lrImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftUp.y / size.y;
+
+    // 2.0e-6f was determined empirically as close to the minimal size that would not
+    // result in either a fractured or pixelated image.
+    if (((lrReal - ulReal) / size.x) < 2.0e-6f) {
+        wxMessageBox(L"The area selected is too small to compute accurately.\n"
+            L"Resulting image would either be fractured or pixelated.\n"
+            L"You might consider selecting a larger area.", L"Selection Problem",
+            MB_OK, this);
+        return;
+}
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
