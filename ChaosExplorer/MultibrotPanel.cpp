@@ -10,6 +10,68 @@
 #include "GLSquareShaderProgram.h"
 #include "MultibrotPanel.h"
 
+// Colours to display Multibrot image in
+static std::vector<glm::vec4> colors = {
+    { 1.0f, 0.5f, 0.0f, 1.0f },
+    { 0.9f, 0.45f, 0.0f, 1.0f },
+    { 0.8f, 0.4f, 0.0f, 1.0f },
+    { 0.7f, 0.35f, 0.0f, 1.0f },
+    { 0.6f, 0.3f, 0.0f, 1.0f },
+    { 0.5f, 0.25f, 0.0f, 1.0f },
+    { 0.4f, 0.2f, 0.0f, 1.0f },
+    { 0.3f, 0.15f, 0.0f, 1.0f },
+    { 0.2f, 0.1f, 0.0f, 1.0f },
+    { 0.1f, 0.05f, 0.0f, 1.0f },
+    { 0.0f, 0.0f, 0.1f, 1.0f },
+    { 0.0f, 0.0f, 0.2f, 1.0f },
+    { 0.0f, 0.0f, 0.3f, 1.0f },
+    { 0.0f, 0.0f, 0.4f, 1.0f },
+    { 0.0f, 0.0f, 0.5f, 1.0f },
+    { 0.1f, 0.0f, 0.5f, 1.0f },
+    { 0.2f, 0.0f, 0.5f, 1.0f },
+    { 0.3f, 0.0f, 0.5f, 1.0f },
+    { 0.4f, 0.0f, 0.5f, 1.0f },
+    { 0.5f, 0.0f, 0.5f, 1.0f },
+    { 0.5f, 0.0f, 0.4f, 1.0f },
+    { 0.5f, 0.0f, 0.3f, 1.0f },
+    { 0.5f, 0.0f, 0.2f, 1.0f },
+    { 0.5f, 0.0f, 0.1f, 1.0f },
+    { 0.5f, 0.0f, 0.0f, 1.0f },
+    { 0.4f, 0.0f, 0.0f, 1.0f },
+    { 0.3f, 0.0f, 0.0f, 1.0f },
+    { 0.2f, 0.0f, 0.0f, 1.0f },
+    { 0.1f, 0.0f, 0.0f, 1.0f },
+    { 0.0f, 0.1f, 0.0f, 1.0f },
+    { 0.0f, 0.2f, 0.0f, 1.0f },
+    { 0.0f, 0.3f, 0.0f, 1.0f },
+    { 0.0f, 0.4f, 0.0f, 1.0f },
+    { 0.0f, 0.4f, 0.0f, 1.0f },
+    { 0.0f, 0.5f, 0.0f, 1.0f },
+    { 0.0f, 0.5f, 0.1f, 1.0f },
+    { 0.0f, 0.5f, 0.2f, 1.0f },
+    { 0.0f, 0.5f, 0.3f, 1.0f },
+    { 0.0f, 0.5f, 0.4f, 1.0f },
+    { 0.0f, 0.5f, 0.5f, 1.0f },
+    { 0.0f, 0.4f, 0.5f, 1.0f },
+    { 0.0f, 0.3f, 0.5f, 1.0f },
+    { 0.0f, 0.2f, 0.5f, 1.0f },
+    { 0.0f, 0.1f, 0.5f, 1.0f },
+    { 0.1f, 0.1f, 0.5f, 1.0f },
+    { 0.2f, 0.2f, 0.4f, 1.0f },
+    { 0.3f, 0.3f, 0.1f, 1.0f },
+    { 0.4f, 0.4f, 0.1f, 1.0f },
+    { 0.5f, 0.5f, 0.0f, 1.0f },
+    { 0.3f, 0.3f, 0.3f, 1.0f }
+};
+
+// The vertices that define the two triangles.
+// These vertices take up entire view
+std::vector<glm::vec4> vertices = {
+    { 1.0f, 1.0f, 0.0f, 1.0f },
+    { -1.0f, 1.0f, 0.0f, 1.0f },
+    { 1.0f, -1.0f, 0.0f, 1.0f },
+    { -1.0f, -1.0f, 0.0f, 1.0f }
+};
 
 MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList, 
     const wxSize& size,
@@ -42,14 +104,18 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     Bind(wxEVT_LEFT_UP, &MultibrotPanel::OnLeftButtonUp, this);
     Bind(wxEVT_MOTION, &MultibrotPanel::OnMouseMove, this);
 
-    std::vector<glm::vec4> vertices;
-    vertices.push_back({ 1.0f, 1.0f, 0.0f, 1.0f });
-    vertices.push_back({ -1.0f, 1.0f, 0.0f, 1.0f });
-    vertices.push_back({ 1.0f, -1.0f, 0.0f, 1.0f });
-    vertices.push_back({ -1.0f, -1.0f, 0.0f, 1.0f });
+
     BuildShaderProgram();
     SetupTriangles(vertices, m_program->GetProgramHandle());
     SetupSquareArrays();
+    glUseProgram(m_program->GetProgramHandle());
+    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
+    glUniform2f(prog->GetZ0Handle(), 0.0f, 0.0f);
+    glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
+    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
+    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
+    glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
+    glUniform4fv(prog->GetColorHandle(), 50 * 4, &colors[0].x);
 }
 
 
@@ -72,13 +138,6 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
-    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetZ0Handle(), 0.0f, 0.0f);
-    glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
-    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
-    glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
-    glUniform3f(prog->GetColorHandle(), 1.0f, 0.5f, 0.0f);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     if (m_leftDown.x != m_leftUp.x || m_leftDown.y != m_leftUp.y) {
@@ -87,15 +146,15 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
         float halfSize = static_cast<float>(size.x) / 2.0f;
         float downX = m_leftDown.x - halfSize;
         float downY = halfSize - m_leftDown.y;
-float upX = m_leftUp.x - halfSize;
-float upY = halfSize - m_leftUp.y;
-std::vector<glm::vec4> points;
-points.push_back({ downX, downY, 0.0f, halfSize });
-points.push_back({ downX, upY, 0.0f, halfSize });
-points.push_back({ upX, upY, 0.0f, halfSize });
-points.push_back({ upX, downY, 0.0f, halfSize });
-glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
-glDrawArrays(GL_LINE_LOOP, 0, points.size());
+        float upX = m_leftUp.x - halfSize;
+        float upY = halfSize - m_leftUp.y;
+        std::vector<glm::vec4> points;
+        points.push_back({ downX, downY, 0.0f, halfSize });
+        points.push_back({ downX, upY, 0.0f, halfSize });
+        points.push_back({ upX, upY, 0.0f, halfSize });
+        points.push_back({ upX, downY, 0.0f, halfSize });
+        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
+        glDrawArrays(GL_LINE_LOOP, 0, points.size());
     }
 
     glFlush();
@@ -186,16 +245,6 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
     float ulImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftDown.y / size.y;
     float lrReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftUp.x / size.x;
     float lrImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftUp.y / size.y;
-
-    // 2.0e-6f was determined empirically as close to the minimal size that would not
-    // result in either a fractured or pixelated image.
-    if (((lrReal - ulReal) / size.x) < 2.0e-6f) {
-        wxMessageBox(L"The area selected is too small to compute accurately.\n"
-            L"Resulting image would either be fractured or pixelated.\n"
-            L"You might consider selecting a larger area.", L"Selection Problem",
-            MB_OK, this);
-        return;
-}
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);

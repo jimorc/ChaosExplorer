@@ -47,7 +47,7 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
         "uniform vec2 ul;"
         "uniform vec2 lr;"
         "uniform vec2 viewDimensions;"
-        "uniform vec3 color;"
+        "uniform vec4 color[50];"
         "out vec4 OutColor;"
         "vec2 iPower(vec2 vec, vec2 p)"
         "{"
@@ -77,7 +77,7 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
         "        ++i;"
         "    }"
         "	 OutColor = i == 50 ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
-        "        vec4(color * (2.0f * i) / 100.0f, 1.0f);"
+        "        color[i - 1];"
         "}";
     m_fragmentShader = std::make_unique<GLShader>(*GetCanvas(), GL_FRAGMENT_SHADER, fragmentSource,
         "Multibrot fragment shader did not compile.");
