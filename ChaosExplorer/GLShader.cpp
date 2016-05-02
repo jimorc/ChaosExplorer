@@ -7,6 +7,7 @@ GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
     const std::string& compileErrorString)
     : m_canvas(&canvas)
 {
+    // build the shader
     m_canvas->SetContext();
     m_shader = glCreateShader(shaderType);
     const char *source = shaderSource.c_str();
@@ -18,7 +19,6 @@ GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
 
 GLShader::~GLShader()
 {
-//    m_canvas->SetContext();
     glDeleteShader(m_shader);
 }
 

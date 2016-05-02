@@ -4,6 +4,7 @@
 GLMultibrotShaderProgram::GLMultibrotShaderProgram(ChaosPanel& canvas)
     : GLShaderProgram(canvas)
 {
+    // build and link the Multibrot shaders and program
     GetCanvas()->SetContext();
     BuildVertexShader();
     BuildFragmentShader();
@@ -12,6 +13,7 @@ GLMultibrotShaderProgram::GLMultibrotShaderProgram(ChaosPanel& canvas)
     glAttachShader(GetProgramHandle(), m_fragmentShader->GetShaderHandle());
     glBindFragDataLocation(GetProgramHandle(), 0, "OutColor");
     Link();
+    // get the handles for the various uniforms
     m_z0 = glGetUniformLocation(GetProgramHandle(), "z0");
     m_p = glGetUniformLocation(GetProgramHandle(), "p");
     m_ul = glGetUniformLocation(GetProgramHandle(), "ul");
@@ -40,6 +42,13 @@ void GLMultibrotShaderProgram::BuildVertexShader()
 
 void GLMultibrotShaderProgram::BuildFragmentShader()
 {
+    // iPower calculates the complex power of a complex number.
+    // Equation given in http://mathworld.wolfram.com/ComplexExponentiation.html
+    // Similar to the code in http://abecedarical.com/zenosamples/zs_complexnumbers.html
+    // GLSL does not have complex number support and exp/log and trig functions are limited
+    // to floats.
+    //
+    // #TODO: add link to post regarding Multibrot calculations.
     std::string fragmentSource =
         "#version 430 core\n"
         "uniform vec2 z0;"

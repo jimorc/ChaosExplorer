@@ -6,6 +6,7 @@
 GLSquareShaderProgram::GLSquareShaderProgram(ChaosPanel& canvas)
     : GLShaderProgram(canvas)
 {
+    // build and link the square shaders and program
     GetCanvas()->SetContext();
     BuildVertexShader();
     BuildFragmentShader();

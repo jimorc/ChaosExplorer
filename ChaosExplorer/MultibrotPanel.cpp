@@ -73,6 +73,7 @@ std::vector<glm::vec4> vertices = {
     { -1.0f, -1.0f, 0.0f, 1.0f }
 };
 
+// Constructor
 MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList, 
     const wxSize& size,
     std::complex<float> power,
@@ -97,6 +98,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
             "The imag portions of the upper-left and lower-right corners of the Multibrot display are equal.");
     }
 
+    // create popup menu
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
@@ -104,7 +106,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     Bind(wxEVT_LEFT_UP, &MultibrotPanel::OnLeftButtonUp, this);
     Bind(wxEVT_MOTION, &MultibrotPanel::OnMouseMove, this);
 
-
+    // set up GL stuff
     BuildShaderProgram();
     SetupTriangles(vertices, m_program->GetProgramHandle());
     SetupSquareArrays();
@@ -124,6 +126,7 @@ MultibrotPanel::~MultibrotPanel()
     glDeleteBuffers(1, &m_squareVbo);
     glDeleteVertexArrays(1, &m_squareVao);
 
+    // delete popup menu
     if (m_popup != nullptr) {
         delete m_popup;
     }
@@ -136,10 +139,12 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     // set background to black
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // draw the Multibrot image (well, draw the triangles for the display area)
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+    // draw the square outlining the selected area of the image
     if (m_leftDown.x != m_leftUp.x || m_leftDown.y != m_leftUp.y) {
         glUseProgram(m_squareProgram->GetProgramHandle());
         glBindVertexArray(m_squareVao);
@@ -170,6 +175,7 @@ void MultibrotPanel::BuildShaderProgram()
 
 void MultibrotPanel::OnLeftButtonDown(wxMouseEvent& event)
 {
+    // set left button down position
     m_leftButtonDown = true;
     m_leftDown = event.GetPosition();
     m_leftUp = m_leftDown;
@@ -177,6 +183,8 @@ void MultibrotPanel::OnLeftButtonDown(wxMouseEvent& event)
 
 void MultibrotPanel::OnMouseMove(wxMouseEvent& event)
 {
+    // as mouse moves when left button is down, set m_leftDown to be upper left
+    // and m_leftUp to be lower right positions of selection area.
     if (m_leftButtonDown) {
         m_leftUp = event.GetPosition();
         if (m_leftDown.x > m_leftUp.x) {
@@ -188,12 +196,14 @@ void MultibrotPanel::OnMouseMove(wxMouseEvent& event)
             m_leftDown.y = m_leftUp.y;
         }
         m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+        // redraw the selection square
         Refresh();
     }
 }
 
 void MultibrotPanel::OnLeftButtonUp(wxMouseEvent& event)
 {
+    // set final positions of the selection square
     m_leftUp = event.GetPosition();
     m_leftButtonDown = false;
     if (m_leftDown.x > m_leftUp.x) {
@@ -205,11 +215,13 @@ void MultibrotPanel::OnLeftButtonUp(wxMouseEvent& event)
         m_leftDown.y = m_leftUp.y;
     }
     m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+    // and redraw
     Refresh();
 }
 
 void MultibrotPanel::SetupSquareArrays()
 {
+    // set GL stuff for the square that will contain the Multibrot image
     glGenVertexArrays(1, &m_squareVao);
     glBindVertexArray(m_squareVao);
     glGenBuffers(1, &m_squareVbo);
@@ -222,11 +234,12 @@ void MultibrotPanel::SetupSquareArrays()
 
 void MultibrotPanel::CreateMainMenu()
 {
+    // create the popup menu
     m_popup = new wxMenu;
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     m_popup->Enable(ID_DRAWFROMSELECTION, false);
 
-
+    // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
@@ -240,6 +253,7 @@ void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
 
 void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
+    // calculate the upper left and lower right locations for the new display
     wxSize size = GetSize();
     float ulReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftDown.x / size.x;
     float ulImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftDown.y / size.y;
@@ -248,6 +262,8 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
+
+    // create and display a new MultibrotPanel for the display
     wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
     if (nBook == nullptr) {
         throw std::logic_error("Could not retrieve the Notebook for the new MultibrotPanel.");
@@ -258,5 +274,6 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 
 void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 {
+    // enable/disable the various popup menu items
     m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
 }
