@@ -249,6 +249,8 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->AppendSeparator();
     m_popup->Append(ID_ANIMATEITERATIONS, L"Animate Iterations");
     m_popup->Enable(ID_ANIMATEITERATIONS, true);
+    m_popup->Append(ID_ANIMATEMAGNIFICATION, L"Animate Magnification");
+    m_popup->Enable(ID_ANIMATEMAGNIFICATION, true);
 
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
@@ -258,6 +260,8 @@ void MultibrotPanel::CreateMainMenu()
         this, ID_DELETESELECTION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateIterations,
         this, ID_ANIMATEITERATIONS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateMagnification,
+        this, ID_ANIMATEMAGNIFICATION);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
@@ -352,4 +356,9 @@ void MultibrotPanel::SetStatusBarText()
     ss << abs(m_lowerRight.imag()) << L"i";
 
     statusBar->SetStatusText(ss.str().c_str());
+}
+
+void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
+{
+
 }
