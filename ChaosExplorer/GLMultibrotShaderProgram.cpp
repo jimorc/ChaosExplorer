@@ -20,6 +20,7 @@ GLMultibrotShaderProgram::GLMultibrotShaderProgram(ChaosPanel& canvas)
     m_lr = glGetUniformLocation(GetProgramHandle(), "lr");
     m_viewDimensions = glGetUniformLocation(GetProgramHandle(), "viewDimensions");
     m_color = glGetUniformLocation(GetProgramHandle(), "color");
+    m_maxIterations = glGetUniformLocation(GetProgramHandle(), "maxIterations");
 }
 
 
@@ -56,6 +57,7 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
         "uniform vec2 ul;"
         "uniform vec2 lr;"
         "uniform vec2 viewDimensions;"
+        "uniform int maxIterations;"
         "uniform vec4 color[50];"
         "out vec4 OutColor;"
         "vec2 iPower(vec2 vec, vec2 p)"
@@ -81,12 +83,12 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
         "    float y = ul.y - (ul.y - lr.y) * gl_FragCoord.y / (viewDimensions.y - 1);"
         "    vec2 c = vec2(x, y);"
         "    int i = 0;"
-        "    while(z.x * z.x + z.y * z.y < 4.0f && i < 50) {"
+        "    while(z.x * z.x + z.y * z.y < 4.0f && i < maxIterations) {"
         "        z = iPower(z, p) + c;"
         "        ++i;"
         "    }"
-        "	 OutColor = i == 50 ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
-        "        color[i - 1];"
+        "	 OutColor = i == maxIterations ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
+        "        color[i%50 - 1];"
         "}";
     m_fragmentShader = std::make_unique<GLShader>(*GetCanvas(), GL_FRAGMENT_SHADER, fragmentSource,
         "Multibrot fragment shader did not compile.");

@@ -3,6 +3,8 @@
 #include "GLShaderProgram.h"
 #include "ChaosPanel.h"
 
+std::vector<bool> ChaosPanel::m_timers(MaxTimers, false);
+
 ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const wxSize& size)
     : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size)

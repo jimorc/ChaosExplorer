@@ -1,12 +1,14 @@
 #pragma once
 #include <complex>
 #include <memory>
+#include <chrono>
 #include "wx/panel.h"
 #include "ChaosPanel.h"
 
 using namespace std::complex_literals;
 
 const int ID_DRAWFROMSELECTION = 2002;
+const int ID_ANIMATEITERATIONS = 2003;
 
 class MultibrotPanel :
     public ChaosPanel
@@ -30,6 +32,8 @@ private:
     virtual void OnRightButtonDown(wxMouseEvent& event);
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnMenuOpen(wxMenuEvent& event);
+    virtual void OnAnimateIterations(wxCommandEvent& event);
+    virtual void AnimateIterations(wxTimerEvent& event);
     void SetupSquareArrays();
     void CreateMainMenu();
 
@@ -46,5 +50,11 @@ private:
     wxPoint m_leftUp;
 
     wxMenu* m_popup;
+
+    static const int INTERVAL = 1000 / 6;
+    int m_timerNumber;
+    std::unique_ptr<wxTimer> m_timer;
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_startTime;
+    int m_maxIterations;
 };
 

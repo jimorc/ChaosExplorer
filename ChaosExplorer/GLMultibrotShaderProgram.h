@@ -15,6 +15,7 @@ public:
     GLint GetLRHandle() { return m_lr; }
     GLint GetViewDimensionsHandle() { return m_viewDimensions; }
     GLint GetColorHandle() { return m_color; }
+    GLint GetMaxIterationsHandle() { return m_maxIterations; }
 
 private:
     void BuildVertexShader();
@@ -28,5 +29,6 @@ private:
     GLint m_lr;
     GLint m_viewDimensions;
     GLint m_color;
+    GLint m_maxIterations;
 };
 

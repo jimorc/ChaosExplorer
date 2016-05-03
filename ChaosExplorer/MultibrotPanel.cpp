@@ -82,9 +82,9 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, size),
     m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
-    m_popup(nullptr)
-{
-    if (power.real() < 1.0f) {
+    m_popup(nullptr), m_maxIterations(4 * colors.size())
+    {
+        if (power.real() < 1.0f) {
         throw std::invalid_argument(
             "The real portion of the power argument for Multibrot is less than 1.0");
     }
@@ -98,6 +98,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
         throw std::invalid_argument(
             "The imag portions of the upper-left and lower-right corners of the Multibrot display are equal.");
     }
+
 
     // create popup menu
     CreateMainMenu();
@@ -118,7 +119,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
     glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
     glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
-    glUniform4fv(prog->GetColorHandle(), 50 * 4, &colors[0].x);
+    glUniform4fv(prog->GetColorHandle(), colors.size() *4, &colors[0].x);
 }
 
 
@@ -143,6 +144,8 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     // draw the Multibrot image (well, draw the triangles for the display area)
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
+    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
+    glUniform1i(prog->GetMaxIterationsHandle(), m_maxIterations);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
@@ -174,7 +177,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
         m_power.imag() > 0.0f ? ss << L" + " : ss << L" - ";
         ss << m_power.imag() << L"i";
     }
-    ss << L", Iterations = " << 50;
+    ss << L", Iterations = " << m_maxIterations;
     statusBar->SetStatusText(ss.str().c_str());
 }
 
@@ -250,17 +253,23 @@ void MultibrotPanel::CreateMainMenu()
     m_popup = new wxMenu;
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     m_popup->Enable(ID_DRAWFROMSELECTION, false);
+    m_popup->Append(ID_ANIMATEITERATIONS, L"Animate Iterations");
+    m_popup->Enable(ID_ANIMATEITERATIONS, true);
 
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateIterations,
+        this, ID_ANIMATEITERATIONS);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
 void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
 {
-    PopupMenu(m_popup);
+    if (m_timer == nullptr) {
+        PopupMenu(m_popup);
+    }
 }
 
 void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
@@ -288,4 +297,29 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 {
     // enable/disable the various popup menu items
     m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
+}
+
+void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
+{
+    m_timerNumber = GetTimer();
+    if (m_timerNumber != NOTIMERS) {
+        m_startTime = std::chrono::high_resolution_clock::now();
+        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
+        m_timer->Start(INTERVAL);
+        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
+        m_maxIterations = 1;
+    }
+}
+
+void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
+{
+    ++m_maxIterations;
+    if (m_maxIterations > 4 * colors.size()) {
+        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
+        m_maxIterations = 4 * colors.size();
+        m_timer->Stop();
+        m_timer.release();
+        ReleaseTimer(m_timerNumber);
+    }
+    Refresh();
 }
