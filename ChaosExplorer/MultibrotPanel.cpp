@@ -301,6 +301,7 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
 {
+    wxBeginBusyCursor();
     m_timerNumber = GetTimer();
     if (m_timerNumber != NOTIMERS) {
         m_startTime = std::chrono::high_resolution_clock::now();
@@ -321,6 +322,7 @@ void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
         wxTimer* timer = m_timer.release();
         delete timer;
         ReleaseTimer(m_timerNumber);
+        wxEndBusyCursor();
     }
     Refresh();
 }
