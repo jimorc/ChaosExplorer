@@ -9,6 +9,7 @@
 #include "GLMultibrotShaderProgram.h"
 #include "GLSquareShaderProgram.h"
 #include "MultibrotPanel.h"
+#include "ChaosExplorerWindow.h"
 
 // Colours to display Multibrot image in
 static std::vector<glm::vec4> colors = {
@@ -164,6 +165,17 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
     glFlush();
     SwapBuffers();
+
+    ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+    wxStatusBar* statusBar = win->GetStatusBar();
+    std::wstringstream ss;
+    ss << L"Power = " << m_power.real();
+    if (m_power.imag() != 0.0f) {
+        m_power.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+        ss << m_power.imag() << L"i";
+    }
+    ss << L", Iterations = " << 50;
+    statusBar->SetStatusText(ss.str().c_str());
 }
 
 

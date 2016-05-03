@@ -13,7 +13,9 @@ public:
     virtual ~ChaosExplorerWindow();
     ChaosExplorerWindow& operator=(const ChaosExplorerWindow&) = delete;
     ChaosExplorerWindow& operator=(ChaosExplorerWindow&&) = delete;
+    wxStatusBar* GetStatusBar() { return m_statusBar; }
 private:
     wxNotebook* m_notebook;
+    wxStatusBar* m_statusBar;
 };
 
