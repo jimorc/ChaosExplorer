@@ -253,6 +253,9 @@ void MultibrotPanel::CreateMainMenu()
     m_popup = new wxMenu;
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     m_popup->Enable(ID_DRAWFROMSELECTION, false);
+    m_popup->Append(ID_DELETESELECTION, L"Delete Selection");
+    m_popup->Enable(ID_DELETESELECTION, false);
+    m_popup->AppendSeparator();
     m_popup->Append(ID_ANIMATEITERATIONS, L"Animate Iterations");
     m_popup->Enable(ID_ANIMATEITERATIONS, true);
 
@@ -260,6 +263,8 @@ void MultibrotPanel::CreateMainMenu()
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDeleteSelection,
+        this, ID_DELETESELECTION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateIterations,
         this, ID_ANIMATEITERATIONS);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
@@ -297,6 +302,7 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 {
     // enable/disable the various popup menu items
     m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
+    m_popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
 }
 
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
@@ -328,5 +334,12 @@ void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
         ReleaseTimer(m_timerNumber);
         wxEndBusyCursor();
     }
+    Refresh();
+}
+
+void MultibrotPanel::OnDeleteSelection(wxCommandEvent& event)
+{
+    // to delete the selection, just set leftDown and leftUp positions to the same value
+    m_leftDown = m_leftUp = { 0, 0 };
     Refresh();
 }

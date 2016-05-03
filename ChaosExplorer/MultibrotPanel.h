@@ -8,7 +8,8 @@
 using namespace std::complex_literals;
 
 const int ID_DRAWFROMSELECTION = 2002;
-const int ID_ANIMATEITERATIONS = 2003;
+const int ID_DELETESELECTION = 2003;
+const int ID_ANIMATEITERATIONS = 2004;
 
 class MultibrotPanel :
     public ChaosPanel
@@ -31,6 +32,7 @@ private:
     virtual void OnLeftButtonUp(wxMouseEvent& event);
     virtual void OnRightButtonDown(wxMouseEvent& event);
     virtual void OnDrawFromSelection(wxCommandEvent& event);
+    virtual void OnDeleteSelection(wxCommandEvent& event);
     virtual void OnMenuOpen(wxMenuEvent& event);
     virtual void OnAnimateIterations(wxCommandEvent& event);
     virtual void AnimateIterations(wxTimerEvent& event);
