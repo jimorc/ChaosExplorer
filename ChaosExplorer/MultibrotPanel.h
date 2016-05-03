@@ -36,6 +36,7 @@ private:
     virtual void OnMenuOpen(wxMenuEvent& event);
     virtual void OnAnimateIterations(wxCommandEvent& event);
     virtual void AnimateIterations(wxTimerEvent& event);
+    void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();
 

@@ -169,16 +169,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glFlush();
     SwapBuffers();
 
-    ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
-    wxStatusBar* statusBar = win->GetStatusBar();
-    std::wstringstream ss;
-    ss << L"Power = " << m_power.real();
-    if (m_power.imag() != 0.0f) {
-        m_power.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-        ss << m_power.imag() << L"i";
-    }
-    ss << L", Iterations = " << m_maxIterations;
-    statusBar->SetStatusText(ss.str().c_str());
+    SetStatusBarText();
 }
 
 
@@ -342,4 +333,18 @@ void MultibrotPanel::OnDeleteSelection(wxCommandEvent& event)
     // to delete the selection, just set leftDown and leftUp positions to the same value
     m_leftDown = m_leftUp = { 0, 0 };
     Refresh();
+}
+
+void MultibrotPanel::SetStatusBarText()
+{
+    ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+    wxStatusBar* statusBar = win->GetStatusBar();
+    std::wstringstream ss;
+    ss << L"Power = " << m_power.real();
+    if (m_power.imag() != 0.0f) {
+        m_power.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+        ss << m_power.imag() << L"i";
+    }
+    ss << L", Iterations = " << m_maxIterations;
+    statusBar->SetStatusText(ss.str().c_str());
 }
