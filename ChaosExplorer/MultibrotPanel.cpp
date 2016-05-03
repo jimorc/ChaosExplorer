@@ -318,7 +318,8 @@ void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
         Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
         m_maxIterations = 4 * colors.size();
         m_timer->Stop();
-        m_timer.release();
+        wxTimer* timer = m_timer.release();
+        delete timer;
         ReleaseTimer(m_timerNumber);
     }
     Refresh();
