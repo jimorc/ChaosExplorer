@@ -45,6 +45,6 @@ private:
     GLuint m_vbo;
     GLuint m_vao;
     static std::vector<bool> m_timers;
-    static const int MaxTimers = 10;
+    static const int MaxTimers = 10;    // MSW has limited # timers, so we only allow 10 timers at once
 };
 

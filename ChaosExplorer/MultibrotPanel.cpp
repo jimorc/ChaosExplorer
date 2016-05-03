@@ -302,8 +302,11 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
 {
     wxBeginBusyCursor();
+    // get a new timer number
     m_timerNumber = GetTimer();
+    // MSW has a limited number of timers, so we must check that we got one.
     if (m_timerNumber != NOTIMERS) {
+        // start the timer and run AnimateIterations each time it generates event
         m_startTime = std::chrono::high_resolution_clock::now();
         m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
         m_timer->Start(INTERVAL);
@@ -315,6 +318,7 @@ void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
 void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
 {
     ++m_maxIterations;
+    // if we have reached max iterations, unbind the timer event and stop and delete the timer.
     if (m_maxIterations > 4 * colors.size()) {
         Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
         m_maxIterations = 4 * colors.size();
