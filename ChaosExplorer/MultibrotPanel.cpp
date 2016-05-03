@@ -340,11 +340,16 @@ void MultibrotPanel::SetStatusBarText()
     ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
     wxStatusBar* statusBar = win->GetStatusBar();
     std::wstringstream ss;
-    ss << L"Power = " << m_power.real();
-    if (m_power.imag() != 0.0f) {
-        m_power.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-        ss << m_power.imag() << L"i";
-    }
-    ss << L", Iterations = " << m_maxIterations;
+    ss << L"Iterations = " << m_maxIterations;
+    ss << L", Power = " << m_power.real();
+    m_power.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_power.imag()) << L"i";
+    ss << L", Upper Left = " << m_upperLeft.real();
+    m_upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_lowerRight.imag()) << L"i";
+    ss << L", Lower Right = " << m_lowerRight.real();
+    m_lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_lowerRight.imag()) << L"i";
+
     statusBar->SetStatusText(ss.str().c_str());
 }
