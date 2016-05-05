@@ -369,12 +369,12 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
     wxBeginBusyCursor();
     m_zoomCount = 0;
     wxSize size = GetSize();
-    float deltaX = m_lowerRight.real() - m_upperLeft.real();
-    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
-    float x = m_upperLeft.real() + deltaX *m_rightDown.x / size.x;
-    float y = m_upperLeft.imag() - deltaY * m_rightDown.y / size.y;
-    m_upperLeft = { (x - deltaX / 2.0f), (y + deltaY / 2.0f) };
-    m_lowerRight = { (x + deltaX / 2.0f), (y - deltaY / 2.0f) };
+    float deltaXY = m_lowerRight.real() - m_upperLeft.real();
+    float x = m_upperLeft.real() + deltaXY *m_rightDown.x / size.x;
+    float y = m_upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
+    m_rightDownPoint = { x, y };
+    m_upperLeft = { (x - deltaXY / 2.0f), (y + deltaXY / 2.0f) };
+    m_lowerRight = { (x + deltaXY / 2.0f), (y - deltaXY / 2.0f) };
     // get a new timer number
     m_timerNumber = GetTimer();
     // MSW has a limited number of timers, so we must check that we got one.
@@ -391,15 +391,10 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
 void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
 {
     ++m_zoomCount;
-    if (m_zoomCount <= 0) {
-        float deltaX = m_lowerRight.real() - m_upperLeft.real();
-        float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
-        float x = m_lowerRight.real() - deltaX / 2.0f;
-        float y = m_upperLeft.imag() - deltaY / 2.0f;
-        deltaX = deltaX * 0.99f / 2.0f;
-        deltaY = deltaY * 0.99f / 2.0f;
-        m_upperLeft = { (x - deltaX), (y + deltaY) };
-        m_lowerRight = { (x + deltaX), (y - deltaY) };
+    if (m_zoomCount <= 500) {
+        float deltaXY = (m_lowerRight.real() - m_upperLeft.real()) * 0.99f / 2.0f;
+        m_upperLeft = { (m_rightDownPoint.real() - deltaXY), (m_rightDownPoint.imag() + deltaXY) };
+        m_lowerRight = { (m_rightDownPoint.real() + deltaXY), (m_rightDownPoint.imag() - deltaXY) };
         Refresh();
     }
     else {
