@@ -83,7 +83,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     : ChaosPanel(parent, id, attribList, size),
     m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
     m_rightDown({ 0, 0 }), m_popup(nullptr), m_maxIterations(4 * colors.size()),
-    m_zoomCount(0), m_realPowersCount(0)
+    m_zoomCount(0), m_powersCount(0)
     {
         if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -260,6 +260,8 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->Enable(ID_ANIMATEMAGNIFICATION, true);
     m_popup->Append(ID_ANIMATEREALPOWERS, L"Animate Real Powers");
     m_popup->Enable(ID_ANIMATEREALPOWERS, true);
+    m_popup->Append(ID_ANIMATEIMAGINARYPOWERS, L"Animate Imaginary Powers");
+    m_popup->Enable(ID_ANIMATEIMAGINARYPOWERS, true);
 
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
@@ -273,6 +275,8 @@ void MultibrotPanel::CreateMainMenu()
         this, ID_ANIMATEMAGNIFICATION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateRealPowers,
         this, ID_ANIMATEREALPOWERS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateImaginaryPowers,
+        this, ID_ANIMATEIMAGINARYPOWERS);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
@@ -457,9 +461,9 @@ void MultibrotPanel::OnAnimateRealPowers(wxCommandEvent& event)
 
 void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
 {
-    ++m_realPowersCount;
-    if (m_realPowersCount <= 900) {
-        m_power = 1.0f + 0.01 * m_realPowersCount;
+    ++m_powersCount;
+    if (m_powersCount <= 900) {
+        m_power = 1.0f + 0.01 * m_powersCount;
         Refresh();
     }
     else {
@@ -468,7 +472,40 @@ void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
         wxTimer* timer = m_timer.release();
         delete timer;
         ReleaseTimer(m_timerNumber);
-        m_realPowersCount = 0;
+        m_powersCount = 0;
+        wxEndBusyCursor();
+    }
+}
+
+void MultibrotPanel::OnAnimateImaginaryPowers(wxCommandEvent& event)
+{
+    m_power = { m_power.real(), -1.0f };
+    m_timerNumber = GetTimer();
+    // MSW has limited number of timers, so we must check that we got one.
+    if (m_timerNumber != NOTIMERS) {
+        m_startTime = std::chrono::high_resolution_clock::now();
+        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
+        m_timer->Start(m_realPowersInterval);
+        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateImaginaryPowers, this);
+        wxBeginBusyCursor();
+    }
+    Refresh();
+}
+
+void MultibrotPanel::AnimateImaginaryPowers(wxTimerEvent& event)
+{
+    ++m_powersCount;
+    if (m_powersCount <= 200) {
+        m_power = { m_power.real(), -1.0f + 0.01f * m_powersCount };
+        Refresh();
+    }
+    else {
+        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateImaginaryPowers, this);
+        m_timer->Stop();
+        wxTimer* timer = m_timer.release();
+        delete timer;
+        ReleaseTimer(m_timerNumber);
+        m_powersCount = 0;
         wxEndBusyCursor();
     }
 }
