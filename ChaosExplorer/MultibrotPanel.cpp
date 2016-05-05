@@ -75,14 +75,15 @@ std::vector<glm::vec4> vertices = {
 };
 
 // Constructor
-MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList, 
+MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const wxSize& size,
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, size),
     m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
-    m_popup(nullptr), m_maxIterations(4 * colors.size())
+    m_rightDown({ 0, 0 }), m_popup(nullptr), m_maxIterations(4 * colors.size()),
+    m_zoomCount(0)
     {
         if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -146,6 +147,8 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glBindVertexArray(GetVao());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
     glUniform1i(prog->GetMaxIterationsHandle(), m_maxIterations);
+    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
+    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
@@ -268,6 +271,7 @@ void MultibrotPanel::CreateMainMenu()
 void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
 {
     if (m_timer == nullptr) {
+        m_rightDown = event.GetPosition();
         PopupMenu(m_popup);
     }
 }
@@ -276,10 +280,12 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
     // calculate the upper left and lower right locations for the new display
     wxSize size = GetSize();
-    float ulReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftDown.x / size.x;
-    float ulImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftDown.y / size.y;
-    float lrReal = m_upperLeft.real() + (m_lowerRight.real() - m_upperLeft.real()) * m_leftUp.x / size.x;
-    float lrImag = m_lowerRight.imag() + (m_upperLeft.imag() - m_lowerRight.imag()) * m_leftUp.y / size.y;
+    float deltaX = m_lowerRight.real() - m_upperLeft.real();
+    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
+    float ulReal = m_upperLeft.real() + deltaX * m_leftDown.x / size.x;
+    float ulImag = m_upperLeft.imag() - deltaY * m_leftDown.y / size.y;
+    float lrReal = m_upperLeft.real() + deltaX * m_leftUp.x / size.x;
+    float lrImag = m_upperLeft.imag() - deltaY * m_leftUp.y / size.y;
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
@@ -310,7 +316,7 @@ void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
         // start the timer and run AnimateIterations each time it generates event
         m_startTime = std::chrono::high_resolution_clock::now();
         m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(INTERVAL);
+        m_timer->Start(m_iterationInterval);
         Bind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
         m_maxIterations = 1;
     }
@@ -350,7 +356,7 @@ void MultibrotPanel::SetStatusBarText()
     ss << abs(m_power.imag()) << L"i";
     ss << L", Upper Left = " << m_upperLeft.real();
     m_upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_lowerRight.imag()) << L"i";
+    ss << abs(m_upperLeft.imag()) << L"i";
     ss << L", Lower Right = " << m_lowerRight.real();
     m_lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
     ss << abs(m_lowerRight.imag()) << L"i";
@@ -360,5 +366,49 @@ void MultibrotPanel::SetStatusBarText()
 
 void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
 {
+    wxBeginBusyCursor();
+    m_zoomCount = 0;
+    wxSize size = GetSize();
+    float deltaX = m_lowerRight.real() - m_upperLeft.real();
+    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
+    float x = m_upperLeft.real() + deltaX *m_rightDown.x / size.x;
+    float y = m_upperLeft.imag() - deltaY * m_rightDown.y / size.y;
+    m_upperLeft = { (x - deltaX / 2.0f), (y + deltaY / 2.0f) };
+    m_lowerRight = { (x + deltaX / 2.0f), (y - deltaY / 2.0f) };
+    // get a new timer number
+    m_timerNumber = GetTimer();
+    // MSW has a limited number of timers, so we must check that we got one.
+    if (m_timerNumber != NOTIMERS) {
+        // start the timer and run AnimateIterations each time it generates event
+        m_startTime = std::chrono::high_resolution_clock::now();
+        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
+        m_timer->Start(m_magnificationInterval);
+        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateMagnification, this);
+    }
+    Refresh();
+}
 
+void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
+{
+    ++m_zoomCount;
+    if (m_zoomCount <= 0) {
+        float deltaX = m_lowerRight.real() - m_upperLeft.real();
+        float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
+        float x = m_lowerRight.real() - deltaX / 2.0f;
+        float y = m_upperLeft.imag() - deltaY / 2.0f;
+        deltaX = deltaX * 0.99f / 2.0f;
+        deltaY = deltaY * 0.99f / 2.0f;
+        m_upperLeft = { (x - deltaX), (y + deltaY) };
+        m_lowerRight = { (x + deltaX), (y - deltaY) };
+        Refresh();
+    }
+    else {
+        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateMagnification, this);
+        m_timer->Stop();
+        wxTimer* timer = m_timer.release();
+        delete timer;
+        ReleaseTimer(m_timerNumber);
+        m_zoomCount = 0;
+        wxEndBusyCursor();
+    }
 }

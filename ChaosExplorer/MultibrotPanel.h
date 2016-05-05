@@ -38,6 +38,7 @@ private:
     virtual void OnAnimateIterations(wxCommandEvent& event);
     virtual void AnimateIterations(wxTimerEvent& event);
     virtual void OnAnimateMagnification(wxCommandEvent& event);
+    virtual void AnimateMagnification(wxTimerEvent& event);
     void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();
@@ -53,13 +54,16 @@ private:
     bool m_leftButtonDown;
     wxPoint m_leftDown;
     wxPoint m_leftUp;
+    wxPoint m_rightDown;
 
     wxMenu* m_popup;
 
-    static const int INTERVAL = 1000 / 6;
+    static const int m_iterationInterval = 1000 / 6;
+    static const int m_magnificationInterval = 1000 / 60;
     int m_timerNumber;
     std::unique_ptr<wxTimer> m_timer;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_startTime;
     int m_maxIterations;
+    int m_zoomCount;
 };
 
