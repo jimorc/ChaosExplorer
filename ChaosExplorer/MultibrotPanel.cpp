@@ -283,6 +283,7 @@ void MultibrotPanel::CreateMainMenu()
 wxMenu* MultibrotPanel::CreateMultibrotSubMenu()
 {
     wxMenu* multiMenu = new wxMenu;
+    AddItemToMenu(multiMenu, ID_POWER2, L"Power=2", 2.0f);
     AddItemToMenu(multiMenu, ID_POWER3, L"Power=3", 3.0f);
     AddItemToMenu(multiMenu, ID_POWER4, L"Power=4", 4.0f);
     AddItemToMenu(multiMenu, ID_POWER5, L"Power=5", 5.0f);

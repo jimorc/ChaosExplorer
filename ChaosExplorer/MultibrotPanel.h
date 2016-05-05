@@ -21,6 +21,7 @@ const int ID_POWER9 = 2012;
 const int ID_POWER10 = 2013;
 const int ID_ANIMATEREALPOWERS = 2014;
 const int ID_ANIMATEIMAGINARYPOWERS = 2015;
+const int ID_POWER2 = 2016;
 
 class MultibrotPanel :
     public ChaosPanel
