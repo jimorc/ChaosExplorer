@@ -80,7 +80,7 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
         "{"
         "    vec2 z = z0;"
         "    float x = ul.x + (lr.x - ul.x) * gl_FragCoord.x / (viewDimensions.x - 1);"
-        "    float y = ul.y - (ul.y - lr.y) * gl_FragCoord.y / (viewDimensions.y - 1);"
+        "    float y = lr.y + (ul.y - lr.y) * gl_FragCoord.y / (viewDimensions.y - 1);"
         "    vec2 c = vec2(x, y);"
         "    int i = 0;"
         "    while(z.x * z.x + z.y * z.y < 4.0f && i < maxIterations) {"
