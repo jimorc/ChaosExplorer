@@ -244,10 +244,7 @@ void MultibrotPanel::SetupSquareArrays()
 void MultibrotPanel::CreateMainMenu()
 {
     // create Multibrot submenu
-    wxMenu* multiMenu = new wxMenu;
-    multiMenu->Append(ID_POWER3, L"Power = 3");
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnMultibrotPower3,
-        this, ID_POWER3);
+    wxMenu* multiMenu = CreateMultibrotSubMenu();
     // create the popup menu
     m_popup = new wxMenu;
     m_popup->AppendSubMenu(multiMenu, L"MultibrotPower");
@@ -273,6 +270,30 @@ void MultibrotPanel::CreateMainMenu()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateMagnification,
         this, ID_ANIMATEMAGNIFICATION);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
+}
+
+wxMenu* MultibrotPanel::CreateMultibrotSubMenu()
+{
+    wxMenu* multiMenu = new wxMenu;
+    AddItemToMenu(multiMenu, ID_POWER3, L"Power=3", 3.0f);
+    AddItemToMenu(multiMenu, ID_POWER4, L"Power=4", 4.0f);
+    AddItemToMenu(multiMenu, ID_POWER5, L"Power=5", 5.0f);
+    AddItemToMenu(multiMenu, ID_POWER6, L"Power=6", 6.0f);
+    AddItemToMenu(multiMenu, ID_POWER7, L"Power=7", 7.0f);
+    AddItemToMenu(multiMenu, ID_POWER8, L"Power=8", 8.0f);
+    AddItemToMenu(multiMenu, ID_POWER9, L"Power=9", 9.0f);
+    AddItemToMenu(multiMenu, ID_POWER10, L"Power=10", 10.0f);
+    return multiMenu;
+}
+
+void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText,
+    float power)
+{
+    menu->Append(menuId, menuText.c_str());
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this, power](wxCommandEvent&) {
+        m_power = std::complex<float>(power, 0.0f); Refresh(); },
+        menuId);
 }
 
 void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
@@ -413,10 +434,4 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
         m_zoomCount = 0;
         wxEndBusyCursor();
     }
-}
-
-void MultibrotPanel::OnMultibrotPower3(wxCommandEvent& event)
-{
-    m_power = 3.0f;
-    Refresh();
 }

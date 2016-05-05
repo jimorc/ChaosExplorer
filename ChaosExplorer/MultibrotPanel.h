@@ -12,6 +12,13 @@ const int ID_DELETESELECTION = 2003;
 const int ID_ANIMATEITERATIONS = 2004;
 const int ID_ANIMATEMAGNIFICATION = 2005;
 const int ID_POWER3 = 2006;
+const int ID_POWER4 = 2007;
+const int ID_POWER5 = 2008;
+const int ID_POWER6 = 2009;
+const int ID_POWER7 = 2010;
+const int ID_POWER8 = 2011;
+const int ID_POWER9 = 2012;
+const int ID_POWER10 = 2013;
 
 class MultibrotPanel :
     public ChaosPanel
@@ -40,10 +47,11 @@ private:
     virtual void AnimateIterations(wxTimerEvent& event);
     virtual void OnAnimateMagnification(wxCommandEvent& event);
     virtual void AnimateMagnification(wxTimerEvent& event);
-    virtual void OnMultibrotPower3(wxCommandEvent& event);
     void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();
+    wxMenu* CreateMultibrotSubMenu();
+    void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);
 
     std::unique_ptr<GLShaderProgram> m_squareProgram;
     GLuint m_squareVbo;
