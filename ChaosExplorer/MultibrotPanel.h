@@ -19,6 +19,7 @@ const int ID_POWER7 = 2010;
 const int ID_POWER8 = 2011;
 const int ID_POWER9 = 2012;
 const int ID_POWER10 = 2013;
+const int ID_ANIMATEREALPOWERS = 2014;
 
 class MultibrotPanel :
     public ChaosPanel
@@ -47,6 +48,8 @@ private:
     virtual void AnimateIterations(wxTimerEvent& event);
     virtual void OnAnimateMagnification(wxCommandEvent& event);
     virtual void AnimateMagnification(wxTimerEvent& event);
+    void OnAnimateRealPowers(wxCommandEvent& event);
+    void AnimateRealPowers(wxTimerEvent& event);
     void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();
@@ -71,10 +74,12 @@ private:
 
     static const int m_iterationInterval = 1000 / 6;
     static const int m_magnificationInterval = 1000 / 60;
+    static const int m_realPowersInterval = 1000 / 20;
     int m_timerNumber;
     std::unique_ptr<wxTimer> m_timer;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_startTime;
     int m_maxIterations;
     int m_zoomCount;
+    int m_realPowersCount;
 };
 
