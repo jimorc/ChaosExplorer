@@ -83,7 +83,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     : ChaosPanel(parent, id, attribList, size),
     m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
     m_rightDown({ 0, 0 }), m_popup(nullptr), m_maxIterations(4 * colors.size()),
-    m_zoomCount(0), m_powersCount(0)
+    m_zoomCount(0), m_powersCount(0), m_z0Count(0), m_z0({ 0.0f, 0.0f })
     {
         if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -115,7 +115,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetZ0Handle(), 0.0f, 0.0f);
     glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
     glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
     glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
@@ -149,6 +148,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
     glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
     glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
+    glUniform2f(prog->GetZ0Handle(), m_z0.real(), m_z0.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
@@ -262,6 +262,8 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->Enable(ID_ANIMATEREALPOWERS, true);
     m_popup->Append(ID_ANIMATEIMAGINARYPOWERS, L"Animate Imaginary Powers");
     m_popup->Enable(ID_ANIMATEIMAGINARYPOWERS, true);
+    m_popup->Append(ID_ANIMATEZ0REAL, L"Animate Z0 Real");
+    m_popup->Enable(ID_ANIMATEZ0REAL, true);
 
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
@@ -277,6 +279,8 @@ void MultibrotPanel::CreateMainMenu()
         this, ID_ANIMATEREALPOWERS);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateImaginaryPowers,
         this, ID_ANIMATEIMAGINARYPOWERS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateZ0Real,
+        this, ID_ANIMATEZ0REAL);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
@@ -302,7 +306,7 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this, power](wxCommandEvent&) {
         m_power = { power, 0.0f }; m_upperLeft = { -2.5f, 2.0f }; 
-        m_lowerRight = { 1.5f, -2.0f }; Refresh(); },
+        m_lowerRight = { 1.5f, -2.0f }; m_z0 = { 0.0f, 0.0f }; Refresh(); },
         menuId);
 }
 
@@ -340,8 +344,13 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 {
     // enable/disable the various popup menu items
-    m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
+    m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp && 
+        m_z0 == std::complex<float>({0.0f, 0.0f}));
     m_popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
+    m_popup->Enable(ID_ANIMATEITERATIONS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
+    m_popup->Enable(ID_ANIMATEMAGNIFICATION, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
+    m_popup->Enable(ID_ANIMATEREALPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
+    m_popup->Enable(ID_ANIMATEIMAGINARYPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
 }
 
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
@@ -503,6 +512,40 @@ void MultibrotPanel::AnimateImaginaryPowers(wxTimerEvent& event)
     }
     else {
         Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateImaginaryPowers, this);
+        m_timer->Stop();
+        wxTimer* timer = m_timer.release();
+        delete timer;
+        ReleaseTimer(m_timerNumber);
+        m_powersCount = 0;
+        wxEndBusyCursor();
+    }
+}
+
+void MultibrotPanel::OnAnimateZ0Real(wxCommandEvent& event)
+{
+    m_z0 = { -1.0f, 0.0f };
+    m_z0Count = 0;
+    m_timerNumber = GetTimer();
+    // MSW has limited number of timers, so we must check that we got one.
+    if (m_timerNumber != NOTIMERS) {
+        m_startTime = std::chrono::high_resolution_clock::now();
+        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
+        m_timer->Start(m_z0Interval);
+        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Real, this);
+        wxBeginBusyCursor();
+    }
+    Refresh();
+}
+
+void MultibrotPanel::AnimateZ0Real(wxTimerEvent& event)
+{
+    ++m_z0Count;
+    if (m_z0Count <= 200) {
+        m_z0 = { -1 + 0.01f * m_z0Count, 0.0f };
+        Refresh();
+    }
+    else {
+        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Real, this);
         m_timer->Stop();
         wxTimer* timer = m_timer.release();
         delete timer;
