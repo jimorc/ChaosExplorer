@@ -11,6 +11,7 @@ const int ID_DRAWFROMSELECTION = 2002;
 const int ID_DELETESELECTION = 2003;
 const int ID_ANIMATEITERATIONS = 2004;
 const int ID_ANIMATEMAGNIFICATION = 2005;
+const int ID_POWER3 = 2006;
 
 class MultibrotPanel :
     public ChaosPanel
@@ -39,6 +40,7 @@ private:
     virtual void AnimateIterations(wxTimerEvent& event);
     virtual void OnAnimateMagnification(wxCommandEvent& event);
     virtual void AnimateMagnification(wxTimerEvent& event);
+    virtual void OnMultibrotPower3(wxCommandEvent& event);
     void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();

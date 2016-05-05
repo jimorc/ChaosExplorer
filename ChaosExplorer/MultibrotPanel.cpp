@@ -116,7 +116,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     glUseProgram(m_program->GetProgramHandle());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
     glUniform2f(prog->GetZ0Handle(), 0.0f, 0.0f);
-    glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
     glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
     glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
     glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
@@ -149,6 +148,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glUniform1i(prog->GetMaxIterationsHandle(), m_maxIterations);
     glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
     glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
+    glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
@@ -243,8 +243,15 @@ void MultibrotPanel::SetupSquareArrays()
 
 void MultibrotPanel::CreateMainMenu()
 {
+    // create Multibrot submenu
+    wxMenu* multiMenu = new wxMenu;
+    multiMenu->Append(ID_POWER3, L"Power = 3");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnMultibrotPower3,
+        this, ID_POWER3);
     // create the popup menu
     m_popup = new wxMenu;
+    m_popup->AppendSubMenu(multiMenu, L"MultibrotPower");
+    m_popup->AppendSeparator();
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     m_popup->Enable(ID_DRAWFROMSELECTION, false);
     m_popup->Append(ID_DELETESELECTION, L"Delete Selection");
@@ -406,4 +413,10 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
         m_zoomCount = 0;
         wxEndBusyCursor();
     }
+}
+
+void MultibrotPanel::OnMultibrotPower3(wxCommandEvent& event)
+{
+    m_power = 3.0f;
+    Refresh();
 }
