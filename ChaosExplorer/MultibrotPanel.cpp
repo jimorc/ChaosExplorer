@@ -370,6 +370,8 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
 {
     StartTimer(m_iterationInterval, &MultibrotPanel::AnimateIterations);
+    // only set m_maxIterations to 1 if successful obtaining a timer.
+    // otherwise, m_maxIterations must be 200.
     if (m_timerNumber != NOTIMERS) {
         m_maxIterations = 1;
     }
