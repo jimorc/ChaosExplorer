@@ -23,6 +23,7 @@ const int ID_ANIMATEREALPOWERS = 2014;
 const int ID_ANIMATEIMAGINARYPOWERS = 2015;
 const int ID_POWER2 = 2016;
 const int ID_ANIMATEZ0REAL = 2017;
+const int ID_ANIMATEZ0IMAG = 2018;
 
 class MultibrotPanel :
     public ChaosPanel
@@ -57,6 +58,8 @@ private:
     void AnimateImaginaryPowers(wxTimerEvent& event);
     void OnAnimateZ0Real(wxCommandEvent& event);
     void AnimateZ0Real(wxTimerEvent& event);
+    void OnAnimateZ0Imag(wxCommandEvent& event);
+    void AnimateZ0Imag(wxTimerEvent& event);
     void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();

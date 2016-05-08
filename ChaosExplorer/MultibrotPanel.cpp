@@ -264,6 +264,8 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->Enable(ID_ANIMATEIMAGINARYPOWERS, true);
     m_popup->Append(ID_ANIMATEZ0REAL, L"Animate Z0 Real");
     m_popup->Enable(ID_ANIMATEZ0REAL, true);
+    m_popup->Append(ID_ANIMATEZ0IMAG, L"Animage Z0 Imaginary");
+    m_popup->Enable(ID_ANIMATEZ0IMAG, true);
 
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
@@ -281,6 +283,8 @@ void MultibrotPanel::CreateMainMenu()
         this, ID_ANIMATEIMAGINARYPOWERS);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateZ0Real,
         this, ID_ANIMATEZ0REAL);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateZ0Imag,
+        this, ID_ANIMATEZ0IMAG);
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
@@ -546,6 +550,40 @@ void MultibrotPanel::AnimateZ0Real(wxTimerEvent& event)
     }
     else {
         Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Real, this);
+        m_timer->Stop();
+        wxTimer* timer = m_timer.release();
+        delete timer;
+        ReleaseTimer(m_timerNumber);
+        m_powersCount = 0;
+        wxEndBusyCursor();
+    }
+}
+
+void MultibrotPanel::OnAnimateZ0Imag(wxCommandEvent& event)
+{
+    m_z0 = { -0.0f, -1.0f };
+    m_z0Count = 0;
+    m_timerNumber = GetTimer();
+    // MSW has limited number of timers, so we must check that we got one.
+    if (m_timerNumber != NOTIMERS) {
+        m_startTime = std::chrono::high_resolution_clock::now();
+        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
+        m_timer->Start(m_z0Interval);
+        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Imag, this);
+        wxBeginBusyCursor();
+    }
+    Refresh();
+}
+
+void MultibrotPanel::AnimateZ0Imag(wxTimerEvent& event)
+{
+    ++m_z0Count;
+    if (m_z0Count <= 200) {
+        m_z0 = { 0.0f, -1 + 0.01f * m_z0Count };
+        Refresh();
+    }
+    else {
+        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Imag, this);
         m_timer->Stop();
         wxTimer* timer = m_timer.release();
         delete timer;
