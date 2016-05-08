@@ -369,16 +369,8 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
 {
-    wxBeginBusyCursor();
-    // get a new timer number
-    m_timerNumber = GetTimer();
-    // MSW has a limited number of timers, so we must check that we got one.
+    StartTimer(m_iterationInterval, &MultibrotPanel::AnimateIterations);
     if (m_timerNumber != NOTIMERS) {
-        // start the timer and run AnimateIterations each time it generates event
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(m_iterationInterval);
-        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
         m_maxIterations = 1;
     }
 }
@@ -427,7 +419,6 @@ void MultibrotPanel::SetStatusBarText()
 
 void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
 {
-    wxBeginBusyCursor();
     m_zoomCount = 0;
     wxSize size = GetSize();
     float deltaXY = m_lowerRight.real() - m_upperLeft.real();
@@ -436,16 +427,8 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
     m_rightDownPoint = { x, y };
     m_upperLeft = { (x - deltaXY / 2.0f), (y + deltaXY / 2.0f) };
     m_lowerRight = { (x + deltaXY / 2.0f), (y - deltaXY / 2.0f) };
-    // get a new timer number
-    m_timerNumber = GetTimer();
-    // MSW has a limited number of timers, so we must check that we got one.
-    if (m_timerNumber != NOTIMERS) {
-        // start the timer and run AnimateIterations each time it generates event
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(m_magnificationInterval);
-        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateMagnification, this);
-    }
+
+    StartTimer(m_magnificationInterval, &MultibrotPanel::AnimateMagnification);
     Refresh();
 }
 
@@ -471,16 +454,8 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
 
 void MultibrotPanel::OnAnimateRealPowers(wxCommandEvent& event)
 {
-    wxBeginBusyCursor();
     m_power = 1.0f;
-    m_timerNumber = GetTimer();
-    // MSW has a limited number of timers, so we must check that we got one.
-    if (m_timerNumber != NOTIMERS) {
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(m_realPowersInterval);
-        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateRealPowers, this);
-    }
+    StartTimer(m_realPowersInterval, &MultibrotPanel::AnimateRealPowers);
     Refresh();
 }
 
@@ -505,15 +480,7 @@ void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
 void MultibrotPanel::OnAnimateImaginaryPowers(wxCommandEvent& event)
 {
     m_power = { m_power.real(), -1.0f };
-    m_timerNumber = GetTimer();
-    // MSW has limited number of timers, so we must check that we got one.
-    if (m_timerNumber != NOTIMERS) {
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(m_realPowersInterval);
-        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateImaginaryPowers, this);
-        wxBeginBusyCursor();
-    }
+    StartTimer(m_realPowersInterval, &MultibrotPanel::AnimateImaginaryPowers);
     Refresh();
 }
 
@@ -539,15 +506,7 @@ void MultibrotPanel::OnAnimateZ0Real(wxCommandEvent& event)
 {
     m_z0 = { -1.0f, 0.0f };
     m_z0Count = 0;
-    m_timerNumber = GetTimer();
-    // MSW has limited number of timers, so we must check that we got one.
-    if (m_timerNumber != NOTIMERS) {
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(m_z0Interval);
-        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Real, this);
-        wxBeginBusyCursor();
-    }
+    StartTimer(m_z0Interval, &MultibrotPanel::AnimateZ0Real);
     Refresh();
 }
 
@@ -573,15 +532,7 @@ void MultibrotPanel::OnAnimateZ0Imag(wxCommandEvent& event)
 {
     m_z0 = { -0.0f, -1.0f };
     m_z0Count = 0;
-    m_timerNumber = GetTimer();
-    // MSW has limited number of timers, so we must check that we got one.
-    if (m_timerNumber != NOTIMERS) {
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
-        m_timer->Start(m_z0Interval);
-        Bind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Imag, this);
-        wxBeginBusyCursor();
-    }
+    StartTimer(m_z0Interval, &MultibrotPanel::AnimateZ0Imag);
     Refresh();
 }
 
@@ -601,4 +552,18 @@ void MultibrotPanel::AnimateZ0Imag(wxTimerEvent& event)
         m_z0Count = 0;
         wxEndBusyCursor();
     }
+}
+
+void MultibrotPanel::StartTimer(const int timerInterval, TimerHandler handler)
+{
+    m_timerNumber = GetTimer();
+    // MSW has limited number of timers, so we must check that we got one.
+    if (m_timerNumber != NOTIMERS) {
+        m_startTime = std::chrono::high_resolution_clock::now();
+        m_timer = std::make_unique<wxTimer>(this, m_timerNumber);
+        m_timer->Start(timerInterval);
+        Bind(wxEVT_TIMER, handler, this);
+        wxBeginBusyCursor();
+    }
+
 }

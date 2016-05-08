@@ -25,6 +25,10 @@ const int ID_POWER2 = 2016;
 const int ID_ANIMATEZ0REAL = 2017;
 const int ID_ANIMATEZ0IMAG = 2018;
 
+class MultibrotPanel;
+
+using TimerHandler =  void(MultibrotPanel::*) (wxTimerEvent&);
+
 class MultibrotPanel :
     public ChaosPanel
 {
@@ -65,6 +69,7 @@ private:
     void CreateMainMenu();
     wxMenu* CreateMultibrotSubMenu();
     void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);
+    void StartTimer(const int timerInterval, TimerHandler handler);
 
     std::unique_ptr<GLShaderProgram> m_squareProgram;
     GLuint m_squareVbo;
