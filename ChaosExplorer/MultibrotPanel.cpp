@@ -554,7 +554,7 @@ void MultibrotPanel::AnimateZ0Real(wxTimerEvent& event)
         wxTimer* timer = m_timer.release();
         delete timer;
         ReleaseTimer(m_timerNumber);
-        m_powersCount = 0;
+        m_z0Count = 0;
         wxEndBusyCursor();
     }
 }
@@ -588,7 +588,7 @@ void MultibrotPanel::AnimateZ0Imag(wxTimerEvent& event)
         wxTimer* timer = m_timer.release();
         delete timer;
         ReleaseTimer(m_timerNumber);
-        m_powersCount = 0;
+        m_z0Count = 0;
         wxEndBusyCursor();
     }
 }
