@@ -70,6 +70,7 @@ private:
     wxMenu* CreateMultibrotSubMenu();
     void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);
     void StartTimer(const int timerInterval, TimerHandler handler);
+    void StopAndReleaseTimer(TimerHandler handler);
 
     std::unique_ptr<GLShaderProgram> m_squareProgram;
     GLuint m_squareVbo;

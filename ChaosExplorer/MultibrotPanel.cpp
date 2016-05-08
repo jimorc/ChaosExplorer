@@ -371,7 +371,7 @@ void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
 {
     StartTimer(m_iterationInterval, &MultibrotPanel::AnimateIterations);
     // only set m_maxIterations to 1 if successful obtaining a timer.
-    // otherwise, m_maxIterations must be 200.
+    // otherwise, m_maxIterations must be 4 * colors.size().
     if (m_timerNumber != NOTIMERS) {
         m_maxIterations = 1;
     }
@@ -382,13 +382,8 @@ void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
     ++m_maxIterations;
     // if we have reached max iterations, unbind the timer event and stop and delete the timer.
     if (m_maxIterations > 4 * colors.size()) {
-        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateIterations, this);
+        StopAndReleaseTimer(&MultibrotPanel::AnimateIterations);
         m_maxIterations = 4 * colors.size();
-        m_timer->Stop();
-        wxTimer* timer = m_timer.release();
-        delete timer;
-        ReleaseTimer(m_timerNumber);
-        wxEndBusyCursor();
     }
     Refresh();
 }
@@ -444,13 +439,8 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
         Refresh();
     }
     else {
-        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateMagnification, this);
-        m_timer->Stop();
-        wxTimer* timer = m_timer.release();
-        delete timer;
-        ReleaseTimer(m_timerNumber);
+        StopAndReleaseTimer(&MultibrotPanel::AnimateMagnification);
         m_zoomCount = 0;
-        wxEndBusyCursor();
     }
 }
 
@@ -469,13 +459,8 @@ void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
         Refresh();
     }
     else {
-        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateRealPowers, this);
-        m_timer->Stop();
-        wxTimer* timer = m_timer.release();
-        delete timer;
-        ReleaseTimer(m_timerNumber);
+        StopAndReleaseTimer(&MultibrotPanel::AnimateRealPowers);
         m_powersCount = 0;
-        wxEndBusyCursor();
     }
 }
 
@@ -494,13 +479,8 @@ void MultibrotPanel::AnimateImaginaryPowers(wxTimerEvent& event)
         Refresh();
     }
     else {
-        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateImaginaryPowers, this);
-        m_timer->Stop();
-        wxTimer* timer = m_timer.release();
-        delete timer;
-        ReleaseTimer(m_timerNumber);
+        StopAndReleaseTimer(&MultibrotPanel::AnimateImaginaryPowers);
         m_powersCount = 0;
-        wxEndBusyCursor();
     }
 }
 
@@ -520,13 +500,8 @@ void MultibrotPanel::AnimateZ0Real(wxTimerEvent& event)
         Refresh();
     }
     else {
-        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Real, this);
-        m_timer->Stop();
-        wxTimer* timer = m_timer.release();
-        delete timer;
-        ReleaseTimer(m_timerNumber);
+        StopAndReleaseTimer(&MultibrotPanel::AnimateZ0Real);
         m_z0Count = 0;
-        wxEndBusyCursor();
     }
 }
 
@@ -546,13 +521,8 @@ void MultibrotPanel::AnimateZ0Imag(wxTimerEvent& event)
         Refresh();
     }
     else {
-        Unbind(wxEVT_TIMER, &MultibrotPanel::AnimateZ0Imag, this);
-        m_timer->Stop();
-        wxTimer* timer = m_timer.release();
-        delete timer;
-        ReleaseTimer(m_timerNumber);
+        StopAndReleaseTimer(&MultibrotPanel::AnimateZ0Imag);
         m_z0Count = 0;
-        wxEndBusyCursor();
     }
 }
 
@@ -567,5 +537,15 @@ void MultibrotPanel::StartTimer(const int timerInterval, TimerHandler handler)
         Bind(wxEVT_TIMER, handler, this);
         wxBeginBusyCursor();
     }
+}
+
+void MultibrotPanel::StopAndReleaseTimer(TimerHandler handler)
+{
+    Unbind(wxEVT_TIMER, handler, this);
+    m_timer->Stop();
+    wxTimer* timer = m_timer.release();
+    delete timer;
+    ReleaseTimer(m_timerNumber);
+    wxEndBusyCursor();
 
 }
