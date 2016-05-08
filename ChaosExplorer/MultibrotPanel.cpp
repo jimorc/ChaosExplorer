@@ -353,8 +353,18 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
     m_popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
     m_popup->Enable(ID_ANIMATEITERATIONS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
     m_popup->Enable(ID_ANIMATEMAGNIFICATION, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
-    m_popup->Enable(ID_ANIMATEREALPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
-    m_popup->Enable(ID_ANIMATEIMAGINARYPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
+    m_popup->Enable(ID_ANIMATEREALPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+    m_popup->Enable(ID_ANIMATEIMAGINARYPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+    m_popup->Enable(ID_ANIMATEZ0REAL, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+    m_popup->Enable(ID_ANIMATEZ0IMAG, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
 }
 
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
