@@ -315,8 +315,12 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
     menu->Append(menuId, menuText.c_str());
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this, power](wxCommandEvent&) {
-        m_power = { power, 0.0f }; m_upperLeft = { -2.5f, 2.0f }; 
-        m_lowerRight = { 1.5f, -2.0f }; m_z0 = { 0.0f, 0.0f }; Refresh(); },
+        m_leftDown = m_leftUp = { 0, 0 };
+        m_power = { power, 0.0f }; 
+        m_upperLeft = { -2.5f, 2.0f }; 
+        m_lowerRight = { 1.5f, -2.0f }; 
+        m_z0 = { 0.0f, 0.0f }; 
+        Refresh(); },
         menuId);
 }
 
