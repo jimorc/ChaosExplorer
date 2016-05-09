@@ -266,6 +266,7 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->Enable(ID_ANIMATEZ0REAL, true);
     m_popup->Append(ID_ANIMATEZ0IMAG, L"Animage Z0 Imaginary");
     m_popup->Enable(ID_ANIMATEZ0IMAG, true);
+    m_popup->AppendSeparator();
     m_popup->Append(ID_PRECLOSETAB, L"Close Tab");
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
