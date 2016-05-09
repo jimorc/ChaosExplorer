@@ -2,6 +2,7 @@
 #include <complex>
 #include <memory>
 #include <chrono>
+#include "wx/event.h"
 #include "wx/panel.h"
 #include "ChaosPanel.h"
 
@@ -24,6 +25,7 @@ const int ID_ANIMATEIMAGINARYPOWERS = 2015;
 const int ID_POWER2 = 2016;
 const int ID_ANIMATEZ0REAL = 2017;
 const int ID_ANIMATEZ0IMAG = 2018;
+const int ID_PRECLOSETAB = 2019;
 
 class MultibrotPanel;
 
@@ -64,6 +66,7 @@ private:
     void AnimateZ0Real(wxTimerEvent& event);
     void OnAnimateZ0Imag(wxCommandEvent& event);
     void AnimateZ0Imag(wxTimerEvent& event);
+    void OnCloseTab();
     void SetStatusBarText();
     void SetupSquareArrays();
     void CreateMainMenu();

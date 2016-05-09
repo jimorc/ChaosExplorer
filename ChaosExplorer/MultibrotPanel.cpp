@@ -266,7 +266,7 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->Enable(ID_ANIMATEZ0REAL, true);
     m_popup->Append(ID_ANIMATEZ0IMAG, L"Animage Z0 Imaginary");
     m_popup->Enable(ID_ANIMATEZ0IMAG, true);
-
+    m_popup->Append(ID_PRECLOSETAB, L"Close Tab");
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
@@ -285,6 +285,12 @@ void MultibrotPanel::CreateMainMenu()
         this, ID_ANIMATEZ0REAL);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnAnimateZ0Imag,
         this, ID_ANIMATEZ0IMAG);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent& event) {
+        // Closing a tab must be done after popup menu has closed.
+        // Otherwise, assert fails in wxMenuBase::SetInvokingWindow()
+        CallAfter(&MultibrotPanel::OnCloseTab); },
+        ID_PRECLOSETAB);
+
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
 }
 
@@ -365,6 +371,9 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
     m_popup->Enable(ID_ANIMATEZ0IMAG, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
         m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
         m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+    wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
+    int tabCount = noteBook->GetPageCount();
+    m_popup->Enable(ID_PRECLOSETAB, tabCount > 1);
 }
 
 void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
@@ -547,5 +556,20 @@ void MultibrotPanel::StopAndReleaseTimer(TimerHandler handler)
     delete timer;
     ReleaseTimer(m_timerNumber);
     wxEndBusyCursor();
+}
 
+void MultibrotPanel::OnCloseTab()
+{
+    wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
+    int pageNumber = noteBook->GetSelection();
+    int pageCount = noteBook->GetPageCount();
+    // must change selected tab before deleting a tab/page
+    // otherwise, the MultibrotPanels get screwed up and one display background only
+    if (pageNumber != pageCount - 1) {
+        noteBook->ChangeSelection(pageNumber + 1);
+    }
+    else {
+        noteBook->ChangeSelection(pageNumber - 1);
+    }
+    noteBook->DeletePage(pageNumber);
 }
