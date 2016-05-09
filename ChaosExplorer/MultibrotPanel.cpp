@@ -251,7 +251,7 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->AppendSeparator();
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     m_popup->Enable(ID_DRAWFROMSELECTION, false);
-    m_popup->Append(ID_DELETESELECTION, L"Delete Selection");
+    m_popup->Append(ID_DELETESELECTION, L"Deselect Selection");
     m_popup->Enable(ID_DELETESELECTION, false);
     m_popup->AppendSeparator();
     m_popup->Append(ID_ANIMATEITERATIONS, L"Animate Iterations");
