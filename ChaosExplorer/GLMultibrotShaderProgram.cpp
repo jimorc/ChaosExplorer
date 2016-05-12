@@ -31,7 +31,7 @@ GLMultibrotShaderProgram::~GLMultibrotShaderProgram()
 void GLMultibrotShaderProgram::BuildVertexShader()
 {
     std::string vertexSource =
-        "#version 400 core\n"
+        "#version 330 core\n"
         "in vec4 position;"
         "void main()"
         "{"
@@ -51,7 +51,7 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
     //
     // #TODO: add link to post regarding Multibrot calculations.
     std::string fragmentSource =
-        "#version 430 core\n"
+        "#version 330 core\n"
         "uniform vec2 z0;"
         "uniform vec2 p;"
         "uniform vec2 ul;"
