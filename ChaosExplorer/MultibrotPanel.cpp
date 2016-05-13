@@ -461,7 +461,7 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
 void MultibrotPanel::OnAnimateRealPowers(wxCommandEvent& event)
 {
     m_power = 1.0f;
-    StartTimer(m_realPowersInterval, &MultibrotPanel::AnimateRealPowers);
+    StartTimer(m_powersInterval, &MultibrotPanel::AnimateRealPowers);
     Refresh();
 }
 
@@ -481,7 +481,7 @@ void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
 void MultibrotPanel::OnAnimateImaginaryPowers(wxCommandEvent& event)
 {
     m_power = { m_power.real(), -1.0f };
-    StartTimer(m_realPowersInterval, &MultibrotPanel::AnimateImaginaryPowers);
+    StartTimer(m_powersInterval, &MultibrotPanel::AnimateImaginaryPowers);
     Refresh();
 }
 

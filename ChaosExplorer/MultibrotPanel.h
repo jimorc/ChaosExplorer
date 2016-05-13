@@ -92,10 +92,12 @@ private:
 
     wxMenu* m_popup;
 
+    // rate at which the various animations run
     static const int m_iterationInterval = 1000 / 6;
     static const int m_magnificationInterval = 1000 / 60;
-    static const int m_realPowersInterval = 1000 / 20;
+    static const int m_powersInterval = 1000 / 20;
     static const int m_z0Interval = 1000 / 20;
+
     int m_timerNumber;
     std::unique_ptr<wxTimer> m_timer;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_startTime;
