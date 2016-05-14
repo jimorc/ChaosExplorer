@@ -113,20 +113,24 @@
     <ClInclude Include="ChaosExplorerApp.h" />
     <ClInclude Include="ChaosExplorerWindow.h" />
     <ClInclude Include="ChaosPanel.h" />
+    <ClInclude Include="GLMandelJuliaShaderProgram.h" />
     <ClInclude Include="GLMultibrotShaderProgram.h" />
     <ClInclude Include="GLShader.h" />
     <ClInclude Include="GLShaderProgram.h" />
     <ClInclude Include="GLSquareShaderProgram.h" />
+    <ClInclude Include="MandelJuliaPanel.h" />
     <ClInclude Include="MultibrotPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp" />
     <ClCompile Include="ChaosExplorerWindow.cpp" />
     <ClCompile Include="ChaosPanel.cpp" />
+    <ClCompile Include="GLMandelJuliaShaderProgram.cpp" />
     <ClCompile Include="GLMultibrotShaderProgram.cpp" />
     <ClCompile Include="GLShader.cpp" />
     <ClCompile Include="GLShaderProgram.cpp" />
     <ClCompile Include="GLSquareShaderProgram.cpp" />
+    <ClCompile Include="MandelJuliaPanel.cpp" />
     <ClCompile Include="MultibrotPanel.cpp" />
   </ItemGroup>
   <ItemGroup>

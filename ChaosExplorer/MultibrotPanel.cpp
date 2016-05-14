@@ -9,10 +9,11 @@
 #include "GLMultibrotShaderProgram.h"
 #include "GLSquareShaderProgram.h"
 #include "MultibrotPanel.h"
+#include "MandelJuliaPanel.h"
 #include "ChaosExplorerWindow.h"
 
 // Colours to display Multibrot image in
-static std::vector<glm::vec4> colors = {
+extern std::vector<glm::vec4> colors = {
     { 1.0f, 0.5f, 0.0f, 1.0f },
     { 0.9f, 0.45f, 0.0f, 1.0f },
     { 0.8f, 0.4f, 0.0f, 1.0f },
@@ -67,7 +68,7 @@ static std::vector<glm::vec4> colors = {
 
 // The vertices that define the two triangles.
 // These vertices take up entire view
-std::vector<glm::vec4> vertices = {
+extern std::vector<glm::vec4> vertices = {
     { 1.0f, 1.0f, 0.0f, 1.0f },
     { -1.0f, 1.0f, 0.0f, 1.0f },
     { 1.0f, -1.0f, 0.0f, 1.0f },
@@ -249,6 +250,7 @@ void MultibrotPanel::CreateMainMenu()
     m_popup = new wxMenu;
     m_popup->AppendSubMenu(multiMenu, L"MultibrotPower");
     m_popup->AppendSeparator();
+    m_popup->Append(ID_JULIA, L"Julia Set");
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     m_popup->Enable(ID_DRAWFROMSELECTION, false);
     m_popup->Append(ID_DELETESELECTION, L"Deselect Selection");
@@ -270,6 +272,8 @@ void MultibrotPanel::CreateMainMenu()
     m_popup->Append(ID_PRECLOSETAB, L"Close Tab");
     // bind the various events related to this menu
     Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnJulia,
+        this, ID_JULIA);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDeleteSelection,
@@ -577,4 +581,27 @@ void MultibrotPanel::OnCloseTab()
         noteBook->ChangeSelection(pageNumber - 1);
     }
     noteBook->DeletePage(pageNumber);
+}
+
+void MultibrotPanel::OnJulia(wxCommandEvent& event)
+{
+    wxSize size = GetSize();
+    float deltaXY = m_lowerRight.real() - m_upperLeft.real();
+    float x = m_upperLeft.real() + deltaXY *m_rightDown.x / size.x;
+    float y = m_upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
+    m_rightDownPoint = { x, y };
+    
+    // create and display a new MandelJuliaPanel for the display
+    wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
+    if (nBook == nullptr) {
+        throw std::logic_error("Could not retrieve the Notebook for the new MandelJuliaPanel.");
+    }
+    try {
+        MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr,
+            size, m_power, m_rightDownPoint);
+        nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
+    }
+    catch (std::exception& e) {
+        wxMessageBox(e.what(), "Cannot create Julia Set");
+    }
 }

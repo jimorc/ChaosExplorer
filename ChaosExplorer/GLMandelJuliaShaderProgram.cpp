@@ -1,10 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "GLMultibrotShaderProgram.h"
+#include "GLMandelJuliaShaderProgram.h"
 
-GLMultibrotShaderProgram::GLMultibrotShaderProgram(ChaosPanel& canvas)
+GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram(ChaosPanel& canvas)
     : GLShaderProgram(canvas)
 {
-    // build and link the Multibrot shaders and program
     GetCanvas()->SetContext();
     BuildVertexShader();
     BuildFragmentShader();
@@ -14,21 +13,18 @@ GLMultibrotShaderProgram::GLMultibrotShaderProgram(ChaosPanel& canvas)
     glBindFragDataLocation(GetProgramHandle(), 0, "OutColor");
     Link();
     // get the handles for the various uniforms
-    m_z0 = glGetUniformLocation(GetProgramHandle(), "z0");
+    m_c = glGetUniformLocation(GetProgramHandle(), "c");
     m_p = glGetUniformLocation(GetProgramHandle(), "p");
-    m_ul = glGetUniformLocation(GetProgramHandle(), "ul");
-    m_lr = glGetUniformLocation(GetProgramHandle(), "lr");
     m_viewDimensions = glGetUniformLocation(GetProgramHandle(), "viewDimensions");
     m_color = glGetUniformLocation(GetProgramHandle(), "color");
-    m_maxIterations = glGetUniformLocation(GetProgramHandle(), "maxIterations");
 }
 
 
-GLMultibrotShaderProgram::~GLMultibrotShaderProgram()
+GLMandelJuliaShaderProgram::~GLMandelJuliaShaderProgram()
 {
 }
 
-void GLMultibrotShaderProgram::BuildVertexShader()
+void GLMandelJuliaShaderProgram::BuildVertexShader()
 {
     std::string vertexSource =
         "#version 330 core\n"
@@ -38,10 +34,10 @@ void GLMultibrotShaderProgram::BuildVertexShader()
         "    gl_Position = position;"
         "}";
     m_vertexShader = std::make_unique<GLShader>(*GetCanvas(), GL_VERTEX_SHADER, vertexSource,
-        "Multibrot vertex shader did not compile.");
+        "MandelJulia vertex shader did not compile.");
 }
 
-void GLMultibrotShaderProgram::BuildFragmentShader()
+void GLMandelJuliaShaderProgram::BuildFragmentShader()
 {
     // iPower calculates the complex power of a complex number.
     // Equation given in http://mathworld.wolfram.com/ComplexExponentiation.html
@@ -51,12 +47,9 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
     //
     std::string fragmentSource =
         "#version 330 core\n"
-        "uniform vec2 z0;"
+        "uniform vec2 c;"
         "uniform vec2 p;"
-        "uniform vec2 ul;"
-        "uniform vec2 lr;"
         "uniform vec2 viewDimensions;"
-        "uniform int maxIterations;"
         "uniform vec4 color[50];"
         "out vec4 OutColor;"
         "vec2 iPower(vec2 vec, vec2 p)"
@@ -77,18 +70,17 @@ void GLMultibrotShaderProgram::BuildFragmentShader()
         ""
         "void main()"
         "{"
-        "    vec2 z = z0;"
-        "    float x = ul.x + (lr.x - ul.x) * gl_FragCoord.x / (viewDimensions.x - 1);"
-        "    float y = lr.y + (ul.y - lr.y) * gl_FragCoord.y / (viewDimensions.y - 1);"
-        "    vec2 c = vec2(x, y);"
+        "    float x = -2.0f + 4.0f * gl_FragCoord.x / (viewDimensions.x - 1);"
+        "    float y = -2.0f + 4.0f * gl_FragCoord.y / (viewDimensions.y - 1);"
+        "    vec2 z = vec2(x, y);"
         "    int i = 0;"
-        "    while(z.x * z.x + z.y * z.y < 4.0f && i < maxIterations) {"
+        "    while(z.x * z.x + z.y * z.y < 4.0f && i < 200) {"
         "        z = iPower(z, p) + c;"
         "        ++i;"
         "    }"
-        "	 OutColor = i == maxIterations ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
+        "	 OutColor = i == 200 ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
         "        color[i%50 - 1];"
         "}";
     m_fragmentShader = std::make_unique<GLShader>(*GetCanvas(), GL_FRAGMENT_SHADER, fragmentSource,
-        "Multibrot fragment shader did not compile.");
+        "MandelJulia fragment shader did not compile.");
 }

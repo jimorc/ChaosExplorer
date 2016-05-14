@@ -8,24 +8,6 @@
 
 using namespace std::complex_literals;
 
-const int ID_DRAWFROMSELECTION = 2002;
-const int ID_DELETESELECTION = 2003;
-const int ID_ANIMATEITERATIONS = 2004;
-const int ID_ANIMATEMAGNIFICATION = 2005;
-const int ID_POWER3 = 2006;
-const int ID_POWER4 = 2007;
-const int ID_POWER5 = 2008;
-const int ID_POWER6 = 2009;
-const int ID_POWER7 = 2010;
-const int ID_POWER8 = 2011;
-const int ID_POWER9 = 2012;
-const int ID_POWER10 = 2013;
-const int ID_ANIMATEREALPOWERS = 2014;
-const int ID_ANIMATEIMAGINARYPOWERS = 2015;
-const int ID_POWER2 = 2016;
-const int ID_ANIMATEZ0REAL = 2017;
-const int ID_ANIMATEZ0IMAG = 2018;
-const int ID_PRECLOSETAB = 2019;
 
 class MultibrotPanel;
 
@@ -66,6 +48,7 @@ private:
     void AnimateZ0Real(wxTimerEvent& event);
     void OnAnimateZ0Imag(wxCommandEvent& event);
     void AnimateZ0Imag(wxTimerEvent& event);
+    void OnJulia(wxCommandEvent& event);
     void OnCloseTab();
     void SetStatusBarText();
     void SetupSquareArrays();
