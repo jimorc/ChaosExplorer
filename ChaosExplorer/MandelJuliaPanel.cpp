@@ -26,6 +26,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
+    Bind(wxEVT_RIGHT_DOWN, &MandelJuliaPanel::OnRightButtonDown, this);
 
     // set up GL stuff
     BuildShaderProgram();
@@ -98,7 +99,6 @@ void MandelJuliaPanel::OnCloseTab()
 
 void MandelJuliaPanel::OnRightButtonDown(wxMouseEvent& event)
 {
-    m_rightDown = event.GetPosition();
     PopupMenu(m_popup);
 }
 
