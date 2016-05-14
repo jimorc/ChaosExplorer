@@ -14,10 +14,12 @@ extern std::vector<glm::vec4> vertices;
 MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const wxSize& size,
     std::complex<float> power,
-    std::complex<float> c)
+    std::complex<float> c,
+    std::complex<float> ul,
+    std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, size), m_c(c), m_p(power),
     m_leftDown({0, 0}), m_leftUp({ 0, 0}),
-    m_upperLeft({ -2.0f, 2.0f }), m_lowerRight({ 2.0f, -2.0f }), m_popup(nullptr)
+    m_upperLeft(ul), m_lowerRight(lr), m_popup(nullptr)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -103,7 +105,16 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
 void MandelJuliaPanel::CreateMainMenu()
 {
     m_popup = new wxMenu;
+    m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
+//    m_popup->Enable(ID_DRAWFROMSELECTION, false);
+    m_popup->Append(ID_DELETESELECTION, L"Deselect Selection");
+//    m_popup->Enable(ID_DELETESELECTION, false);
+    m_popup->AppendSeparator();
     m_popup->Append(ID_PRECLOSETAB, L"Close Tab");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MandelJuliaPanel::OnDrawFromSelection,
+        this, ID_DRAWFROMSELECTION);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MandelJuliaPanel::OnDeleteSelection,
+        this, ID_DELETESELECTION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent& event) {
         // Closing a tab must be done after popup menu has closed.
         // Otherwise, assert fails in wxMenuBase::SetInvokingWindow()
@@ -189,4 +200,34 @@ void MandelJuliaPanel::SetupSquareArrays()
     glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(posAttrib);
 
+}
+
+void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
+{
+    // calculate the upper left and lower right locations for the new display
+    wxSize size = GetSize();
+    float deltaX = m_lowerRight.real() - m_upperLeft.real();
+    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
+    float ulReal = m_upperLeft.real() + deltaX * m_leftDown.x / size.x;
+    float ulImag = m_upperLeft.imag() - deltaY * m_leftDown.y / size.y;
+    float lrReal = m_upperLeft.real() + deltaX * m_leftUp.x / size.x;
+    float lrImag = m_upperLeft.imag() - deltaY * m_leftUp.y / size.y;
+
+    std::complex<float> ul(ulReal, ulImag);
+    std::complex<float> lr(lrReal, lrImag);
+
+    // create and display a new MultibrotPanel for the display
+    wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
+    if (nBook == nullptr) {
+        throw std::logic_error("Could not retrieve the Notebook for the new MultibrotPanel.");
+    }
+    MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr, size, m_p, m_c, ul, lr);
+    nBook->AddPage(mPanel, L"MandelJulia", true);
+}
+
+void MandelJuliaPanel::OnDeleteSelection(wxCommandEvent& event)
+{
+    // to delete the selection, just set leftDown and leftUp positions to the same value
+    m_leftDown = m_leftUp = { 0, 0 };
+    Refresh();
 }
