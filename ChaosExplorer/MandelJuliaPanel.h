@@ -20,12 +20,26 @@ protected:
 
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
+    virtual void OnLeftButtonDown(wxMouseEvent& event);
+    virtual void OnMouseMove(wxMouseEvent& event);
+    virtual void OnLeftButtonUp(wxMouseEvent& event);
     virtual void OnRightButtonDown(wxMouseEvent& event);
     void CreateMainMenu();
     void OnCloseTab();
+    void SetupSquareArrays();
+
+    std::unique_ptr<GLShaderProgram> m_squareProgram;
+    GLuint m_squareVbo;
+    GLuint m_squareVao;
+
+    bool m_leftButtonDown;
+    wxPoint m_leftDown;
+    wxPoint m_leftUp;
 
     std::complex<float> m_c;
     std::complex<float> m_p;
+    std::complex<float> m_upperLeft;
+    std::complex<float> m_lowerRight;
 
     wxMenu* m_popup;
     wxPoint m_rightDown;

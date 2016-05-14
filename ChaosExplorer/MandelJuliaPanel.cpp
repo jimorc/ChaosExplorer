@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "GL/glew.h"
 #include "GLMandelJuliaShaderProgram.h"
+#include "GLSquareShaderProgram.h"
 #include "MandelJuliaPanel.h"
 
 extern std::vector<glm::vec4> colors;
@@ -15,7 +16,8 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     std::complex<float> power,
     std::complex<float> c)
     : ChaosPanel(parent, id, attribList, size), m_c(c), m_p(power),
-    m_popup(nullptr)
+    m_leftDown({0, 0}), m_leftUp({ 0, 0}),
+    m_upperLeft({ -2.0f, 2.0f }), m_lowerRight({ 2.0f, -2.0f }), m_popup(nullptr)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -26,11 +28,15 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
+    Bind(wxEVT_LEFT_DOWN, &MandelJuliaPanel::OnLeftButtonDown, this);
+    Bind(wxEVT_LEFT_UP, &MandelJuliaPanel::OnLeftButtonUp, this);
+    Bind(wxEVT_MOTION, &MandelJuliaPanel::OnMouseMove, this);
     Bind(wxEVT_RIGHT_DOWN, &MandelJuliaPanel::OnRightButtonDown, this);
 
     // set up GL stuff
     BuildShaderProgram();
     SetupTriangles(vertices, m_program->GetProgramHandle());
+    SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
     glUniform2f(prog->GetCHandle(), m_c.real(), m_c.imag());
@@ -42,6 +48,9 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
 
 MandelJuliaPanel::~MandelJuliaPanel()
 {
+    glDeleteBuffers(1, &m_squareVbo);
+    glDeleteVertexArrays(1, &m_squareVao);
+
     // delete popup menu
     if (m_popup != nullptr) {
         delete m_popup;
@@ -50,7 +59,8 @@ MandelJuliaPanel::~MandelJuliaPanel()
 
 void MandelJuliaPanel::BuildShaderProgram()
 {
-        m_program = std::make_unique<GLMandelJuliaShaderProgram>(*this);
+    m_program = std::make_unique<GLMandelJuliaShaderProgram>(*this);
+    m_squareProgram = std::make_unique<GLSquareShaderProgram>(*this);
 }
 
 void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
@@ -66,6 +76,24 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+
+    // draw the square outlining the selected area of the image
+    if (m_leftDown.x != m_leftUp.x || m_leftDown.y != m_leftUp.y) {
+        glUseProgram(m_squareProgram->GetProgramHandle());
+        glBindVertexArray(m_squareVao);
+        float halfSize = static_cast<float>(size.x) / 2.0f;
+        float downX = m_leftDown.x - halfSize;
+        float downY = halfSize - m_leftDown.y;
+        float upX = m_leftUp.x - halfSize;
+        float upY = halfSize - m_leftUp.y;
+        std::vector<glm::vec4> points;
+        points.push_back({ downX, downY, 0.0f, halfSize });
+        points.push_back({ downX, upY, 0.0f, halfSize });
+        points.push_back({ upX, upY, 0.0f, halfSize });
+        points.push_back({ upX, downY, 0.0f, halfSize });
+        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
+        glDrawArrays(GL_LINE_LOOP, 0, points.size());
+    }
     glFlush();
     SwapBuffers();
 }
@@ -102,3 +130,61 @@ void MandelJuliaPanel::OnRightButtonDown(wxMouseEvent& event)
     PopupMenu(m_popup);
 }
 
+void MandelJuliaPanel::OnLeftButtonDown(wxMouseEvent& event)
+{
+    // set left button down position
+    m_leftButtonDown = true;
+    m_leftDown = event.GetPosition();
+    m_leftUp = m_leftDown;
+}
+
+void MandelJuliaPanel::OnMouseMove(wxMouseEvent& event)
+{
+    // as mouse moves when left button is down, set m_leftDown to be upper left
+    // and m_leftUp to be lower right positions of selection area.
+    if (m_leftButtonDown) {
+        m_leftUp = event.GetPosition();
+        if (m_leftDown.x > m_leftUp.x) {
+            int temp = m_leftDown.x;
+            m_leftDown.x = m_leftUp.x;
+            m_leftUp.x = temp;
+        }
+        if (m_leftDown.y > m_leftUp.y) {
+            m_leftDown.y = m_leftUp.y;
+        }
+        m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+        // redraw the selection square
+        Refresh();
+    }
+}
+
+void MandelJuliaPanel::OnLeftButtonUp(wxMouseEvent& event)
+{
+    // set final positions of the selection square
+    m_leftUp = event.GetPosition();
+    m_leftButtonDown = false;
+    if (m_leftDown.x > m_leftUp.x) {
+        int temp = m_leftDown.x;
+        m_leftDown.x = m_leftUp.x;
+        m_leftUp.x = temp;
+    }
+    if (m_leftDown.y > m_leftUp.y) {
+        m_leftDown.y = m_leftUp.y;
+    }
+    m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+    // and redraw
+    Refresh();
+}
+
+void MandelJuliaPanel::SetupSquareArrays()
+{
+    // set GL stuff for the square that will contain the Multibrot image
+    glGenVertexArrays(1, &m_squareVao);
+    glBindVertexArray(m_squareVao);
+    glGenBuffers(1, &m_squareVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_squareVbo);
+    GLint posAttrib = glGetAttribLocation(m_squareProgram->GetProgramHandle(), "position");
+    glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(posAttrib);
+
+}
