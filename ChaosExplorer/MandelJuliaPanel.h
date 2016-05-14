@@ -28,6 +28,7 @@ private:
     virtual void OnRightButtonDown(wxMouseEvent& event);
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnDeleteSelection(wxCommandEvent& event);
+    virtual void OnMenuOpen(wxMenuEvent& event);
     void CreateMainMenu();
     void OnCloseTab();
     void SetupSquareArrays();

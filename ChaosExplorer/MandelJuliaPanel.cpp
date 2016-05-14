@@ -106,9 +106,7 @@ void MandelJuliaPanel::CreateMainMenu()
 {
     m_popup = new wxMenu;
     m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
-//    m_popup->Enable(ID_DRAWFROMSELECTION, false);
     m_popup->Append(ID_DELETESELECTION, L"Deselect Selection");
-//    m_popup->Enable(ID_DELETESELECTION, false);
     m_popup->AppendSeparator();
     m_popup->Append(ID_PRECLOSETAB, L"Close Tab");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MandelJuliaPanel::OnDrawFromSelection,
@@ -120,6 +118,7 @@ void MandelJuliaPanel::CreateMainMenu()
         // Otherwise, assert fails in wxMenuBase::SetInvokingWindow()
         CallAfter(&MandelJuliaPanel::OnCloseTab); },
         ID_PRECLOSETAB);
+    Bind(wxEVT_MENU_OPEN, &MandelJuliaPanel::OnMenuOpen, this);
 }
 
 void MandelJuliaPanel::OnCloseTab()
@@ -230,4 +229,14 @@ void MandelJuliaPanel::OnDeleteSelection(wxCommandEvent& event)
     // to delete the selection, just set leftDown and leftUp positions to the same value
     m_leftDown = m_leftUp = { 0, 0 };
     Refresh();
+}
+
+void MandelJuliaPanel::OnMenuOpen(wxMenuEvent& event)
+{
+    // enable/disable the various popup menu items
+    m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
+    m_popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
+    wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
+    int tabCount = noteBook->GetPageCount();
+    m_popup->Enable(ID_PRECLOSETAB, tabCount > 1);
 }
