@@ -15,6 +15,8 @@ GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram(ChaosPanel& canvas)
     // get the handles for the various uniforms
     m_c = glGetUniformLocation(GetProgramHandle(), "c");
     m_p = glGetUniformLocation(GetProgramHandle(), "p");
+    m_ul = glGetUniformLocation(GetProgramHandle(), "ul");
+    m_lr = glGetUniformLocation(GetProgramHandle(), "lr");
     m_viewDimensions = glGetUniformLocation(GetProgramHandle(), "viewDimensions");
     m_color = glGetUniformLocation(GetProgramHandle(), "color");
 }
@@ -49,6 +51,8 @@ void GLMandelJuliaShaderProgram::BuildFragmentShader()
         "#version 330 core\n"
         "uniform vec2 c;"
         "uniform vec2 p;"
+        "uniform vec2 ul;"
+        "uniform vec2 lr;"
         "uniform vec2 viewDimensions;"
         "uniform vec4 color[50];"
         "out vec4 OutColor;"
@@ -70,8 +74,8 @@ void GLMandelJuliaShaderProgram::BuildFragmentShader()
         ""
         "void main()"
         "{"
-        "    float x = -2.0f + 4.0f * gl_FragCoord.x / (viewDimensions.x - 1);"
-        "    float y = -2.0f + 4.0f * gl_FragCoord.y / (viewDimensions.y - 1);"
+        "    float x = ul.x + (lr.x - ul.x) * gl_FragCoord.x / (viewDimensions.x - 1);"
+        "    float y = lr.y + (ul.y - lr.y) * gl_FragCoord.y / (viewDimensions.y - 1);"
         "    vec2 z = vec2(x, y);"
         "    int i = 0;"
         "    while(z.x * z.x + z.y * z.y < 4.0f && i < 200) {"

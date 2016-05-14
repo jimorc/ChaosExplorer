@@ -74,6 +74,8 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
+    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
+    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 
