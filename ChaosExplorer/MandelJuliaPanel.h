@@ -32,6 +32,7 @@ private:
     void CreateMainMenu();
     void OnCloseTab();
     void SetupSquareArrays();
+    void SetStatusBarText();
 
     std::unique_ptr<GLShaderProgram> m_squareProgram;
     GLuint m_squareVbo;

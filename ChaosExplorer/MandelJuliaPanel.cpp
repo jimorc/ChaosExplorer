@@ -7,6 +7,7 @@
 #include "GLMandelJuliaShaderProgram.h"
 #include "GLSquareShaderProgram.h"
 #include "MandelJuliaPanel.h"
+#include "ChaosExplorerWindow.h"
 
 extern std::vector<glm::vec4> colors;
 extern std::vector<glm::vec4> vertices;
@@ -100,6 +101,8 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     }
     glFlush();
     SwapBuffers();
+
+    SetStatusBarText();
 }
 
 void MandelJuliaPanel::CreateMainMenu()
@@ -239,4 +242,25 @@ void MandelJuliaPanel::OnMenuOpen(wxMenuEvent& event)
     wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
     int tabCount = noteBook->GetPageCount();
     m_popup->Enable(ID_PRECLOSETAB, tabCount > 1);
+}
+
+void MandelJuliaPanel::SetStatusBarText()
+{
+    ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+    wxStatusBar* statusBar = win->GetStatusBar();
+    std::wstringstream ss;
+    ss << L"C = " << m_c.real();
+    m_c.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_c.imag()) << L"i";
+    ss << L", Power = " << m_p.real();
+    m_p.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_p.imag()) << L"i";
+    ss << L", Upper Left = " << m_upperLeft.real();
+    m_upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_upperLeft.imag()) << L"i";
+    ss << L", Lower Right = " << m_lowerRight.real();
+    m_lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(m_lowerRight.imag()) << L"i";
+
+    statusBar->SetStatusText(ss.str().c_str());
 }
