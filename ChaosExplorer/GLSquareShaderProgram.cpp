@@ -25,7 +25,7 @@ GLSquareShaderProgram::~GLSquareShaderProgram()
 void GLSquareShaderProgram::BuildVertexShader()
 {
     std::string vertexSource =
-        "#version 400 core\n"
+        "#version 330 core\n"
         "in vec4 position;"
         "void main()"
         "{"
@@ -39,7 +39,7 @@ void GLSquareShaderProgram::BuildVertexShader()
 void GLSquareShaderProgram::BuildFragmentShader()
 {
     std::string fragmentSource =
-        "#version 430 core\n"
+        "#version 330 core\n"
         "out vec4 OutColor;"
         "void main()"
         "{"
