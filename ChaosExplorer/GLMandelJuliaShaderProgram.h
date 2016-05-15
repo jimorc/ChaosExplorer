@@ -17,10 +17,8 @@ public:
     GLint GetColorHandle() { return m_color; }
 
 private:
-    void BuildVertexShader();
     void BuildFragmentShader();
 
-    std::unique_ptr<GLShader> m_vertexShader;
     std::unique_ptr<GLShader> m_fragmentShader;
     GLint m_c;
     GLint m_p;

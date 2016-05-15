@@ -10,10 +10,8 @@ public:
     virtual ~GLSquareShaderProgram();
 
 private:
-    void BuildVertexShader();
     void BuildFragmentShader();
 
-    std::unique_ptr<GLShader> m_vertexShader;
     std::unique_ptr<GLShader> m_fragmentShader;
 };
 

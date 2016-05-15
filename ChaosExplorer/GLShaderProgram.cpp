@@ -26,3 +26,18 @@ void GLShaderProgram::Link()
     }
 
 }
+
+// Vertex shader is common among the shader programs.
+// It can, however, be overridden if necessary.
+void GLShaderProgram::BuildVertexShader()
+{
+    std::string vertexSource =
+        "#version 330 core\n"
+        "in vec4 position;"
+        "void main()"
+        "{"
+        "    gl_Position = position;"
+        "}";
+    m_vertexShader = std::make_unique<GLShader>(*GetCanvas(), GL_VERTEX_SHADER, vertexSource,
+        "Vertex shader did not compile.");
+}

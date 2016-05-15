@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <memory>
 #include "GL/glew.h"
 #include <string>
 #include <vector>
@@ -24,8 +25,14 @@ public:
     GLuint GetProgramHandle() { return m_program; }
     void SetProgramHandle(GLuint handle) { m_program = handle; }
     ChaosPanel* GetCanvas() { return m_canvas; }
+    GLShader* GetVertexShader() { return m_vertexShader.get(); }
+
+protected:
+    virtual void BuildVertexShader();
 
 private:
+    std::unique_ptr<GLShader> m_vertexShader;
+
     ChaosPanel* m_canvas;
     GLuint m_program;
 

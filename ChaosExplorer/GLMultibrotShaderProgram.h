@@ -18,10 +18,8 @@ public:
     GLint GetMaxIterationsHandle() { return m_maxIterations; }
 
 private:
-    void BuildVertexShader();
     void BuildFragmentShader();
 
-    std::unique_ptr<GLShader> m_vertexShader;
     std::unique_ptr<GLShader> m_fragmentShader;
     GLint m_z0;
     GLint m_p;

@@ -8,7 +8,7 @@ GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram(ChaosPanel& canvas)
     BuildVertexShader();
     BuildFragmentShader();
     SetProgramHandle(glCreateProgram());
-    glAttachShader(GetProgramHandle(), m_vertexShader->GetShaderHandle());
+    glAttachShader(GetProgramHandle(), GetVertexShader()->GetShaderHandle());
     glAttachShader(GetProgramHandle(), m_fragmentShader->GetShaderHandle());
     glBindFragDataLocation(GetProgramHandle(), 0, "OutColor");
     Link();
@@ -24,19 +24,6 @@ GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram(ChaosPanel& canvas)
 
 GLMandelJuliaShaderProgram::~GLMandelJuliaShaderProgram()
 {
-}
-
-void GLMandelJuliaShaderProgram::BuildVertexShader()
-{
-    std::string vertexSource =
-        "#version 330 core\n"
-        "in vec4 position;"
-        "void main()"
-        "{"
-        "    gl_Position = position;"
-        "}";
-    m_vertexShader = std::make_unique<GLShader>(*GetCanvas(), GL_VERTEX_SHADER, vertexSource,
-        "MandelJulia vertex shader did not compile.");
 }
 
 void GLMandelJuliaShaderProgram::BuildFragmentShader()
