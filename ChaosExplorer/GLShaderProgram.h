@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <vector>
+#include <map>
 #include <memory>
 #include "GL/glew.h"
 #include <string>
@@ -29,9 +29,13 @@ public:
 
 protected:
     virtual void BuildVertexShader();
+    void LoadUniformHandles();
+    auto GetUniformHandle(const std::string& name) const;
 
 private:
     std::unique_ptr<GLShader> m_vertexShader;
+
+    std::map<std::string, GLint> m_uniforms;
 
     ChaosPanel* m_canvas;
     GLuint m_program;
