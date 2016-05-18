@@ -66,13 +66,13 @@ void GLShaderProgram::LoadUniformHandles()
         glGetProgramResourceName(m_program, GL_UNIFORM, uniform, nameData.size(), NULL, &nameData[0]);
         std::string name((char*)&nameData[0], nameData.size() - 1);
         // now get the location and add to m_uniforms (a map)
-        glGetUniformLocation(m_program, name.c_str());
-        m_uniforms[name] = glGetUniformLocation(m_program, name.c_str());
+        // must use name.c_str() as index or m_uniforms.at() and m_uniforms.find() do not find the key
+        m_uniforms[name.c_str()] = glGetUniformLocation(m_program, name.c_str());
     }
 }
 
 // retrieve the uniform handle for the uniform named 'name'
-auto GLShaderProgram::GetUniformHandle(const std::string& name) const
+GLint GLShaderProgram::GetUniformHandle(const std::string& name) const
 {
     auto iter = m_uniforms.find(name);
     if (iter != m_uniforms.end()) {

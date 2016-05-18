@@ -116,10 +116,10 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
-    glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
-    glUniform4fv(prog->GetColorHandle(), colors.size() *4, &colors[0].x);
+    glUniform2f(prog->GetUniformHandle("ul"), m_upperLeft.real(), m_upperLeft.imag());
+    glUniform2f(prog->GetUniformHandle("lr"), m_lowerRight.real(), m_lowerRight.imag());
+    glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
+    glUniform4fv(prog->GetUniformHandle("color[0]"), colors.size() * 4, &colors[0].x);
 }
 
 
@@ -145,11 +145,9 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
-    glUniform1i(prog->GetMaxIterationsHandle(), m_maxIterations);
-    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
-    glUniform2f(prog->GetPHandle(), m_power.real(), m_power.imag());
-    glUniform2f(prog->GetZ0Handle(), m_z0.real(), m_z0.imag());
+    glUniform1i(prog->GetUniformHandle("maxIterations"), m_maxIterations);
+    glUniform2f(prog->GetUniformHandle("p"), m_power.real(), m_power.imag());
+    glUniform2f(prog->GetUniformHandle("z0"), m_z0.real(), m_z0.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
