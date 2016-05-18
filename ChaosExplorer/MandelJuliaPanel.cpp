@@ -42,10 +42,10 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetCHandle(), m_c.real(), m_c.imag());
-    glUniform2f(prog->GetPHandle(), m_p.real(), m_p.imag());
-    glUniform2f(prog->GetViewDimensionsHandle(), size.x, size.y);
-    glUniform4fv(prog->GetColorHandle(), colors.size() * 4, &colors[0].x);
+    glUniform2f(prog->GetUniformHandle("c"), m_c.real(), m_c.imag());
+    glUniform2f(prog->GetUniformHandle("p"), m_p.real(), m_p.imag());
+    glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
+    glUniform4fv(prog->GetUniformHandle("color[0]"), colors.size() * 4, &colors[0].x);
 }
 
 
@@ -77,8 +77,8 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetULHandle(), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(prog->GetLRHandle(), m_lowerRight.real(), m_lowerRight.imag());
+    glUniform2f(prog->GetUniformHandle("ul"), m_upperLeft.real(), m_upperLeft.imag());
+    glUniform2f(prog->GetUniformHandle("lr"), m_lowerRight.real(), m_lowerRight.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 

@@ -13,12 +13,7 @@ GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram(ChaosPanel& canvas)
     glBindFragDataLocation(GetProgramHandle(), 0, "OutColor");
     Link();
     // get the handles for the various uniforms
-    m_c = glGetUniformLocation(GetProgramHandle(), "c");
-    m_p = glGetUniformLocation(GetProgramHandle(), "p");
-    m_ul = glGetUniformLocation(GetProgramHandle(), "ul");
-    m_lr = glGetUniformLocation(GetProgramHandle(), "lr");
-    m_viewDimensions = glGetUniformLocation(GetProgramHandle(), "viewDimensions");
-    m_color = glGetUniformLocation(GetProgramHandle(), "color");
+    LoadUniformHandles();
 }
 
 
