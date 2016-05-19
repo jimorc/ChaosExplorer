@@ -3,6 +3,15 @@
 #include "GLShaderProgram.h"
 #include "ChaosPanel.h"
 
+// The vertices that define the two triangles.
+// These vertices take up entire view 
+std::vector<glm::vec4> ChaosPanel::s_vertices = {
+    { 1.0f, 1.0f, 0.0f, 1.0f },
+    { -1.0f, 1.0f, 0.0f, 1.0f },
+    { 1.0f, -1.0f, 0.0f, 1.0f },
+    { -1.0f, -1.0f, 0.0f, 1.0f }
+};
+
 std::vector<bool> ChaosPanel::m_timers(MaxTimers, false);
 
 ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
@@ -31,14 +40,15 @@ void ChaosPanel::InitializeGLEW()
     }
 }
 
-void ChaosPanel::SetupTriangles(std::vector<glm::vec4>& vert, GLint prog)
+void ChaosPanel::SetupTriangles()
 {
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vert) * sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
-    GLint posAttrib = glGetAttribLocation(prog, "position");
+    glBufferData(GL_ARRAY_BUFFER, sizeof(s_vertices) * sizeof(s_vertices[0]), &s_vertices[0], 
+        GL_STATIC_DRAW);
+    GLint posAttrib = glGetAttribLocation(m_program->GetProgramHandle(), "position");
     glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(posAttrib);
 }

@@ -44,7 +44,7 @@ public:
 protected:
     virtual void BuildShaderProgram() = 0;
     std::unique_ptr<GLShaderProgram> m_program;
-    void SetupTriangles(std::vector<glm::vec4>& vert, GLint prog);
+    void SetupTriangles();
     GLuint GetVao() { return m_vao; }
     int GetTimer() {
         for (int timer = 0; timer < MaxTimers; ++timer) {
@@ -61,6 +61,7 @@ protected:
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
+    static std::vector<glm::vec4> s_vertices;
     std::unique_ptr<wxGLContext> m_context;
     GLuint m_vbo;
     GLuint m_vao;

@@ -10,7 +10,6 @@
 #include "ChaosExplorerWindow.h"
 
 extern std::vector<glm::vec4> colors;
-extern std::vector<glm::vec4> vertices;
 
 MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const wxSize& size,
@@ -38,7 +37,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
 
     // set up GL stuff
     BuildShaderProgram();
-    SetupTriangles(vertices, m_program->GetProgramHandle());
+    SetupTriangles();
     SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());

@@ -66,15 +66,6 @@ extern std::vector<glm::vec4> colors = {
     { 0.3f, 0.3f, 0.3f, 1.0f }
 };
 
-// The vertices that define the two triangles.
-// These vertices take up entire view
-extern std::vector<glm::vec4> vertices = {
-    { 1.0f, 1.0f, 0.0f, 1.0f },
-    { -1.0f, 1.0f, 0.0f, 1.0f },
-    { 1.0f, -1.0f, 0.0f, 1.0f },
-    { -1.0f, -1.0f, 0.0f, 1.0f }
-};
-
 // Constructor
 MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const wxSize& size,
@@ -112,7 +103,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
 
     // set up GL stuff
     BuildShaderProgram();
-    SetupTriangles(vertices, m_program->GetProgramHandle());
+    SetupTriangles();
     SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
