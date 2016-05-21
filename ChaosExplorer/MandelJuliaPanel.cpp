@@ -98,18 +98,8 @@ void MandelJuliaPanel::CreatePopupMenu()
 
 void MandelJuliaPanel::OnCloseTab()
 {
-    wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
-    int pageNumber = noteBook->GetSelection();
-    int pageCount = noteBook->GetPageCount();
-    // must change selected tab before deleting a tab/page
-    // otherwise, the ChaosPanels get screwed up and one display background only
-    if (pageNumber != pageCount - 1) {
-        noteBook->ChangeSelection(pageNumber + 1);
-    }
-    else {
-        noteBook->ChangeSelection(pageNumber - 1);
-    }
-    noteBook->DeletePage(pageNumber);
+    ChaosExplorerWindow* mainWin = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+    mainWin->OnCloseTab(wxCommandEvent());
 }
 
 void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)

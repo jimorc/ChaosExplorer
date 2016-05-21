@@ -14,10 +14,11 @@ public:
     ChaosExplorerWindow& operator=(const ChaosExplorerWindow&) = delete;
     ChaosExplorerWindow& operator=(ChaosExplorerWindow&&) = delete;
     wxStatusBar* GetStatusBar() { return m_statusBar; }
+    void OnCloseTab(wxCommandEvent& event);
+
 private:
     void CreateMainMenu();
     wxMenu* CreateFileMenu();
-    void OnCloseTab(wxCommandEvent& event);
     void OnFileMenuOpen(wxMenuEvent& event);
     wxNotebook* m_notebook;
     wxStatusBar* m_statusBar;

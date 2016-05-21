@@ -477,18 +477,8 @@ void MultibrotPanel::StopAndReleaseTimer(TimerHandler handler)
 
 void MultibrotPanel::OnCloseTab()
 {
-    wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
-    int pageNumber = noteBook->GetSelection();
-    int pageCount = noteBook->GetPageCount();
-    // must change selected tab before deleting a tab/page
-    // otherwise, the MultibrotPanels get screwed up and one display background only
-    if (pageNumber != pageCount - 1) {
-        noteBook->ChangeSelection(pageNumber + 1);
-    }
-    else {
-        noteBook->ChangeSelection(pageNumber - 1);
-    }
-    noteBook->DeletePage(pageNumber);
+    ChaosExplorerWindow* mainWin = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+    mainWin->OnCloseTab(wxCommandEvent());
 }
 
 void MultibrotPanel::OnJulia(wxCommandEvent& event)
