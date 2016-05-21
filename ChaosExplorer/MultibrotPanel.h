@@ -66,10 +66,6 @@ private:
     std::complex<float> m_power;
     std::complex<float> m_rightDownPoint;
 
-    bool m_leftButtonDown;
-    wxPoint m_leftDown;
-    wxPoint m_leftUp;
-
     // rate at which the various animations run
     static const int m_iterationInterval = 1000 / 6;
     static const int m_magnificationInterval = 1000 / 60;

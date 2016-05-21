@@ -17,8 +17,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     std::complex<float> c,
     std::complex<float> ul,
     std::complex<float> lr)
-    : ChaosPanel(parent, id, attribList, ul, lr, size), m_c(c), m_p(power),
-    m_leftDown({0, 0}), m_leftUp({ 0, 0})
+    : ChaosPanel(parent, id, attribList, ul, lr, size), m_c(c), m_p(power)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -77,14 +76,16 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
 
 
     // draw the square outlining the selected area of the image
-    if (m_leftDown.x != m_leftUp.x || m_leftDown.y != m_leftUp.y) {
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = GetLeftUp();
+    if (leftDown.x != leftUp.x || leftDown.y != leftUp.y) {
         glUseProgram(m_squareProgram->GetProgramHandle());
         glBindVertexArray(m_squareVao);
         float halfSize = static_cast<float>(size.x) / 2.0f;
-        float downX = m_leftDown.x - halfSize;
-        float downY = halfSize - m_leftDown.y;
-        float upX = m_leftUp.x - halfSize;
-        float upY = halfSize - m_leftUp.y;
+        float downX = leftDown.x - halfSize;
+        float downY = halfSize - leftDown.y;
+        float upX = leftUp.x - halfSize;
+        float upY = halfSize - leftUp.y;
         std::vector<glm::vec4> points;
         points.push_back({ downX, downY, 0.0f, halfSize });
         points.push_back({ downX, upY, 0.0f, halfSize });
@@ -143,26 +144,29 @@ void MandelJuliaPanel::OnRightButtonDown(wxMouseEvent& event)
 void MandelJuliaPanel::OnLeftButtonDown(wxMouseEvent& event)
 {
     // set left button down position
-    m_leftButtonDown = true;
-    m_leftDown = event.GetPosition();
-    m_leftUp = m_leftDown;
+    SetLeftButtonDown(true);
+    SetLeftDown(event.GetPosition());
+    SetLeftUp(GetLeftDown());
 }
 
 void MandelJuliaPanel::OnMouseMove(wxMouseEvent& event)
 {
     // as mouse moves when left button is down, set m_leftDown to be upper left
     // and m_leftUp to be lower right positions of selection area.
-    if (m_leftButtonDown) {
-        m_leftUp = event.GetPosition();
-        if (m_leftDown.x > m_leftUp.x) {
-            int temp = m_leftDown.x;
-            m_leftDown.x = m_leftUp.x;
-            m_leftUp.x = temp;
+    if (GetLeftButtonDown()) {
+        wxPoint leftUp = event.GetPosition();
+        wxPoint leftDown = GetLeftDown();
+        if (leftDown.x > leftUp.x) {
+            int temp = leftDown.x;
+            leftDown.x = leftUp.x;
+            leftUp.x = temp;
         }
-        if (m_leftDown.y > m_leftUp.y) {
-            m_leftDown.y = m_leftUp.y;
+        if (leftDown.y > leftUp.y) {
+            leftDown.y = leftUp.y;
         }
-        m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+        leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
+        SetLeftDown(leftDown);
+        SetLeftUp(leftUp);
         // redraw the selection square
         Refresh();
     }
@@ -171,17 +175,20 @@ void MandelJuliaPanel::OnMouseMove(wxMouseEvent& event)
 void MandelJuliaPanel::OnLeftButtonUp(wxMouseEvent& event)
 {
     // set final positions of the selection square
-    m_leftUp = event.GetPosition();
-    m_leftButtonDown = false;
-    if (m_leftDown.x > m_leftUp.x) {
-        int temp = m_leftDown.x;
-        m_leftDown.x = m_leftUp.x;
-        m_leftUp.x = temp;
+    wxPoint leftUp = event.GetPosition();
+    wxPoint leftDown = GetLeftDown();
+   SetLeftButtonDown(false);
+    if (leftDown.x > leftUp.x) {
+        int temp = leftDown.x;
+        leftDown.x = leftUp.x;
+        leftUp.x = temp;
     }
-    if (m_leftDown.y > m_leftUp.y) {
-        m_leftDown.y = m_leftUp.y;
+    if (leftDown.y > leftUp.y) {
+        leftDown.y = leftUp.y;
     }
-    m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+    leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
+    SetLeftDown(leftDown);
+    SetLeftUp(leftUp);
     // and redraw
     Refresh();
 }
@@ -203,14 +210,16 @@ void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
     // calculate the upper left and lower right locations for the new display
     wxSize size = GetSize();
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = GetLeftUp();
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
     float deltaX = lowerRight.real() - upperLeft.real();
     float deltaY = upperLeft.imag() - lowerRight.imag();
-    float ulReal = upperLeft.real() + deltaX * m_leftDown.x / size.x;
-    float ulImag = upperLeft.imag() - deltaY * m_leftDown.y / size.y;
-    float lrReal = upperLeft.real() + deltaX * m_leftUp.x / size.x;
-    float lrImag = upperLeft.imag() - deltaY * m_leftUp.y / size.y;
+    float ulReal = upperLeft.real() + deltaX * leftDown.x / size.x;
+    float ulImag = upperLeft.imag() - deltaY * leftDown.y / size.y;
+    float lrReal = upperLeft.real() + deltaX * leftUp.x / size.x;
+    float lrImag = upperLeft.imag() - deltaY * leftUp.y / size.y;
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
@@ -227,16 +236,19 @@ void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
 void MandelJuliaPanel::OnDeleteSelection(wxCommandEvent& event)
 {
     // to delete the selection, just set leftDown and leftUp positions to the same value
-    m_leftDown = m_leftUp = { 0, 0 };
+    SetLeftDown({ 0, 0 });
+    SetLeftUp({ 0, 0 });
     Refresh();
 }
 
 void MandelJuliaPanel::OnMenuOpen(wxMenuEvent& event)
 {
     // enable/disable the various popup menu items
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = GetLeftUp();
     wxMenu* popup = GetPopupMenu();
-    popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
-    popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
+    popup->Enable(ID_DRAWFROMSELECTION, leftDown != leftUp);
+    popup->Enable(ID_DELETESELECTION, leftDown != leftUp);
     wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
     int tabCount = noteBook->GetPageCount();
     popup->Enable(ID_PRECLOSETAB, tabCount > 1);

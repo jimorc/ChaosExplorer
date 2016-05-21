@@ -18,7 +18,7 @@ ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const std::complex<float>ul, const std::complex<float>lr,
     const wxSize& size)
     : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size), m_popup(nullptr),
-    m_rightDown({ 0, 0 })
+    m_rightDown({ 0, 0 }), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 })
 {
     SetUpperLeftLowerRight(ul, lr);
     m_context = std::make_unique<wxGLContext>(this);

@@ -38,10 +38,6 @@ private:
     GLuint m_squareVbo;
     GLuint m_squareVao;
 
-    bool m_leftButtonDown;
-    wxPoint m_leftDown;
-    wxPoint m_leftUp;
-
     std::complex<float> m_c;
     std::complex<float> m_p;
 };

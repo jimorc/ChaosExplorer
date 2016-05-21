@@ -81,6 +81,12 @@ protected:
             PopupMenu(m_popup);
         }
     }
+    wxPoint& GetLeftDown() { return m_leftDown; }
+    void SetLeftDown(const wxPoint& leftDown) { m_leftDown = leftDown; }
+    wxPoint& GetLeftUp() { return m_leftUp; }
+    void SetLeftUp(const wxPoint& leftUp) { m_leftUp = leftUp; }
+    bool GetLeftButtonDown() { return m_leftButtonDown; }
+    void SetLeftButtonDown(bool down) { m_leftButtonDown = down; }
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
@@ -90,6 +96,9 @@ private:
     std::complex<float> m_lowerRight;
 
     wxPoint m_rightDown;
+    bool m_leftButtonDown;
+    wxPoint m_leftDown;
+    wxPoint m_leftUp;
 
     static std::vector<glm::vec4> s_vertices;
     std::unique_ptr<wxGLContext> m_context;

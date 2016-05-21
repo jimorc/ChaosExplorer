@@ -73,8 +73,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> ul,
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, ul, lr, size),
-    m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
-   m_maxIterations(4 * colors.size()),
+    m_power(power), m_maxIterations(4 * colors.size()),
     m_zoomCount(0), m_powersCount(0), m_z0Count(0), m_z0({ 0.0f, 0.0f })
     {
         if (power.real() < 1.0f) {
@@ -137,14 +136,16 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
-    if (m_leftDown.x != m_leftUp.x || m_leftDown.y != m_leftUp.y) {
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = GetLeftUp();
+    if (leftDown.x != leftUp.x || leftDown.y != leftUp.y) {
         glUseProgram(m_squareProgram->GetProgramHandle());
         glBindVertexArray(m_squareVao);
         float halfSize = static_cast<float>(size.x) / 2.0f;
-        float downX = m_leftDown.x - halfSize;
-        float downY = halfSize - m_leftDown.y;
-        float upX = m_leftUp.x - halfSize;
-        float upY = halfSize - m_leftUp.y;
+        float downX = leftDown.x - halfSize;
+        float downY = halfSize - leftDown.y;
+        float upX = leftUp.x - halfSize;
+        float upY = halfSize - leftUp.y;
         std::vector<glm::vec4> points;
         points.push_back({ downX, downY, 0.0f, halfSize });
         points.push_back({ downX, upY, 0.0f, halfSize });
@@ -170,26 +171,29 @@ void MultibrotPanel::BuildShaderProgram()
 void MultibrotPanel::OnLeftButtonDown(wxMouseEvent& event)
 {
     // set left button down position
-    m_leftButtonDown = true;
-    m_leftDown = event.GetPosition();
-    m_leftUp = m_leftDown;
+    SetLeftButtonDown(true);
+    SetLeftDown(event.GetPosition());
+    SetLeftUp(GetLeftDown());;
 }
 
 void MultibrotPanel::OnMouseMove(wxMouseEvent& event)
 {
     // as mouse moves when left button is down, set m_leftDown to be upper left
     // and m_leftUp to be lower right positions of selection area.
-    if (m_leftButtonDown) {
-        m_leftUp = event.GetPosition();
-        if (m_leftDown.x > m_leftUp.x) {
-            int temp = m_leftDown.x;
-            m_leftDown.x = m_leftUp.x;
-            m_leftUp.x = temp;
+    if (GetLeftButtonDown()) {
+        wxPoint leftDown = GetLeftDown();
+        wxPoint leftUp = event.GetPosition();
+        if (leftDown.x > leftUp.x) {
+            int temp = leftDown.x;
+            leftDown.x = leftUp.x;
+            leftUp.x = temp;
         }
-        if (m_leftDown.y > m_leftUp.y) {
-            m_leftDown.y = m_leftUp.y;
+        if (leftDown.y > leftUp.y) {
+            leftDown.y = leftUp.y;
         }
-        m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+        leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
+        SetLeftDown(leftDown);
+        SetLeftUp(leftUp);
         // redraw the selection square
         Refresh();
     }
@@ -198,17 +202,20 @@ void MultibrotPanel::OnMouseMove(wxMouseEvent& event)
 void MultibrotPanel::OnLeftButtonUp(wxMouseEvent& event)
 {
     // set final positions of the selection square
-    m_leftUp = event.GetPosition();
-    m_leftButtonDown = false;
-    if (m_leftDown.x > m_leftUp.x) {
-        int temp = m_leftDown.x;
-        m_leftDown.x = m_leftUp.x;
-        m_leftUp.x = temp;
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = event.GetPosition();
+    SetLeftButtonDown(false);
+    if (leftDown.x > leftUp.x) {
+        int temp = leftDown.x;
+        leftDown.x = leftUp.x;
+        leftUp.x = temp;
     }
-    if (m_leftDown.y > m_leftUp.y) {
-        m_leftDown.y = m_leftUp.y;
+    if (leftDown.y > leftUp.y) {
+        leftDown.y = leftUp.y;
     }
-    m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+    leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
+    SetLeftDown(leftDown);
+    SetLeftUp(leftUp);
     // and redraw
     Refresh();
 }
@@ -304,7 +311,8 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
     menu->Append(menuId, menuText.c_str());
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this, power](wxCommandEvent&) {
-        m_leftDown = m_leftUp = { 0, 0 };
+        SetLeftDown({ 0, 0 });
+        SetLeftUp({ 0, 0 });
         m_power = { power, 0.0f }; 
         SetUpperLeftLowerRight(-2.5f + 2.0if, 1.5f - 2.0if);
         m_z0 = { 0.0f, 0.0f }; 
@@ -325,12 +333,14 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
     wxSize size = GetSize();
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = GetLeftUp();
     float deltaX = lowerRight.real() - upperLeft.real();
     float deltaY = upperLeft.imag() - lowerRight.imag();
-    float ulReal = upperLeft.real() + deltaX * m_leftDown.x / size.x;
-    float ulImag = upperLeft.imag() - deltaY * m_leftDown.y / size.y;
-    float lrReal = upperLeft.real() + deltaX * m_leftUp.x / size.x;
-    float lrImag = upperLeft.imag() - deltaY * m_leftUp.y / size.y;
+    float ulReal = upperLeft.real() + deltaX * leftDown.x / size.x;
+    float ulImag = upperLeft.imag() - deltaY * leftDown.y / size.y;
+    float lrReal = upperLeft.real() + deltaX * leftUp.x / size.x;
+    float lrImag = upperLeft.imag() - deltaY * leftUp.y / size.y;
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
@@ -349,10 +359,12 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
     wxMenu* popup = GetPopupMenu();
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
+    wxPoint leftDown = GetLeftDown();
+    wxPoint leftUp = GetLeftUp();
     // enable/disable the various popup menu items
-    popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp &&
+    popup->Enable(ID_DRAWFROMSELECTION, leftDown != leftUp &&
         m_z0 == std::complex<float>({0.0f, 0.0f}));
-    popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
+    popup->Enable(ID_DELETESELECTION, leftDown != leftUp);
     popup->Enable(ID_ANIMATEITERATIONS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
     popup->Enable(ID_ANIMATEMAGNIFICATION, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
     popup->Enable(ID_ANIMATEREALPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
@@ -396,7 +408,8 @@ void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
 void MultibrotPanel::OnDeleteSelection(wxCommandEvent& event)
 {
     // to delete the selection, just set leftDown and leftUp positions to the same value
-    m_leftDown = m_leftUp = { 0, 0 };
+    SetLeftDown({ 0, 0 });
+    SetLeftUp({ 0, 0 });
     Refresh();
 }
 
