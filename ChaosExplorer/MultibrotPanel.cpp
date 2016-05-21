@@ -95,7 +95,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
     Bind(wxEVT_LEFT_UP, &MultibrotPanel::OnLeftButtonUp, this);
-    Bind(wxEVT_MOTION, &MultibrotPanel::OnMouseMove, this);
 
     // set up GL stuff
     BuildShaderProgram();
@@ -165,29 +164,6 @@ void MultibrotPanel::BuildShaderProgram()
 {
     m_program = std::make_unique<GLMultibrotShaderProgram>(*this);
     m_squareProgram = std::make_unique<GLSquareShaderProgram>(*this);
-}
-
-void MultibrotPanel::OnMouseMove(wxMouseEvent& event)
-{
-    // as mouse moves when left button is down, set m_leftDown to be upper left
-    // and m_leftUp to be lower right positions of selection area.
-    if (GetLeftButtonDown()) {
-        wxPoint leftDown = GetLeftDown();
-        wxPoint leftUp = event.GetPosition();
-        if (leftDown.x > leftUp.x) {
-            int temp = leftDown.x;
-            leftDown.x = leftUp.x;
-            leftUp.x = temp;
-        }
-        if (leftDown.y > leftUp.y) {
-            leftDown.y = leftUp.y;
-        }
-        leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
-        SetLeftDown(leftDown);
-        SetLeftUp(leftUp);
-        // redraw the selection square
-        Refresh();
-    }
 }
 
 void MultibrotPanel::OnLeftButtonUp(wxMouseEvent& event)

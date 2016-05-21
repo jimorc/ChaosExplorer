@@ -26,6 +26,7 @@ ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     InitializeGLEW();
     Bind(wxEVT_RIGHT_DOWN, &ChaosPanel::OnRightButtonDown, this);
     Bind(wxEVT_LEFT_DOWN, &ChaosPanel::OnLeftButtonDown, this);
+    Bind(wxEVT_MOTION, &ChaosPanel::OnMouseMove, this);
 }
 
 
@@ -69,5 +70,26 @@ void ChaosPanel::OnLeftButtonDown(wxMouseEvent& event)
     m_leftButtonDown = true;
     m_leftDown = event.GetPosition();
     m_leftUp = m_leftDown;
+}
+
+void ChaosPanel::OnMouseMove(wxMouseEvent& event)
+{
+    // as mouse moves when left button is down, set m_leftDown to be upper left
+    // and m_leftUp to be lower right positions of selection area.
+    if (m_leftButtonDown) {
+        m_leftUp = event.GetPosition();
+        if (m_leftDown.x > m_leftUp.x) {
+            int temp = m_leftDown.x;
+            m_leftDown.x = m_leftUp.x;
+            m_leftUp.x = temp;
+        }
+        if (m_leftDown.y > m_leftUp.y) {
+            m_leftDown.y = m_leftUp.y;
+        }
+        m_leftUp.y = m_leftDown.y + (m_leftUp.x - m_leftDown.x);
+        SetLeftUp(m_leftUp);
+        // redraw the selection square
+        Refresh();
+    }
 }
 
