@@ -256,7 +256,6 @@ void MultibrotPanel::CreateMainMenu()
     popup->AppendSeparator();
     popup->Append(ID_PRECLOSETAB, L"Close Tab");
     // bind the various events related to this menu
-    Bind(wxEVT_RIGHT_DOWN, &MultibrotPanel::OnRightButtonDown, this);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnJulia,
         this, ID_JULIA);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
@@ -316,8 +315,7 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
 void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
 {
     if (m_timer == nullptr) {
-        SetRightDown(event.GetPosition());
-        PopupMenu(GetPopupMenu());
+        ChaosPanel::OnRightButtonDown(event);
     }
 }
 

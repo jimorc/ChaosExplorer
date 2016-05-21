@@ -75,6 +75,13 @@ protected:
     wxPoint& GetRightDown() { return m_rightDown; }
     void SetRightDown(wxPoint& rDown) { m_rightDown = rDown; }
 
+    virtual void OnRightButtonDown(wxMouseEvent& event) {
+        if (m_popup != nullptr) {
+            m_rightDown = event.GetPosition();
+            PopupMenu(m_popup);
+        }
+    }
+
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
     wxMenu* m_popup;

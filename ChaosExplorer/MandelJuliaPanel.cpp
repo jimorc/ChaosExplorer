@@ -32,7 +32,6 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     Bind(wxEVT_LEFT_DOWN, &MandelJuliaPanel::OnLeftButtonDown, this);
     Bind(wxEVT_LEFT_UP, &MandelJuliaPanel::OnLeftButtonUp, this);
     Bind(wxEVT_MOTION, &MandelJuliaPanel::OnMouseMove, this);
-    Bind(wxEVT_RIGHT_DOWN, &MandelJuliaPanel::OnRightButtonDown, this);
 
     // set up GL stuff
     BuildShaderProgram();

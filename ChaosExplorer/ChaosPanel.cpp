@@ -24,6 +24,7 @@ ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     m_context = std::make_unique<wxGLContext>(this);
     SetCurrent(*m_context);
     InitializeGLEW();
+    Bind(wxEVT_RIGHT_DOWN, &ChaosPanel::OnRightButtonDown, this);
 }
 
 

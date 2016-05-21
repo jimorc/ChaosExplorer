@@ -32,7 +32,7 @@ private:
     virtual void OnLeftButtonDown(wxMouseEvent& event);
     virtual void OnMouseMove(wxMouseEvent& event);
     virtual void OnLeftButtonUp(wxMouseEvent& event);
-    virtual void OnRightButtonDown(wxMouseEvent& event);
+    virtual void OnRightButtonDown(wxMouseEvent& event) override;
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnDeleteSelection(wxCommandEvent& event);
     virtual void OnMenuOpen(wxMenuEvent& event);
