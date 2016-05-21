@@ -15,6 +15,7 @@ public:
     ChaosExplorerWindow& operator=(ChaosExplorerWindow&&) = delete;
     wxStatusBar* GetStatusBar() { return m_statusBar; }
     void OnCloseTab(wxCommandEvent& event);
+    void OnClose(wxCommandEvent& event);
 
 private:
     void CreateMainMenu();

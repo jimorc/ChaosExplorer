@@ -3,6 +3,7 @@
 #include "MultibrotPanel.h"
 
 const int ID_FILE_CLOSE_TAB = 2200;
+const int ID_FILE_CLOSE = 2201;
 
 ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const wxString& title,
     const wxPoint& pos, const wxSize& size,
@@ -39,8 +40,11 @@ wxMenu* ChaosExplorerWindow::CreateFileMenu()
 {
     wxMenu* fileMenu = new wxMenu;
     fileMenu->Append(ID_FILE_CLOSE_TAB, L"Close Tab");
+    fileMenu->Append(wxID_EXIT, L"&Quit\tCtrl+Q");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnCloseTab,
         this, ID_FILE_CLOSE_TAB);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnClose,
+        this, wxID_EXIT);
 
     Bind(wxEVT_MENU_OPEN, &ChaosExplorerWindow::OnFileMenuOpen, this);
     return fileMenu;
@@ -66,4 +70,9 @@ void ChaosExplorerWindow::OnCloseTab(wxCommandEvent& event)
 void ChaosExplorerWindow::OnFileMenuOpen(wxMenuEvent& event)
 {
     m_mainMenuBar->Enable(ID_FILE_CLOSE_TAB, m_notebook->GetPageCount() > 1);
+}
+
+void ChaosExplorerWindow::OnClose(wxCommandEvent& event)
+{
+   Destroy();
 }
