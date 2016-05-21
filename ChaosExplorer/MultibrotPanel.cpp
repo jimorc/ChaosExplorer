@@ -72,7 +72,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
-    : ChaosPanel(parent, id, attribList, size),
+    : ChaosPanel(parent, id, attribList, ul, lr, size),
     m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
     m_rightDown({ 0, 0 }), m_maxIterations(4 * colors.size()),
     m_zoomCount(0), m_powersCount(0), m_z0Count(0), m_z0({ 0.0f, 0.0f })
@@ -81,8 +81,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
         throw std::invalid_argument(
             "The real portion of the power argument for Multibrot is less than 1.0");
     }
-    m_upperLeft = std::complex<float>(std::min(ul.real(), lr.real()), std::max(ul.imag(), lr.imag()));
-    m_lowerRight = std::complex<float>(std::max(ul.real(), lr.real()), std::min(ul.imag(), lr.imag()));
     if (ul.real() == lr.real()) {
         throw std::invalid_argument(
             "The real portions of the upper-left and lower-right corners of the Multibrot display are equal.");
@@ -107,8 +105,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     SetupSquareArrays();
     glUseProgram(m_program->GetProgramHandle());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetUniformHandle("ul"), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(prog->GetUniformHandle("lr"), m_lowerRight.real(), m_lowerRight.imag());
     glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
     glUniform4fv(prog->GetUniformHandle("color[0]"), colors.size() * 4, &colors[0].x);
 }
@@ -134,6 +130,10 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glUniform1i(prog->GetUniformHandle("maxIterations"), m_maxIterations);
     glUniform2f(prog->GetUniformHandle("p"), m_power.real(), m_power.imag());
     glUniform2f(prog->GetUniformHandle("z0"), m_z0.real(), m_z0.imag());
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
+    glUniform2f(prog->GetUniformHandle("ul"), upperLeft.real(), upperLeft.imag());
+    glUniform2f(prog->GetUniformHandle("lr"), lowerRight.real(), lowerRight.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // draw the square outlining the selected area of the image
@@ -307,8 +307,7 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
         [this, power](wxCommandEvent&) {
         m_leftDown = m_leftUp = { 0, 0 };
         m_power = { power, 0.0f }; 
-        m_upperLeft = { -2.5f, 2.0f }; 
-        m_lowerRight = { 1.5f, -2.0f }; 
+        SetUpperLeftLowerRight(-2.5f + 2.0if, 1.5f - 2.0if);
         m_z0 = { 0.0f, 0.0f }; 
         Refresh(); },
         menuId);
@@ -326,12 +325,14 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
     // calculate the upper left and lower right locations for the new display
     wxSize size = GetSize();
-    float deltaX = m_lowerRight.real() - m_upperLeft.real();
-    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
-    float ulReal = m_upperLeft.real() + deltaX * m_leftDown.x / size.x;
-    float ulImag = m_upperLeft.imag() - deltaY * m_leftDown.y / size.y;
-    float lrReal = m_upperLeft.real() + deltaX * m_leftUp.x / size.x;
-    float lrImag = m_upperLeft.imag() - deltaY * m_leftUp.y / size.y;
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
+    float deltaX = lowerRight.real() - upperLeft.real();
+    float deltaY = upperLeft.imag() - lowerRight.imag();
+    float ulReal = upperLeft.real() + deltaX * m_leftDown.x / size.x;
+    float ulImag = upperLeft.imag() - deltaY * m_leftDown.y / size.y;
+    float lrReal = upperLeft.real() + deltaX * m_leftUp.x / size.x;
+    float lrImag = upperLeft.imag() - deltaY * m_leftUp.y / size.y;
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
@@ -348,6 +349,8 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
 void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
 {
     wxMenu* popup = GetPopupMenu();
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
     // enable/disable the various popup menu items
     popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp &&
         m_z0 == std::complex<float>({0.0f, 0.0f}));
@@ -355,17 +358,17 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
     popup->Enable(ID_ANIMATEITERATIONS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
     popup->Enable(ID_ANIMATEMAGNIFICATION, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
     popup->Enable(ID_ANIMATEREALPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
-        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
-        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+        upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        lowerRight == std::complex<float>({ 1.5f, -2.0f }));
     popup->Enable(ID_ANIMATEIMAGINARYPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
-        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
-        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+        upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        lowerRight == std::complex<float>({ 1.5f, -2.0f }));
     popup->Enable(ID_ANIMATEZ0REAL, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
-        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
-        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+        upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        lowerRight == std::complex<float>({ 1.5f, -2.0f }));
     popup->Enable(ID_ANIMATEZ0IMAG, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
-        m_upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
-        m_lowerRight == std::complex<float>({ 1.5f, -2.0f }));
+        upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
+        lowerRight == std::complex<float>({ 1.5f, -2.0f }));
     wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
     int tabCount = noteBook->GetPageCount();
     popup->Enable(ID_PRECLOSETAB, tabCount > 1);
@@ -403,17 +406,19 @@ void MultibrotPanel::SetStatusBarText()
 {
     ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
     wxStatusBar* statusBar = win->GetStatusBar();
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
     std::wstringstream ss;
     ss << L"Iterations = " << m_maxIterations;
     ss << L", Power = " << m_power.real();
     m_power.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
     ss << abs(m_power.imag()) << L"i";
-    ss << L", Upper Left = " << m_upperLeft.real();
-    m_upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_upperLeft.imag()) << L"i";
-    ss << L", Lower Right = " << m_lowerRight.real();
-    m_lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_lowerRight.imag()) << L"i";
+    ss << L", Upper Left = " << upperLeft.real();
+    upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(upperLeft.imag()) << L"i";
+    ss << L", Lower Right = " << lowerRight.real();
+    lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(lowerRight.imag()) << L"i";
 
     statusBar->SetStatusText(ss.str().c_str());
 }
@@ -422,12 +427,15 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
 {
     m_zoomCount = 0;
     wxSize size = GetSize();
-    float deltaXY = m_lowerRight.real() - m_upperLeft.real();
-    float x = m_upperLeft.real() + deltaXY *m_rightDown.x / size.x;
-    float y = m_upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
+    float deltaXY = lowerRight.real() - upperLeft.real();
+    float x = upperLeft.real() + deltaXY *m_rightDown.x / size.x;
+    float y = upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
     m_rightDownPoint = { x, y };
-    m_upperLeft = { (x - deltaXY / 2.0f), (y + deltaXY / 2.0f) };
-    m_lowerRight = { (x + deltaXY / 2.0f), (y - deltaXY / 2.0f) };
+    upperLeft = { (x - deltaXY / 2.0f), (y + deltaXY / 2.0f) };
+    lowerRight = { (x + deltaXY / 2.0f), (y - deltaXY / 2.0f) };
+    SetUpperLeftLowerRight(upperLeft, lowerRight);
 
     StartTimer(m_magnificationInterval, &MultibrotPanel::AnimateMagnification);
     Refresh();
@@ -435,11 +443,14 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
 
 void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
 {
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
     ++m_zoomCount;
     if (m_zoomCount <= 500) {
-        float deltaXY = (m_lowerRight.real() - m_upperLeft.real()) * 0.99f / 2.0f;
-        m_upperLeft = { (m_rightDownPoint.real() - deltaXY), (m_rightDownPoint.imag() + deltaXY) };
-        m_lowerRight = { (m_rightDownPoint.real() + deltaXY), (m_rightDownPoint.imag() - deltaXY) };
+        float deltaXY = (lowerRight.real() - upperLeft.real()) * 0.99f / 2.0f;
+        upperLeft = { (m_rightDownPoint.real() - deltaXY), (m_rightDownPoint.imag() + deltaXY) };
+        lowerRight = { (m_rightDownPoint.real() + deltaXY), (m_rightDownPoint.imag() - deltaXY) };
+        SetUpperLeftLowerRight(upperLeft, lowerRight);
         Refresh();
     }
     else {
@@ -572,9 +583,11 @@ void MultibrotPanel::OnCloseTab()
 void MultibrotPanel::OnJulia(wxCommandEvent& event)
 {
     wxSize size = GetSize();
-    float deltaXY = m_lowerRight.real() - m_upperLeft.real();
-    float x = m_upperLeft.real() + deltaXY *m_rightDown.x / size.x;
-    float y = m_upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
+    float deltaXY = lowerRight.real() - upperLeft.real();
+    float x = upperLeft.real() + deltaXY *m_rightDown.x / size.x;
+    float y = upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
     m_rightDownPoint = { x, y };
     
     // create and display a new MandelJuliaPanel for the display

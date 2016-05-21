@@ -1,6 +1,7 @@
 #pragma once
 #include "wx/wxprec.h"
 #include <memory>
+#include <complex>
 #include <glm/gtc/type_ptr.hpp>
 #include "wx/glcanvas.h"
 
@@ -31,7 +32,8 @@ class ChaosPanel :
 {
 public:
     ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
-        const wxSize& size = { 800, 600 });
+        const std::complex<float>ul,
+        const std::complex<float>lr, const wxSize& size = { 800, 600 });
     ChaosPanel(const ChaosPanel&) = delete;
     ChaosPanel(ChaosPanel&&) = delete;
     virtual ~ChaosPanel();
@@ -62,9 +64,21 @@ protected:
     wxMenu* GetPopupMenu() { return m_popup; }
     void SetPopupMenu(wxMenu* popup) { m_popup = popup; }
 
+    std::complex<float> GetUpperLeft() { return m_upperLeft; }
+    std::complex<float> GetLowerRight() { return m_lowerRight; }
+    void SetUpperLeftLowerRight(std::complex<float> ul, std::complex<float> lr) {
+        m_upperLeft = std::complex<float>(std::min(ul.real(), lr.real()), 
+            std::max(ul.imag(), lr.imag()));
+        m_lowerRight = std::complex<float>(std::max(ul.real(), lr.real()), 
+            std::min(ul.imag(), lr.imag()));
+    }
+
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
     wxMenu* m_popup;
+
+    std::complex<float> m_upperLeft;
+    std::complex<float> m_lowerRight;
 
     static std::vector<glm::vec4> s_vertices;
     std::unique_ptr<wxGLContext> m_context;

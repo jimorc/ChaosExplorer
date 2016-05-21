@@ -15,9 +15,11 @@ std::vector<glm::vec4> ChaosPanel::s_vertices = {
 std::vector<bool> ChaosPanel::m_timers(MaxTimers, false);
 
 ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
+    const std::complex<float>ul, const std::complex<float>lr,
     const wxSize& size)
     : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size), m_popup(nullptr)
 {
+    SetUpperLeftLowerRight(ul, lr);
     m_context = std::make_unique<wxGLContext>(this);
     SetCurrent(*m_context);
     InitializeGLEW();

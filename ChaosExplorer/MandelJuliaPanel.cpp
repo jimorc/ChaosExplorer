@@ -17,9 +17,8 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     std::complex<float> c,
     std::complex<float> ul,
     std::complex<float> lr)
-    : ChaosPanel(parent, id, attribList, size), m_c(c), m_p(power),
-    m_leftDown({0, 0}), m_leftUp({ 0, 0}),
-    m_upperLeft(ul), m_lowerRight(lr)
+    : ChaosPanel(parent, id, attribList, ul, lr, size), m_c(c), m_p(power),
+    m_leftDown({0, 0}), m_leftUp({ 0, 0})
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -71,8 +70,10 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     glUseProgram(m_program->GetProgramHandle());
     glBindVertexArray(GetVao());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
-    glUniform2f(prog->GetUniformHandle("ul"), m_upperLeft.real(), m_upperLeft.imag());
-    glUniform2f(prog->GetUniformHandle("lr"), m_lowerRight.real(), m_lowerRight.imag());
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
+    glUniform2f(prog->GetUniformHandle("ul"), upperLeft.real(), upperLeft.imag());
+    glUniform2f(prog->GetUniformHandle("lr"), lowerRight.real(), lowerRight.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 
@@ -203,12 +204,14 @@ void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
     // calculate the upper left and lower right locations for the new display
     wxSize size = GetSize();
-    float deltaX = m_lowerRight.real() - m_upperLeft.real();
-    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
-    float ulReal = m_upperLeft.real() + deltaX * m_leftDown.x / size.x;
-    float ulImag = m_upperLeft.imag() - deltaY * m_leftDown.y / size.y;
-    float lrReal = m_upperLeft.real() + deltaX * m_leftUp.x / size.x;
-    float lrImag = m_upperLeft.imag() - deltaY * m_leftUp.y / size.y;
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
+    float deltaX = lowerRight.real() - upperLeft.real();
+    float deltaY = upperLeft.imag() - lowerRight.imag();
+    float ulReal = upperLeft.real() + deltaX * m_leftDown.x / size.x;
+    float ulImag = upperLeft.imag() - deltaY * m_leftDown.y / size.y;
+    float lrReal = upperLeft.real() + deltaX * m_leftUp.x / size.x;
+    float lrImag = upperLeft.imag() - deltaY * m_leftUp.y / size.y;
 
     std::complex<float> ul(ulReal, ulImag);
     std::complex<float> lr(lrReal, lrImag);
@@ -244,6 +247,8 @@ void MandelJuliaPanel::SetStatusBarText()
 {
     ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
     wxStatusBar* statusBar = win->GetStatusBar();
+    std::complex<float> upperLeft = GetUpperLeft();
+    std::complex<float> lowerRight = GetLowerRight();
     std::wstringstream ss;
     ss << L"C = " << m_c.real();
     m_c.imag() > 0.0f ? ss << L" + " : ss << L" - ";
@@ -251,12 +256,12 @@ void MandelJuliaPanel::SetStatusBarText()
     ss << L", Power = " << m_p.real();
     m_p.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
     ss << abs(m_p.imag()) << L"i";
-    ss << L", Upper Left = " << m_upperLeft.real();
-    m_upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_upperLeft.imag()) << L"i";
-    ss << L", Lower Right = " << m_lowerRight.real();
-    m_lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_lowerRight.imag()) << L"i";
+    ss << L", Upper Left = " << upperLeft.real();
+    upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(upperLeft.imag()) << L"i";
+    ss << L", Lower Right = " << lowerRight.real();
+    lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(lowerRight.imag()) << L"i";
 
     statusBar->SetStatusText(ss.str().c_str());
 }

@@ -64,8 +64,6 @@ private:
 
     std::complex<float> m_z0;
     std::complex<float> m_power;
-    std::complex<float> m_upperLeft;
-    std::complex<float> m_lowerRight;
     std::complex<float> m_rightDownPoint;
 
     bool m_leftButtonDown;
