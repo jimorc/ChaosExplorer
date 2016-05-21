@@ -154,3 +154,17 @@ void ChaosPanel::DrawSquare()
         glDrawArrays(GL_LINE_LOOP, 0, points.size());
     }
 }
+
+void ChaosPanel::CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::complex<float>& lr)
+{
+    wxSize size = GetSize();
+    float deltaX = m_lowerRight.real() - m_upperLeft.real();
+    float deltaY = m_upperLeft.imag() - m_lowerRight.imag();
+    float ulReal = m_upperLeft.real() + deltaX * m_leftDown.x / size.x;
+    float ulImag = m_upperLeft.imag() - deltaY * m_leftDown.y / size.y;
+    float lrReal = m_upperLeft.real() + deltaX * m_leftUp.x / size.x;
+    float lrImag = m_upperLeft.imag() - deltaY * m_leftUp.y / size.y;
+
+    ul = { ulReal, ulImag };
+    lr = { lrReal, lrImag };
+}

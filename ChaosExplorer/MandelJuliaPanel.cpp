@@ -114,28 +114,15 @@ void MandelJuliaPanel::OnCloseTab()
 
 void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
 {
-    // calculate the upper left and lower right locations for the new display
-    wxSize size = GetSize();
-    wxPoint leftDown = GetLeftDown();
-    wxPoint leftUp = GetLeftUp();
-    std::complex<float> upperLeft = GetUpperLeft();
-    std::complex<float> lowerRight = GetLowerRight();
-    float deltaX = lowerRight.real() - upperLeft.real();
-    float deltaY = upperLeft.imag() - lowerRight.imag();
-    float ulReal = upperLeft.real() + deltaX * leftDown.x / size.x;
-    float ulImag = upperLeft.imag() - deltaY * leftDown.y / size.y;
-    float lrReal = upperLeft.real() + deltaX * leftUp.x / size.x;
-    float lrImag = upperLeft.imag() - deltaY * leftUp.y / size.y;
-
-    std::complex<float> ul(ulReal, ulImag);
-    std::complex<float> lr(lrReal, lrImag);
-
+    std::complex<float> ul;
+    std::complex<float> lr;
+    CalculateUpperLeftAndLowerRight(ul, lr);
     // create and display a new MultibrotPanel for the display
     wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
     if (nBook == nullptr) {
-        throw std::logic_error("Could not retrieve the Notebook for the new MultibrotPanel.");
+        throw std::logic_error("Could not retrieve the Notebook for the new MandelJuliaPanel.");
     }
-    MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr, size, m_p, m_c, ul, lr);
+    MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr, GetSize(), m_p, m_c, ul, lr);
     nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
 }
 
