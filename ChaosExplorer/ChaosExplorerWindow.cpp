@@ -3,7 +3,7 @@
 #include "MultibrotPanel.h"
 
 const int ID_FILE_CLOSE_TAB = 2200;
-const int ID_FILE_CLOSE = 2201;
+const int ID_FRACTAL_MANDELBROT = 2201;
 
 ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const wxString& title,
     const wxPoint& pos, const wxSize& size,
@@ -33,6 +33,8 @@ void ChaosExplorerWindow::CreateMainMenu()
     m_mainMenuBar = new wxMenuBar;
     wxMenu* fileMenu = CreateFileMenu();
     m_mainMenuBar->Append(fileMenu, L"&File");
+    wxMenu* fractalMenu = CreateFractalMenu();
+    m_mainMenuBar->Append(fractalMenu, L"&Fractals");
     SetMenuBar(m_mainMenuBar);
 }
 
@@ -48,6 +50,15 @@ wxMenu* ChaosExplorerWindow::CreateFileMenu()
 
     Bind(wxEVT_MENU_OPEN, &ChaosExplorerWindow::OnFileMenuOpen, this);
     return fileMenu;
+}
+
+wxMenu* ChaosExplorerWindow::CreateFractalMenu()
+{
+    wxMenu* fractalMenu = new wxMenu;
+    fractalMenu->Append(ID_FRACTAL_MANDELBROT, L"Mandelbrot");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnMandelbrot,
+        this, ID_FRACTAL_MANDELBROT);
+    return fractalMenu;
 }
 
 void ChaosExplorerWindow::OnCloseTab(wxCommandEvent& event)
@@ -70,4 +81,11 @@ void ChaosExplorerWindow::OnCloseTab(wxCommandEvent& event)
 void ChaosExplorerWindow::OnFileMenuOpen(wxMenuEvent& event)
 {
     m_mainMenuBar->Enable(ID_FILE_CLOSE_TAB, m_notebook->GetPageCount() > 1);
+}
+
+void ChaosExplorerWindow::OnMandelbrot(wxCommandEvent& event)
+{
+    MultibrotPanel* win = new MultibrotPanel(m_notebook, wxID_ANY, nullptr,
+    { 800, 800 });
+    m_notebook->AddPage(win, L"Multibrot", true);
 }

@@ -19,7 +19,9 @@ public:
 private:
     void CreateMainMenu();
     wxMenu* CreateFileMenu();
+    wxMenu* CreateFractalMenu();
     void OnFileMenuOpen(wxMenuEvent& event);
+    void OnMandelbrot(wxCommandEvent& event);
     wxNotebook* m_notebook;
     wxStatusBar* m_statusBar;
     wxMenuBar* m_mainMenuBar;
