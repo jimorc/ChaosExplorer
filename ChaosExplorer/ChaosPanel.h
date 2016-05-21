@@ -92,6 +92,7 @@ private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
     virtual void OnLeftButtonDown(wxMouseEvent& event);
     virtual void OnMouseMove(wxMouseEvent& event);
+    virtual void OnLeftButtonUp(wxMouseEvent& event);
     wxMenu* m_popup;
 
     std::complex<float> m_upperLeft;

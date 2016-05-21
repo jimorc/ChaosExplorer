@@ -28,7 +28,6 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
-    Bind(wxEVT_LEFT_UP, &MandelJuliaPanel::OnLeftButtonUp, this);
 
     // set up GL stuff
     BuildShaderProgram();
@@ -132,27 +131,6 @@ void MandelJuliaPanel::OnCloseTab()
         noteBook->ChangeSelection(pageNumber - 1);
     }
     noteBook->DeletePage(pageNumber);
-}
-
-void MandelJuliaPanel::OnLeftButtonUp(wxMouseEvent& event)
-{
-    // set final positions of the selection square
-    wxPoint leftUp = event.GetPosition();
-    wxPoint leftDown = GetLeftDown();
-   SetLeftButtonDown(false);
-    if (leftDown.x > leftUp.x) {
-        int temp = leftDown.x;
-        leftDown.x = leftUp.x;
-        leftUp.x = temp;
-    }
-    if (leftDown.y > leftUp.y) {
-        leftDown.y = leftUp.y;
-    }
-    leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
-    SetLeftDown(leftDown);
-    SetLeftUp(leftUp);
-    // and redraw
-    Refresh();
 }
 
 void MandelJuliaPanel::SetupSquareArrays()

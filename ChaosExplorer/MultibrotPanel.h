@@ -29,7 +29,6 @@ protected:
 
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
-    virtual void OnLeftButtonUp(wxMouseEvent& event);
     virtual void OnRightButtonDown(wxMouseEvent& event) override;
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnDeleteSelection(wxCommandEvent& event);

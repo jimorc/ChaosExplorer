@@ -94,7 +94,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
-    Bind(wxEVT_LEFT_UP, &MultibrotPanel::OnLeftButtonUp, this);
 
     // set up GL stuff
     BuildShaderProgram();
@@ -164,27 +163,6 @@ void MultibrotPanel::BuildShaderProgram()
 {
     m_program = std::make_unique<GLMultibrotShaderProgram>(*this);
     m_squareProgram = std::make_unique<GLSquareShaderProgram>(*this);
-}
-
-void MultibrotPanel::OnLeftButtonUp(wxMouseEvent& event)
-{
-    // set final positions of the selection square
-    wxPoint leftDown = GetLeftDown();
-    wxPoint leftUp = event.GetPosition();
-    SetLeftButtonDown(false);
-    if (leftDown.x > leftUp.x) {
-        int temp = leftDown.x;
-        leftDown.x = leftUp.x;
-        leftUp.x = temp;
-    }
-    if (leftDown.y > leftUp.y) {
-        leftDown.y = leftUp.y;
-    }
-    leftUp.y = leftDown.y + (leftUp.x - leftDown.x);
-    SetLeftDown(leftDown);
-    SetLeftUp(leftUp);
-    // and redraw
-    Refresh();
 }
 
 void MultibrotPanel::SetupSquareArrays()
