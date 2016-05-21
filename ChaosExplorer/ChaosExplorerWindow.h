@@ -15,7 +15,12 @@ public:
     ChaosExplorerWindow& operator=(ChaosExplorerWindow&&) = delete;
     wxStatusBar* GetStatusBar() { return m_statusBar; }
 private:
+    void CreateMainMenu();
+    wxMenu* CreateFileMenu();
+    void OnCloseTab(wxCommandEvent& event);
+    void OnFileMenuOpen(wxMenuEvent& event);
     wxNotebook* m_notebook;
     wxStatusBar* m_statusBar;
+    wxMenuBar* m_mainMenuBar;
 };
 
