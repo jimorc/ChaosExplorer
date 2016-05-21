@@ -16,7 +16,7 @@ std::vector<bool> ChaosPanel::m_timers(MaxTimers, false);
 
 ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const wxSize& size)
-    : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size)
+    : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size), m_popup(nullptr)
 {
     m_context = std::make_unique<wxGLContext>(this);
     SetCurrent(*m_context);
@@ -28,6 +28,11 @@ ChaosPanel::~ChaosPanel()
 {
     glDeleteBuffers(1, &m_vbo);
     glDeleteVertexArrays(1, &m_vao);
+
+    // delete popup menu
+    if (m_popup != nullptr) {
+        delete m_popup;
+    }
 }
 
 void ChaosPanel::InitializeGLEW()

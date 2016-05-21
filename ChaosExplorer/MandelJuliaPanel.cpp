@@ -19,7 +19,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, size), m_c(c), m_p(power),
     m_leftDown({0, 0}), m_leftUp({ 0, 0}),
-    m_upperLeft(ul), m_lowerRight(lr), m_popup(nullptr)
+    m_upperLeft(ul), m_lowerRight(lr)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -52,11 +52,6 @@ MandelJuliaPanel::~MandelJuliaPanel()
 {
     glDeleteBuffers(1, &m_squareVbo);
     glDeleteVertexArrays(1, &m_squareVao);
-
-    // delete popup menu
-    if (m_popup != nullptr) {
-        delete m_popup;
-    }
 }
 
 void MandelJuliaPanel::BuildShaderProgram()
@@ -106,11 +101,12 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
 
 void MandelJuliaPanel::CreateMainMenu()
 {
-    m_popup = new wxMenu;
-    m_popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
-    m_popup->Append(ID_DELETESELECTION, L"Deselect Selection");
-    m_popup->AppendSeparator();
-    m_popup->Append(ID_PRECLOSETAB, L"Close Tab");
+    wxMenu* popup = new wxMenu;
+    SetPopupMenu(popup);
+    popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
+    popup->Append(ID_DELETESELECTION, L"Deselect Selection");
+    popup->AppendSeparator();
+    popup->Append(ID_PRECLOSETAB, L"Close Tab");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MandelJuliaPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MandelJuliaPanel::OnDeleteSelection,
@@ -141,7 +137,7 @@ void MandelJuliaPanel::OnCloseTab()
 
 void MandelJuliaPanel::OnRightButtonDown(wxMouseEvent& event)
 {
-    PopupMenu(m_popup);
+    PopupMenu(GetPopupMenu());
 }
 
 void MandelJuliaPanel::OnLeftButtonDown(wxMouseEvent& event)
@@ -236,11 +232,12 @@ void MandelJuliaPanel::OnDeleteSelection(wxCommandEvent& event)
 void MandelJuliaPanel::OnMenuOpen(wxMenuEvent& event)
 {
     // enable/disable the various popup menu items
-    m_popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
-    m_popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
+    wxMenu* popup = GetPopupMenu();
+    popup->Enable(ID_DRAWFROMSELECTION, m_leftDown != m_leftUp);
+    popup->Enable(ID_DELETESELECTION, m_leftDown != m_leftUp);
     wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
     int tabCount = noteBook->GetPageCount();
-    m_popup->Enable(ID_PRECLOSETAB, tabCount > 1);
+    popup->Enable(ID_PRECLOSETAB, tabCount > 1);
 }
 
 void MandelJuliaPanel::SetStatusBarText()

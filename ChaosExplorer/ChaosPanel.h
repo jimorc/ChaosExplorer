@@ -59,8 +59,13 @@ protected:
     }
     static const int NOTIMERS = -1;
 
+    wxMenu* GetPopupMenu() { return m_popup; }
+    void SetPopupMenu(wxMenu* popup) { m_popup = popup; }
+
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
+    wxMenu* m_popup;
+
     static std::vector<glm::vec4> s_vertices;
     std::unique_ptr<wxGLContext> m_context;
     GLuint m_vbo;

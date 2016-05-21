@@ -73,8 +73,6 @@ private:
     wxPoint m_leftUp;
     wxPoint m_rightDown;
 
-    wxMenu* m_popup;
-
     // rate at which the various animations run
     static const int m_iterationInterval = 1000 / 6;
     static const int m_magnificationInterval = 1000 / 60;

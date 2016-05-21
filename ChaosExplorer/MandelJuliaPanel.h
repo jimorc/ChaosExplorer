@@ -47,7 +47,6 @@ private:
     std::complex<float> m_upperLeft;
     std::complex<float> m_lowerRight;
 
-    wxMenu* m_popup;
     wxPoint m_rightDown;
 };
 
