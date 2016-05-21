@@ -25,6 +25,7 @@ ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     SetCurrent(*m_context);
     InitializeGLEW();
     Bind(wxEVT_RIGHT_DOWN, &ChaosPanel::OnRightButtonDown, this);
+    Bind(wxEVT_LEFT_DOWN, &ChaosPanel::OnLeftButtonDown, this);
 }
 
 
@@ -60,5 +61,13 @@ void ChaosPanel::SetupTriangles()
     GLint posAttrib = glGetAttribLocation(m_program->GetProgramHandle(), "position");
     glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(posAttrib);
+}
+
+void ChaosPanel::OnLeftButtonDown(wxMouseEvent& event)
+{
+    // set left button down position
+    m_leftButtonDown = true;
+    m_leftDown = event.GetPosition();
+    m_leftUp = m_leftDown;
 }
 

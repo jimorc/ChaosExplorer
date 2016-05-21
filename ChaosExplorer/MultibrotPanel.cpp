@@ -94,7 +94,6 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
-    Bind(wxEVT_LEFT_DOWN, &MultibrotPanel::OnLeftButtonDown, this);
     Bind(wxEVT_LEFT_UP, &MultibrotPanel::OnLeftButtonUp, this);
     Bind(wxEVT_MOTION, &MultibrotPanel::OnMouseMove, this);
 
@@ -166,14 +165,6 @@ void MultibrotPanel::BuildShaderProgram()
 {
     m_program = std::make_unique<GLMultibrotShaderProgram>(*this);
     m_squareProgram = std::make_unique<GLSquareShaderProgram>(*this);
-}
-
-void MultibrotPanel::OnLeftButtonDown(wxMouseEvent& event)
-{
-    // set left button down position
-    SetLeftButtonDown(true);
-    SetLeftDown(event.GetPosition());
-    SetLeftUp(GetLeftDown());;
 }
 
 void MultibrotPanel::OnMouseMove(wxMouseEvent& event)

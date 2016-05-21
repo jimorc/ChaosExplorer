@@ -28,7 +28,6 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     CreateMainMenu();
 
     Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
-    Bind(wxEVT_LEFT_DOWN, &MandelJuliaPanel::OnLeftButtonDown, this);
     Bind(wxEVT_LEFT_UP, &MandelJuliaPanel::OnLeftButtonUp, this);
     Bind(wxEVT_MOTION, &MandelJuliaPanel::OnMouseMove, this);
 
@@ -134,14 +133,6 @@ void MandelJuliaPanel::OnCloseTab()
         noteBook->ChangeSelection(pageNumber - 1);
     }
     noteBook->DeletePage(pageNumber);
-}
-
-void MandelJuliaPanel::OnLeftButtonDown(wxMouseEvent& event)
-{
-    // set left button down position
-    SetLeftButtonDown(true);
-    SetLeftDown(event.GetPosition());
-    SetLeftUp(GetLeftDown());
 }
 
 void MandelJuliaPanel::OnMouseMove(wxMouseEvent& event)
