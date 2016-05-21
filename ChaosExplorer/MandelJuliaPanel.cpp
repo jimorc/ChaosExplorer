@@ -136,11 +136,6 @@ void MandelJuliaPanel::OnCloseTab()
     noteBook->DeletePage(pageNumber);
 }
 
-void MandelJuliaPanel::OnRightButtonDown(wxMouseEvent& event)
-{
-    PopupMenu(GetPopupMenu());
-}
-
 void MandelJuliaPanel::OnLeftButtonDown(wxMouseEvent& event)
 {
     // set left button down position
