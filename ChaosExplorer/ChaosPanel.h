@@ -88,6 +88,10 @@ protected:
     bool GetLeftButtonDown() { return m_leftButtonDown; }
     void SetLeftButtonDown(bool down) { m_leftButtonDown = down; }
 
+    GLShaderProgram* GetSquareShaderProgram() { return m_squareProgram.get(); }
+    GLuint GetSquareVao() { return m_squareVao; }
+    void SetupSquareArrays();
+
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
     virtual void OnLeftButtonDown(wxMouseEvent& event);
@@ -107,6 +111,10 @@ private:
     std::unique_ptr<wxGLContext> m_context;
     GLuint m_vbo;
     GLuint m_vao;
+    std::unique_ptr<GLShaderProgram> m_squareProgram;
+    GLuint m_squareVbo;
+    GLuint m_squareVao;
+
     static std::vector<bool> m_timers;
     static const int MaxTimers = 10;    // MSW has limited # timers, so we only allow 10 timers at once
 };

@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GL/glew.h"
-#include "GLShaderProgram.h"
+#include "GLSquareShaderProgram.h"
 #include "ChaosPanel.h"
 
 // The vertices that define the two triangles.
@@ -24,6 +24,8 @@ ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     m_context = std::make_unique<wxGLContext>(this);
     SetCurrent(*m_context);
     InitializeGLEW();
+    m_squareProgram = std::make_unique<GLSquareShaderProgram>(*this);
+
     Bind(wxEVT_RIGHT_DOWN, &ChaosPanel::OnRightButtonDown, this);
     Bind(wxEVT_LEFT_DOWN, &ChaosPanel::OnLeftButtonDown, this);
     Bind(wxEVT_MOTION, &ChaosPanel::OnMouseMove, this);
@@ -35,6 +37,8 @@ ChaosPanel::~ChaosPanel()
 {
     glDeleteBuffers(1, &m_vbo);
     glDeleteVertexArrays(1, &m_vao);
+    glDeleteBuffers(1, &m_squareVbo);
+    glDeleteVertexArrays(1, &m_squareVao);
 
     // delete popup menu
     if (m_popup != nullptr) {
@@ -52,6 +56,8 @@ void ChaosPanel::InitializeGLEW()
     }
 }
 
+// call this from your child panel's constructor
+// If you call from ChaosPanel constructor, exception is thrown in OnPaint.
 void ChaosPanel::SetupTriangles()
 {
     glGenVertexArrays(1, &m_vao);
@@ -112,3 +118,17 @@ void ChaosPanel::OnLeftButtonUp(wxMouseEvent& event)
     Refresh();
 }
 
+// call this from your child panel's constructor
+// If you call from ChaosPanel constructor, exception is thrown in OnPaint.
+void ChaosPanel::SetupSquareArrays()
+{
+    // set GL stuff for the square that will contain the Multibrot image
+    glGenVertexArrays(1, &m_squareVao);
+    glBindVertexArray(m_squareVao);
+    glGenBuffers(1, &m_squareVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_squareVbo);
+    GLint posAttrib = glGetAttribLocation(GetSquareShaderProgram()->GetProgramHandle(), "position");
+    glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(posAttrib);
+
+}

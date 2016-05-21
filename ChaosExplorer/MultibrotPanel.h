@@ -48,16 +48,11 @@ private:
     void OnJulia(wxCommandEvent& event);
     void OnCloseTab();
     void SetStatusBarText();
-    void SetupSquareArrays();
     void CreateMainMenu();
     wxMenu* CreateMultibrotSubMenu();
     void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);
     void StartTimer(const int timerInterval, TimerHandler handler);
     void StopAndReleaseTimer(TimerHandler handler);
-
-    std::unique_ptr<GLShaderProgram> m_squareProgram;
-    GLuint m_squareVbo;
-    GLuint m_squareVao;
 
     std::complex<float> m_z0;
     std::complex<float> m_power;

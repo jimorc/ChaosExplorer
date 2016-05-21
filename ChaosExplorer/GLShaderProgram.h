@@ -2,11 +2,11 @@
 #include <string>
 #include <map>
 #include <memory>
-#include "GL/glew.h"
 #include <string>
 #include <vector>
 #include "GLShader.h"
-#include "ChaosPanel.h"
+
+class ChaosPanel;       // forward declaration
 
 class GLShaderProgram
 {

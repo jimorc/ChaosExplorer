@@ -27,12 +27,7 @@ private:
     virtual void OnMenuOpen(wxMenuEvent& event);
     void CreateMainMenu();
     void OnCloseTab();
-    void SetupSquareArrays();
     void SetStatusBarText();
-
-    std::unique_ptr<GLShaderProgram> m_squareProgram;
-    GLuint m_squareVbo;
-    GLuint m_squareVao;
 
     std::complex<float> m_c;
     std::complex<float> m_p;

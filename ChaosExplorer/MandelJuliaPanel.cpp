@@ -44,14 +44,11 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
 
 MandelJuliaPanel::~MandelJuliaPanel()
 {
-    glDeleteBuffers(1, &m_squareVbo);
-    glDeleteVertexArrays(1, &m_squareVao);
 }
 
 void MandelJuliaPanel::BuildShaderProgram()
 {
     m_program = std::make_unique<GLMandelJuliaShaderProgram>(*this);
-    m_squareProgram = std::make_unique<GLSquareShaderProgram>(*this);
 }
 
 void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
@@ -76,8 +73,8 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     wxPoint leftDown = GetLeftDown();
     wxPoint leftUp = GetLeftUp();
     if (leftDown.x != leftUp.x || leftDown.y != leftUp.y) {
-        glUseProgram(m_squareProgram->GetProgramHandle());
-        glBindVertexArray(m_squareVao);
+        glUseProgram(GetSquareShaderProgram()->GetProgramHandle());
+        glBindVertexArray(GetSquareVao());
         float halfSize = static_cast<float>(size.x) / 2.0f;
         float downX = leftDown.x - halfSize;
         float downY = halfSize - leftDown.y;
@@ -131,19 +128,6 @@ void MandelJuliaPanel::OnCloseTab()
         noteBook->ChangeSelection(pageNumber - 1);
     }
     noteBook->DeletePage(pageNumber);
-}
-
-void MandelJuliaPanel::SetupSquareArrays()
-{
-    // set GL stuff for the square that will contain the Multibrot image
-    glGenVertexArrays(1, &m_squareVao);
-    glBindVertexArray(m_squareVao);
-    glGenBuffers(1, &m_squareVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, m_squareVbo);
-    GLint posAttrib = glGetAttribLocation(m_squareProgram->GetProgramHandle(), "position");
-    glVertexAttribPointer(posAttrib, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(posAttrib);
-
 }
 
 void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
