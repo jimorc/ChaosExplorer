@@ -43,8 +43,8 @@ wxMenu* ChaosExplorerWindow::CreateFileMenu()
     fileMenu->Append(wxID_EXIT, L"&Quit\tCtrl+Q");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnCloseTab,
         this, ID_FILE_CLOSE_TAB);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnClose,
-        this, wxID_EXIT);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent&) {Destroy(); },
+        wxID_EXIT);
 
     Bind(wxEVT_MENU_OPEN, &ChaosExplorerWindow::OnFileMenuOpen, this);
     return fileMenu;
@@ -70,9 +70,4 @@ void ChaosExplorerWindow::OnCloseTab(wxCommandEvent& event)
 void ChaosExplorerWindow::OnFileMenuOpen(wxMenuEvent& event)
 {
     m_mainMenuBar->Enable(ID_FILE_CLOSE_TAB, m_notebook->GetPageCount() > 1);
-}
-
-void ChaosExplorerWindow::OnClose(wxCommandEvent& event)
-{
-   Destroy();
 }
