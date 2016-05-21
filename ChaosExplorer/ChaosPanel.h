@@ -92,7 +92,7 @@ protected:
     GLuint GetSquareVao() { return m_squareVao; }
     void SetupSquareArrays();
     void DrawSquare();
-    void CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::complex<float>& lr);
+    void CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::complex<float>& lr) const;
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;

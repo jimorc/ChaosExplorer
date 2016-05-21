@@ -155,7 +155,7 @@ void ChaosPanel::DrawSquare()
     }
 }
 
-void ChaosPanel::CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::complex<float>& lr)
+void ChaosPanel::CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::complex<float>& lr) const
 {
     wxSize size = GetSize();
     float deltaX = m_lowerRight.real() - m_upperLeft.real();
