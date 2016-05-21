@@ -17,7 +17,8 @@ std::vector<bool> ChaosPanel::m_timers(MaxTimers, false);
 ChaosPanel::ChaosPanel(wxWindow* parent, wxWindowID id, const int* attribList,
     const std::complex<float>ul, const std::complex<float>lr,
     const wxSize& size)
-    : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size), m_popup(nullptr)
+    : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size), m_popup(nullptr),
+    m_rightDown({ 0, 0 })
 {
     SetUpperLeftLowerRight(ul, lr);
     m_context = std::make_unique<wxGLContext>(this);

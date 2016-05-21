@@ -44,7 +44,5 @@ private:
 
     std::complex<float> m_c;
     std::complex<float> m_p;
-
-    wxPoint m_rightDown;
 };
 

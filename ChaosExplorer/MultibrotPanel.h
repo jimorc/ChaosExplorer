@@ -69,7 +69,6 @@ private:
     bool m_leftButtonDown;
     wxPoint m_leftDown;
     wxPoint m_leftUp;
-    wxPoint m_rightDown;
 
     // rate at which the various animations run
     static const int m_iterationInterval = 1000 / 6;

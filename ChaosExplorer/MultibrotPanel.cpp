@@ -74,7 +74,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> lr)
     : ChaosPanel(parent, id, attribList, ul, lr, size),
     m_power(power), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 }),
-    m_rightDown({ 0, 0 }), m_maxIterations(4 * colors.size()),
+   m_maxIterations(4 * colors.size()),
     m_zoomCount(0), m_powersCount(0), m_z0Count(0), m_z0({ 0.0f, 0.0f })
     {
         if (power.real() < 1.0f) {
@@ -316,7 +316,7 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
 void MultibrotPanel::OnRightButtonDown(wxMouseEvent& event)
 {
     if (m_timer == nullptr) {
-        m_rightDown = event.GetPosition();
+        SetRightDown(event.GetPosition());
         PopupMenu(GetPopupMenu());
     }
 }
@@ -429,9 +429,10 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
     wxSize size = GetSize();
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
+    wxPoint rightDown = GetRightDown();
     float deltaXY = lowerRight.real() - upperLeft.real();
-    float x = upperLeft.real() + deltaXY *m_rightDown.x / size.x;
-    float y = upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
+    float x = upperLeft.real() + deltaXY *rightDown.x / size.x;
+    float y = upperLeft.imag() - deltaXY * rightDown.y / size.y;
     m_rightDownPoint = { x, y };
     upperLeft = { (x - deltaXY / 2.0f), (y + deltaXY / 2.0f) };
     lowerRight = { (x + deltaXY / 2.0f), (y - deltaXY / 2.0f) };
@@ -585,9 +586,10 @@ void MultibrotPanel::OnJulia(wxCommandEvent& event)
     wxSize size = GetSize();
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
+    wxPoint rightDown = GetRightDown();
     float deltaXY = lowerRight.real() - upperLeft.real();
-    float x = upperLeft.real() + deltaXY *m_rightDown.x / size.x;
-    float y = upperLeft.imag() - deltaXY * m_rightDown.y / size.y;
+    float x = upperLeft.real() + deltaXY * rightDown.x / size.x;
+    float y = upperLeft.imag() - deltaXY * rightDown.y / size.y;
     m_rightDownPoint = { x, y };
     
     // create and display a new MandelJuliaPanel for the display

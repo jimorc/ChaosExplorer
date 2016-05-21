@@ -72,6 +72,8 @@ protected:
         m_lowerRight = std::complex<float>(std::max(ul.real(), lr.real()), 
             std::min(ul.imag(), lr.imag()));
     }
+    wxPoint& GetRightDown() { return m_rightDown; }
+    void SetRightDown(wxPoint& rDown) { m_rightDown = rDown; }
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
@@ -79,6 +81,8 @@ private:
 
     std::complex<float> m_upperLeft;
     std::complex<float> m_lowerRight;
+
+    wxPoint m_rightDown;
 
     static std::vector<glm::vec4> s_vertices;
     std::unique_ptr<wxGLContext> m_context;
