@@ -91,6 +91,7 @@ protected:
     GLShaderProgram* GetSquareShaderProgram() { return m_squareProgram.get(); }
     GLuint GetSquareVao() { return m_squareVao; }
     void SetupSquareArrays();
+    void DrawSquare();
 
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;

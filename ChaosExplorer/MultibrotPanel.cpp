@@ -130,25 +130,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glUniform2f(prog->GetUniformHandle("lr"), lowerRight.real(), lowerRight.imag());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    // draw the square outlining the selected area of the image
-    wxPoint leftDown = GetLeftDown();
-    wxPoint leftUp = GetLeftUp();
-    if (leftDown.x != leftUp.x || leftDown.y != leftUp.y) {
-        glUseProgram(GetSquareShaderProgram()->GetProgramHandle());
-        glBindVertexArray(GetSquareVao());
-        float halfSize = static_cast<float>(size.x) / 2.0f;
-        float downX = leftDown.x - halfSize;
-        float downY = halfSize - leftDown.y;
-        float upX = leftUp.x - halfSize;
-        float upY = halfSize - leftUp.y;
-        std::vector<glm::vec4> points;
-        points.push_back({ downX, downY, 0.0f, halfSize });
-        points.push_back({ downX, upY, 0.0f, halfSize });
-        points.push_back({ upX, upY, 0.0f, halfSize });
-        points.push_back({ upX, downY, 0.0f, halfSize });
-        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
-        glDrawArrays(GL_LINE_LOOP, 0, points.size());
-    }
+    DrawSquare();
 
     glFlush();
     SwapBuffers();

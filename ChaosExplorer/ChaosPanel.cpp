@@ -132,3 +132,25 @@ void ChaosPanel::SetupSquareArrays()
     glEnableVertexAttribArray(posAttrib);
 
 }
+
+void ChaosPanel::DrawSquare()
+{
+    wxSize size = GetSize();
+    // draw the square outlining the selected area of the image
+    if (m_leftDown.x != m_leftUp.x || m_leftDown.y != m_leftUp.y) {
+        glUseProgram(m_squareProgram->GetProgramHandle());
+        glBindVertexArray(GetSquareVao());
+        float halfSize = static_cast<float>(size.x) / 2.0f;
+        float downX = m_leftDown.x - halfSize;
+        float downY = halfSize - m_leftDown.y;
+        float upX = m_leftUp.x - halfSize;
+        float upY = halfSize - m_leftUp.y;
+        std::vector<glm::vec4> points;
+        points.push_back({ downX, downY, 0.0f, halfSize });
+        points.push_back({ downX, upY, 0.0f, halfSize });
+        points.push_back({ upX, upY, 0.0f, halfSize });
+        points.push_back({ upX, downY, 0.0f, halfSize });
+        glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]), &points[0], GL_DYNAMIC_DRAW);
+        glDrawArrays(GL_LINE_LOOP, 0, points.size());
+    }
+}
