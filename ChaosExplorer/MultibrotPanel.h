@@ -48,7 +48,7 @@ private:
     void OnJulia(wxCommandEvent& event);
     void OnCloseTab();
     void SetStatusBarText();
-    void CreateMainMenu();
+    void CreatePopupMenu();
     wxMenu* CreateMultibrotSubMenu();
     void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);
     void StartTimer(const int timerInterval, TimerHandler handler);

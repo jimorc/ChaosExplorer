@@ -25,7 +25,7 @@ private:
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnDeleteSelection(wxCommandEvent& event);
     virtual void OnMenuOpen(wxMenuEvent& event);
-    void CreateMainMenu();
+    void CreatePopupMenu();
     void OnCloseTab();
     void SetStatusBarText();
 

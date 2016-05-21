@@ -25,7 +25,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     }
 
     // create popup menu
-    CreateMainMenu();
+    CreatePopupMenu();
 
     Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
 
@@ -76,7 +76,7 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     SetStatusBarText();
 }
 
-void MandelJuliaPanel::CreateMainMenu()
+void MandelJuliaPanel::CreatePopupMenu()
 {
     wxMenu* popup = new wxMenu;
     SetPopupMenu(popup);

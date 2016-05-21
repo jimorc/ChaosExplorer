@@ -91,7 +91,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
 
 
     // create popup menu
-    CreateMainMenu();
+    CreatePopupMenu();
 
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
 
@@ -145,7 +145,7 @@ void MultibrotPanel::BuildShaderProgram()
 }
 
 
-void MultibrotPanel::CreateMainMenu()
+void MultibrotPanel::CreatePopupMenu()
 {
     // create Multibrot submenu
     wxMenu* multiMenu = CreateMultibrotSubMenu();
