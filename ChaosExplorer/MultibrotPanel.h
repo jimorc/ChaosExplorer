@@ -4,7 +4,7 @@
 #include <chrono>
 #include "wx/event.h"
 #include "wx/panel.h"
-#include "ChaosPanel.h"
+#include "PlottingCPanel.h"
 
 using namespace std::complex_literals;
 
@@ -14,7 +14,7 @@ class MultibrotPanel;
 using TimerHandler =  void(MultibrotPanel::*) (wxTimerEvent&);
 
 class MultibrotPanel :
-    public ChaosPanel
+    public PlottingCPanel
 {
 public:
     MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,

@@ -72,7 +72,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
-    : ChaosPanel(parent, id, attribList, ul, lr, size),
+    : PlottingCPanel(parent, id, attribList, size, power, ul, lr),
     m_power(power), m_maxIterations(4 * colors.size()),
     m_zoomCount(0), m_powersCount(0), m_z0Count(0), m_z0({ 0.0f, 0.0f })
     {

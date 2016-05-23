@@ -120,6 +120,7 @@
     <ClInclude Include="GLSquareShaderProgram.h" />
     <ClInclude Include="MandelJuliaPanel.h" />
     <ClInclude Include="MultibrotPanel.h" />
+    <ClInclude Include="PlottingCPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="GLSquareShaderProgram.cpp" />
     <ClCompile Include="MandelJuliaPanel.cpp" />
     <ClCompile Include="MultibrotPanel.cpp" />
+    <ClCompile Include="PlottingCPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
