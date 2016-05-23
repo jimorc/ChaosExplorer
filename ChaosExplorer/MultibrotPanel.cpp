@@ -216,7 +216,7 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
         SetLeftUp({ 0, 0 });
         m_power = { power, 0.0f }; 
         SetUpperLeftLowerRight(-2.5f + 2.0if, 1.5f - 2.0if);
-        m_z0 = { 0.0f, 0.0f }; 
+       SetZ0({ 0.0f, 0.0f }); 
         Refresh(); },
         menuId);
 }
@@ -251,20 +251,20 @@ void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
     wxPoint leftUp = GetLeftUp();
     // enable/disable the various popup menu items
     popup->Enable(ID_DRAWFROMSELECTION, leftDown != leftUp &&
-        m_z0 == std::complex<float>({0.0f, 0.0f}));
+       GetZ0() == std::complex<float>({0.0f, 0.0f}));
     popup->Enable(ID_DELETESELECTION, leftDown != leftUp);
-    popup->Enable(ID_ANIMATEITERATIONS, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
-    popup->Enable(ID_ANIMATEMAGNIFICATION, m_z0 == std::complex<float>({ 0.0f, 0.0f }));
-    popup->Enable(ID_ANIMATEREALPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+    popup->Enable(ID_ANIMATEITERATIONS, GetZ0() == std::complex<float>({ 0.0f, 0.0f }));
+    popup->Enable(ID_ANIMATEMAGNIFICATION, GetZ0() == std::complex<float>({ 0.0f, 0.0f }));
+    popup->Enable(ID_ANIMATEREALPOWERS, GetZ0() == std::complex<float>({ 0.0f, 0.0f }) &&
         upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
         lowerRight == std::complex<float>({ 1.5f, -2.0f }));
-    popup->Enable(ID_ANIMATEIMAGINARYPOWERS, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+    popup->Enable(ID_ANIMATEIMAGINARYPOWERS, GetZ0() == std::complex<float>({ 0.0f, 0.0f }) &&
         upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
         lowerRight == std::complex<float>({ 1.5f, -2.0f }));
-    popup->Enable(ID_ANIMATEZ0REAL, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+    popup->Enable(ID_ANIMATEZ0REAL, GetZ0() == std::complex<float>({ 0.0f, 0.0f }) &&
         upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
         lowerRight == std::complex<float>({ 1.5f, -2.0f }));
-    popup->Enable(ID_ANIMATEZ0IMAG, m_z0 == std::complex<float>({ 0.0f, 0.0f }) &&
+    popup->Enable(ID_ANIMATEZ0IMAG, GetZ0() == std::complex<float>({ 0.0f, 0.0f }) &&
         upperLeft == std::complex<float>({ -2.5f, 2.0f }) &&
         lowerRight == std::complex<float>({ 1.5f, -2.0f }));
     wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
@@ -401,7 +401,7 @@ void MultibrotPanel::AnimateImaginaryPowers(wxTimerEvent& event)
 
 void MultibrotPanel::OnAnimateZ0Real(wxCommandEvent& event)
 {
-    m_z0 = { -1.0f, 0.0f };
+    SetZ0({ -1.0f, 0.0f });
     m_z0Count = 0;
     StartTimer(m_z0Interval, &MultibrotPanel::AnimateZ0Real);
     Refresh();
@@ -411,7 +411,7 @@ void MultibrotPanel::AnimateZ0Real(wxTimerEvent& event)
 {
     ++m_z0Count;
     if (m_z0Count <= 200) {
-        m_z0 = { -1 + 0.01f * m_z0Count, 0.0f };
+       SetZ0({ -1 + 0.01f * m_z0Count, 0.0f });
         Refresh();
     }
     else {
@@ -422,7 +422,7 @@ void MultibrotPanel::AnimateZ0Real(wxTimerEvent& event)
 
 void MultibrotPanel::OnAnimateZ0Imag(wxCommandEvent& event)
 {
-    m_z0 = { -0.0f, -1.0f };
+   SetZ0({ -0.0f, -1.0f });
     m_z0Count = 0;
     StartTimer(m_z0Interval, &MultibrotPanel::AnimateZ0Imag);
     Refresh();
@@ -432,7 +432,7 @@ void MultibrotPanel::AnimateZ0Imag(wxTimerEvent& event)
 {
     ++m_z0Count;
     if (m_z0Count <= 200) {
-        m_z0 = { 0.0f, -1 + 0.01f * m_z0Count };
+       SetZ0({ 0.0f, -1 + 0.01f * m_z0Count });
         Refresh();
     }
     else {

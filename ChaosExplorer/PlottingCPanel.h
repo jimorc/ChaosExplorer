@@ -24,11 +24,13 @@ protected:
     void SetMaxIterations(const int iterations) { m_maxIterations = iterations; }
     void IncrementMaxIterations() { ++m_maxIterations; }
     int GetMaxIterations() { return m_maxIterations; }
+    void SetZ0(const std::complex<float>& z0) { m_z0 = z0; }
+    std::complex<float> GetZ0() { return m_z0; }
 
-    std::complex<float> m_z0;
     std::complex<float> m_power;
 
 private:
     int m_maxIterations;
+    std::complex<float> m_z0;
 };
 
