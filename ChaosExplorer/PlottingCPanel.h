@@ -21,8 +21,14 @@ public:
 protected:
     void DrawFractal(GLShaderProgram* shaderProg);
 
+    void SetMaxIterations(const int iterations) { m_maxIterations = iterations; }
+    void IncrementMaxIterations() { ++m_maxIterations; }
+    int GetMaxIterations() { return m_maxIterations; }
+
     std::complex<float> m_z0;
     std::complex<float> m_power;
+
+private:
     int m_maxIterations;
 };
 

@@ -278,17 +278,17 @@ void MultibrotPanel::OnAnimateIterations(wxCommandEvent& event)
     // only set m_maxIterations to 1 if successful obtaining a timer.
     // otherwise, m_maxIterations must be 4 * colors.size().
     if (m_timerNumber != NOTIMERS) {
-        m_maxIterations = 1;
+        SetMaxIterations(1);
     }
 }
 
 void MultibrotPanel::AnimateIterations(wxTimerEvent& event)
 {
-    ++m_maxIterations;
+    IncrementMaxIterations();
     // if we have reached max iterations, unbind the timer event and stop and delete the timer.
-    if (m_maxIterations > 4 * colors.size()) {
+    if (GetMaxIterations() > 4 * colors.size()) {
         StopAndReleaseTimer(&MultibrotPanel::AnimateIterations);
-        m_maxIterations = 4 * colors.size();
+       SetMaxIterations(4 * colors.size());
     }
     Refresh();
 }
@@ -308,7 +308,7 @@ void MultibrotPanel::SetStatusBarText()
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
     std::wstringstream ss;
-    ss << L"Iterations = " << m_maxIterations;
+    ss << L"Iterations = " << GetMaxIterations();
     ss << L", Power = " << m_power.real();
     m_power.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
     ss << abs(m_power.imag()) << L"i";
