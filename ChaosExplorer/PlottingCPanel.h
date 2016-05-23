@@ -1,9 +1,8 @@
 #pragma once
 #include "wx/wxprec.h"
+#include "GLShaderProgram.h"
 #include "ChaosPanel.h"
 #include <complex>
-
-class GLShaderProgram;      // forward declaration
 
 using namespace std::complex_literals;
 

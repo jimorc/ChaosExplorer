@@ -45,7 +45,7 @@ private:
     void AnimateZ0Real(wxTimerEvent& event);
     void OnAnimateZ0Imag(wxCommandEvent& event);
     void AnimateZ0Imag(wxTimerEvent& event);
-    void OnJulia(wxCommandEvent& event);
+    virtual void OnJulia(wxCommandEvent& event);
     void SetStatusBarText();
     void CreatePopupMenu();
     wxMenu* CreateMultibrotSubMenu();

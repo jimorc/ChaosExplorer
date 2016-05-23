@@ -1,10 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "GL/glew.h"
-
-class ChaosPanel;
-//#include "ChaosPanel.h"
+#include "ChaosPanel.h"
 
 class GLShader
 {
@@ -13,11 +10,11 @@ public:
         const std::string& shaderSource,
         const std::string& compileErrorString);
     GLShader(const GLShader&) = delete;
-    GLShader(GLShader&&) = delete;
+    GLShader(GLShader&&);
     virtual ~GLShader();
 
     GLShader& operator=(const GLShader&) = delete;
-    GLShader& operator=(GLShader&&) = delete;
+    GLShader& operator=(GLShader&&);
     GLuint GetShaderHandle() { return m_shader; }
 
 private:

@@ -4,19 +4,23 @@
 #include <memory>
 #include <string>
 #include <vector>
+#if !defined(__gl_h_)
+    #include <GL/glew.h>
+#endif
 #include "GLShader.h"
 
-class ChaosPanel;       // forward declaration
+class ChaosPanel;
+class GLShader;
 
 class GLShaderProgram
 {
 public:
     GLShaderProgram(ChaosPanel& canvas);
     GLShaderProgram(const GLShaderProgram&) = delete;
-    GLShaderProgram(GLShaderProgram&&) = delete;
+    GLShaderProgram(GLShaderProgram&&);
     virtual ~GLShaderProgram();
     GLShaderProgram& operator=(const GLShaderProgram) = delete;
-    GLShaderProgram& operator=(GLShaderProgram&&) = delete;
+    GLShaderProgram& operator=(GLShaderProgram&&);
     void Link();
     void Use() { glUseProgram(m_program); }
     GLint GetUniformLocation(std::string& uniform) {

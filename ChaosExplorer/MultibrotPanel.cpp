@@ -98,8 +98,8 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     BuildShaderProgram();
     SetupTriangles();
     SetupSquareArrays();
-    glUseProgram(m_program->GetProgramHandle());
-    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
+    glUseProgram(GetShaderProgram()->GetProgramHandle());
+    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(GetShaderProgram());
     glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
     glUniform4fv(prog->GetUniformHandle("color[0]"), colors.size() * 4, &colors[0].x);
 }
@@ -117,7 +117,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // draw the Multibrot image (well, draw the triangles for the display area)
-    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
+    GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(GetShaderProgram());
     DrawFractal(prog);
     DrawSquare();
 
@@ -130,7 +130,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
 void MultibrotPanel::BuildShaderProgram()
 {
-    m_program = std::make_unique<GLMultibrotShaderProgram>(*this);
+    SetShaderProgram(new GLMultibrotShaderProgram(*this));
 }
 
 

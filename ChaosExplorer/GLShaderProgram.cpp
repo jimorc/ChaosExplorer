@@ -6,10 +6,27 @@ GLShaderProgram::GLShaderProgram(ChaosPanel& canvas)
 {
 }
 
+GLShaderProgram::GLShaderProgram(GLShaderProgram&& prog)
+{
+    m_vertexShader = std::move(prog.m_vertexShader);
+    prog.m_vertexShader.release();
+    m_uniforms = prog.m_uniforms;
+    prog.m_uniforms.clear();
+    m_canvas = prog.m_canvas;
+    prog.m_canvas = nullptr;
+    m_program = prog.m_program;
+    prog.m_program = 0;
+}
+
 
 GLShaderProgram::~GLShaderProgram()
 {
     glDeleteProgram(m_program);
+}
+
+GLShaderProgram& GLShaderProgram::operator=(GLShaderProgram&& prog)
+{
+    return std::move(prog);
 }
 
 
@@ -59,11 +76,12 @@ void GLShaderProgram::LoadUniformHandles()
     std::vector<GLint> values(properties.size());
     for (int uniform = 0; uniform < numActiveUniforms; ++uniform) {
         // get the properties for each uniform
-        glGetProgramResourceiv(m_program, GL_UNIFORM, uniform, properties.size(),
-            &properties[0], values.size(), NULL, &values[0]);
+        glGetProgramResourceiv(m_program, GL_UNIFORM, uniform, static_cast<GLsizei>(properties.size()),
+            &properties[0], static_cast<GLsizei>(values.size()), NULL, &values[0]);
         // get the name
         nameData.resize(properties[0]);  // length of the name
-        glGetProgramResourceName(m_program, GL_UNIFORM, uniform, nameData.size(), NULL, &nameData[0]);
+        glGetProgramResourceName(m_program, GL_UNIFORM, uniform, static_cast<GLsizei>(nameData.size()),
+            NULL, &nameData[0]);
         std::string name((char*)&nameData[0], nameData.size() - 1);
         // now get the location and add to m_uniforms (a map)
         // must use name.c_str() as index or m_uniforms.at() and m_uniforms.find() do not find the key

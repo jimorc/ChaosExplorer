@@ -33,8 +33,8 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     BuildShaderProgram();
     SetupTriangles();
     SetupSquareArrays();
-    glUseProgram(m_program->GetProgramHandle());
-    GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
+    glUseProgram(GetShaderProgram()->GetProgramHandle());
+    GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(GetShaderProgram());
     glUniform2f(prog->GetUniformHandle("c"), m_c.real(), m_c.imag());
     glUniform2f(prog->GetUniformHandle("p"), m_p.real(), m_p.imag());
     glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
@@ -48,7 +48,7 @@ MandelJuliaPanel::~MandelJuliaPanel()
 
 void MandelJuliaPanel::BuildShaderProgram()
 {
-    m_program = std::make_unique<GLMandelJuliaShaderProgram>(*this);
+    SetShaderProgram(new GLMandelJuliaShaderProgram(*this));
 }
 
 void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
@@ -59,9 +59,9 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // draw the Multibrot image (well, draw the triangles for the display area)
-    glUseProgram(m_program->GetProgramHandle());
+    glUseProgram(GetShaderProgram()->GetProgramHandle());
     glBindVertexArray(GetVao());
-    GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(m_program.get());
+    GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(GetShaderProgram());
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
     glUniform2f(prog->GetUniformHandle("ul"), upperLeft.real(), upperLeft.imag());

@@ -45,7 +45,6 @@ public:
 
 protected:
     virtual void BuildShaderProgram() = 0;
-    std::unique_ptr<GLShaderProgram> m_program;
     void SetupTriangles();
     GLuint GetVao() { return m_vao; }
     int GetTimer() {
@@ -89,6 +88,8 @@ protected:
     void SetLeftButtonDown(bool down) { m_leftButtonDown = down; }
 
     GLShaderProgram* GetSquareShaderProgram() { return m_squareProgram.get(); }
+    GLShaderProgram* GetShaderProgram() { return m_program.get(); }
+    void SetShaderProgram(GLShaderProgram* program) { m_program.reset(program); }
     GLuint GetSquareVao() { return m_squareVao; }
     void SetupSquareArrays();
     void DrawSquare();
@@ -111,6 +112,7 @@ private:
     wxPoint m_leftDown;
     wxPoint m_leftUp;
 
+    std::unique_ptr<GLShaderProgram> m_program;
     static std::vector<glm::vec4> s_vertices;
     std::unique_ptr<wxGLContext> m_context;
     GLuint m_vbo;

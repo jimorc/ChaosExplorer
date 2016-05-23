@@ -1,4 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
+#if !defined(__gl_h_)
+#include <GL/glew.h>
+#endif
 #include "GLShader.h"
 #include "ChaosPanel.h"
 
@@ -16,10 +19,23 @@ GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
     CheckShaderCompileStatus(m_shader, compileErrorString);
 }
 
+GLShader::GLShader(GLShader&& shader)
+{
+    m_canvas = shader.m_canvas;
+    shader.m_canvas = nullptr;
+    m_shader = shader.m_shader;
+    shader.m_shader = 0;
+}
+
 
 GLShader::~GLShader()
 {
     glDeleteShader(m_shader);
+}
+
+GLShader& GLShader::operator=(GLShader&& shader)
+{
+    return std::move(shader);
 }
 
 void GLShader::CheckShaderCompileStatus(GLuint shader, const std::string& errorMsg)
