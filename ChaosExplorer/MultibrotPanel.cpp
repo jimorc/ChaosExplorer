@@ -214,7 +214,7 @@ void MultibrotPanel::AddItemToMenu(wxMenu* menu, const int menuId, std::wstring 
         [this, power](wxCommandEvent&) {
         SetLeftDown({ 0, 0 });
         SetLeftUp({ 0, 0 });
-        m_power = { power, 0.0f }; 
+        SetPower({ power, 0.0f }); 
         SetUpperLeftLowerRight(-2.5f + 2.0if, 1.5f - 2.0if);
        SetZ0({ 0.0f, 0.0f }); 
         Refresh(); },
@@ -238,7 +238,7 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
     if (nBook == nullptr) {
         throw std::logic_error("Could not retrieve the Notebook for the new MultibrotPanel.");
     }
-    MultibrotPanel* mPanel = new MultibrotPanel(nBook, wxID_ANY, nullptr, GetSize(), m_power, ul, lr);
+    MultibrotPanel* mPanel = new MultibrotPanel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), ul, lr);
     nBook->AddPage(mPanel, L"Multibrot", true);
 }
 
@@ -309,9 +309,9 @@ void MultibrotPanel::SetStatusBarText()
     std::complex<float> lowerRight = GetLowerRight();
     std::wstringstream ss;
     ss << L"Iterations = " << GetMaxIterations();
-    ss << L", Power = " << m_power.real();
-    m_power.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_power.imag()) << L"i";
+    ss << L", Power = " << GetPower().real();
+    GetPower().imag() >= 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(GetPower().imag()) << L"i";
     ss << L", Upper Left = " << upperLeft.real();
     upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
     ss << abs(upperLeft.imag()) << L"i";
@@ -361,7 +361,7 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
 
 void MultibrotPanel::OnAnimateRealPowers(wxCommandEvent& event)
 {
-    m_power = 1.0f;
+    SetPower(1.0f);
     StartTimer(m_powersInterval, &MultibrotPanel::AnimateRealPowers);
     Refresh();
 }
@@ -370,7 +370,7 @@ void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
 {
     ++m_powersCount;
     if (m_powersCount <= 900) {
-        m_power = 1.0f + 0.01 * m_powersCount;
+        SetPower(1.0f + 0.01 * m_powersCount);
         Refresh();
     }
     else {
@@ -381,7 +381,7 @@ void MultibrotPanel::AnimateRealPowers(wxTimerEvent& event)
 
 void MultibrotPanel::OnAnimateImaginaryPowers(wxCommandEvent& event)
 {
-    m_power = { m_power.real(), -1.0f };
+    SetPower({ GetPower().real(), -1.0f });
     StartTimer(m_powersInterval, &MultibrotPanel::AnimateImaginaryPowers);
     Refresh();
 }
@@ -390,7 +390,7 @@ void MultibrotPanel::AnimateImaginaryPowers(wxTimerEvent& event)
 {
     ++m_powersCount;
     if (m_powersCount <= 200) {
-        m_power = { m_power.real(), -1.0f + 0.01f * m_powersCount };
+       SetPower({ GetPower().real(), -1.0f + 0.01f * m_powersCount });
         Refresh();
     }
     else {
@@ -482,7 +482,7 @@ void MultibrotPanel::OnJulia(wxCommandEvent& event)
     }
     try {
         MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr,
-            size, m_power, m_rightDownPoint);
+            size, GetPower(), m_rightDownPoint);
         nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
     }
     catch (std::exception& e) {
