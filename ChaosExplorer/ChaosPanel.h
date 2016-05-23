@@ -94,6 +94,8 @@ protected:
     void DrawSquare();
     void CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::complex<float>& lr) const;
 
+    void OnCloseTab();
+
 private:
     virtual void OnPaint(wxPaintEvent& event) = 0;
     virtual void OnLeftButtonDown(wxMouseEvent& event);

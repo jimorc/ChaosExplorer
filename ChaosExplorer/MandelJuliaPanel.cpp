@@ -91,15 +91,9 @@ void MandelJuliaPanel::CreatePopupMenu()
     Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent& event) {
         // Closing a tab must be done after popup menu has closed.
         // Otherwise, assert fails in wxMenuBase::SetInvokingWindow()
-        CallAfter(&MandelJuliaPanel::OnCloseTab); },
+        CallAfter(&ChaosPanel::OnCloseTab); },
         ID_PRECLOSETAB);
     Bind(wxEVT_MENU_OPEN, &MandelJuliaPanel::OnMenuOpen, this);
-}
-
-void MandelJuliaPanel::OnCloseTab()
-{
-    ChaosExplorerWindow* mainWin = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
-    mainWin->OnCloseTab(wxCommandEvent());
 }
 
 void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)

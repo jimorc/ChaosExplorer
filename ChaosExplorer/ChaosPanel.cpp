@@ -2,6 +2,7 @@
 #include "GL/glew.h"
 #include "GLSquareShaderProgram.h"
 #include "ChaosPanel.h"
+#include "ChaosExplorerWindow.h"
 
 // The vertices that define the two triangles.
 // These vertices take up entire view 
@@ -168,3 +169,11 @@ void ChaosPanel::CalculateUpperLeftAndLowerRight(std::complex<float>& ul, std::c
     ul = { ulReal, ulImag };
     lr = { lrReal, lrImag };
 }
+
+void ChaosPanel::OnCloseTab()
+{
+    ChaosExplorerWindow* mainWin = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+    mainWin->OnCloseTab(wxCommandEvent());
+}
+
+

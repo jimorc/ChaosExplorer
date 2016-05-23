@@ -46,7 +46,6 @@ private:
     void OnAnimateZ0Imag(wxCommandEvent& event);
     void AnimateZ0Imag(wxTimerEvent& event);
     void OnJulia(wxCommandEvent& event);
-    void OnCloseTab();
     void SetStatusBarText();
     void CreatePopupMenu();
     wxMenu* CreateMultibrotSubMenu();

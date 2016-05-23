@@ -196,7 +196,7 @@ void MultibrotPanel::CreatePopupMenu()
     Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent& event) {
         // Closing a tab must be done after popup menu has closed.
         // Otherwise, assert fails in wxMenuBase::SetInvokingWindow()
-        CallAfter(&MultibrotPanel::OnCloseTab); },
+        CallAfter(&ChaosPanel::OnCloseTab); },
         ID_PRECLOSETAB);
 
     Bind(wxEVT_MENU_OPEN, &MultibrotPanel::OnMenuOpen, this);
@@ -473,12 +473,6 @@ void MultibrotPanel::StopAndReleaseTimer(TimerHandler handler)
     delete timer;
     ReleaseTimer(m_timerNumber);
     wxEndBusyCursor();
-}
-
-void MultibrotPanel::OnCloseTab()
-{
-    ChaosExplorerWindow* mainWin = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
-    mainWin->OnCloseTab(wxCommandEvent());
 }
 
 void MultibrotPanel::OnJulia(wxCommandEvent& event)
