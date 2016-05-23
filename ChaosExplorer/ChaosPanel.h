@@ -4,6 +4,10 @@
 #include <complex>
 #include <glm/gtc/type_ptr.hpp>
 #include "wx/glcanvas.h"
+#include "GLShader.h"
+#include "GLShaderProgram.h"
+
+class GLShaderProgram;
 
 const int ID_DRAWFROMSELECTION = 2002;
 const int ID_DELETESELECTION = 2003;
@@ -24,8 +28,6 @@ const int ID_ANIMATEZ0REAL = 2017;
 const int ID_ANIMATEZ0IMAG = 2018;
 const int ID_PRECLOSETAB = 2019;
 const int ID_JULIA = 2020;
-
-class GLShaderProgram;
 
 class ChaosPanel :
     public wxGLCanvas

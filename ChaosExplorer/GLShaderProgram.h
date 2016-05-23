@@ -9,8 +9,8 @@
 #endif
 #include "GLShader.h"
 
-class ChaosPanel;
 class GLShader;
+class ChaosPanel;
 
 class GLShaderProgram
 {
