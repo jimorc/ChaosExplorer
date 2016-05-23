@@ -53,8 +53,6 @@ private:
     void StartTimer(const int timerInterval, TimerHandler handler);
     void StopAndReleaseTimer(TimerHandler handler);
 
-    std::complex<float> m_z0;
-    std::complex<float> m_power;
     std::complex<float> m_rightDownPoint;
 
     // rate at which the various animations run
@@ -66,7 +64,6 @@ private:
     int m_timerNumber;
     std::unique_ptr<wxTimer> m_timer;
     std::chrono::time_point<std::chrono::high_resolution_clock> m_startTime;
-    int m_maxIterations;
     int m_zoomCount;
     int m_powersCount;
     int m_z0Count;

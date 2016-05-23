@@ -73,8 +73,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> ul,
     std::complex<float> lr)
     : PlottingCPanel(parent, id, attribList, size, power, ul, lr),
-    m_power(power), m_maxIterations(4 * colors.size()),
-    m_zoomCount(0), m_powersCount(0), m_z0Count(0), m_z0({ 0.0f, 0.0f })
+    m_zoomCount(0), m_powersCount(0), m_z0Count(0)
     {
         if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -118,18 +117,8 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // draw the Multibrot image (well, draw the triangles for the display area)
-    glUseProgram(m_program->GetProgramHandle());
-    glBindVertexArray(GetVao());
     GLMultibrotShaderProgram* prog = dynamic_cast<GLMultibrotShaderProgram*>(m_program.get());
-    glUniform1i(prog->GetUniformHandle("maxIterations"), m_maxIterations);
-    glUniform2f(prog->GetUniformHandle("p"), m_power.real(), m_power.imag());
-    glUniform2f(prog->GetUniformHandle("z0"), m_z0.real(), m_z0.imag());
-    std::complex<float> upperLeft = GetUpperLeft();
-    std::complex<float> lowerRight = GetLowerRight();
-    glUniform2f(prog->GetUniformHandle("ul"), upperLeft.real(), upperLeft.imag());
-    glUniform2f(prog->GetUniformHandle("lr"), lowerRight.real(), lowerRight.imag());
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+    DrawFractal(prog);
     DrawSquare();
 
     glFlush();
