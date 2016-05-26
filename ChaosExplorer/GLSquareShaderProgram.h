@@ -10,7 +10,7 @@ public:
     virtual ~GLSquareShaderProgram();
 
 private:
-    void BuildFragmentShader();
+    void BuildFragmentShader(ChaosPanel& canvas);
 
     std::unique_ptr<GLShader> m_fragmentShader;
 };

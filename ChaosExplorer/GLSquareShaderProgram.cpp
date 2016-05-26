@@ -7,9 +7,9 @@ GLSquareShaderProgram::GLSquareShaderProgram(ChaosPanel& canvas)
     : GLShaderProgram(canvas)
 {
     // build and link the square shaders and program
-    GetCanvas()->SetContext();
-    BuildVertexShader();
-    BuildFragmentShader();
+    canvas.SetContext();
+    BuildVertexShader(canvas);
+    BuildFragmentShader(canvas);
     SetProgramHandle(glCreateProgram());
     glAttachShader(GetProgramHandle(),GetVertexShader()->GetShaderHandle());
     glAttachShader(GetProgramHandle(), m_fragmentShader->GetShaderHandle());
@@ -22,7 +22,7 @@ GLSquareShaderProgram::~GLSquareShaderProgram()
 {
 }
 
-void GLSquareShaderProgram::BuildFragmentShader()
+void GLSquareShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
 {
     std::string fragmentSource =
         "#version 330 core\n"
@@ -31,6 +31,6 @@ void GLSquareShaderProgram::BuildFragmentShader()
         "{"
         "    OutColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);"
         "}";
-    m_fragmentShader = std::make_unique<GLShader>(*GetCanvas(), GL_FRAGMENT_SHADER, fragmentSource,
+    m_fragmentShader = std::make_unique<GLShader>(canvas, GL_FRAGMENT_SHADER, fragmentSource,
         "Square fragment shader did not compile.");
 }

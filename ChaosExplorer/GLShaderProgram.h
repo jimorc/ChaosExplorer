@@ -28,12 +28,11 @@ public:
     }
     GLuint GetProgramHandle() { return m_program; }
     void SetProgramHandle(GLuint handle) { m_program = handle; }
-    ChaosPanel* GetCanvas() { return m_canvas; }
     GLShader* GetVertexShader() { return m_vertexShader.get(); }
     GLint GetUniformHandle(const std::string& name) const;
 
 protected:
-    virtual void BuildVertexShader();
+    virtual void BuildVertexShader(ChaosPanel& canvas);
     void LoadUniformHandles();
 
 private:
@@ -41,7 +40,6 @@ private:
 
     std::map<const std::string, GLint> m_uniforms;
 
-    ChaosPanel* m_canvas;
     GLuint m_program;
 
 };

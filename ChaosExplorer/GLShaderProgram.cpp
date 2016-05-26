@@ -2,7 +2,6 @@
 #include "GLShaderProgram.h"
 
 GLShaderProgram::GLShaderProgram(ChaosPanel& canvas) 
-    : m_canvas(&canvas)
 {
 }
 
@@ -12,8 +11,6 @@ GLShaderProgram::GLShaderProgram(GLShaderProgram&& prog)
     prog.m_vertexShader.release();
     m_uniforms = prog.m_uniforms;
     prog.m_uniforms.clear();
-    m_canvas = prog.m_canvas;
-    prog.m_canvas = nullptr;
     m_program = prog.m_program;
     prog.m_program = 0;
 }
@@ -46,7 +43,7 @@ void GLShaderProgram::Link()
 
 // Vertex shader is common among the shader programs.
 // It can, however, be overridden if necessary.
-void GLShaderProgram::BuildVertexShader()
+void GLShaderProgram::BuildVertexShader(ChaosPanel& canvas)
 {
     std::string vertexSource =
         "#version 330 core\n"
@@ -55,7 +52,7 @@ void GLShaderProgram::BuildVertexShader()
         "{"
         "    gl_Position = position;"
         "}";
-    m_vertexShader = std::make_unique<GLShader>(*GetCanvas(), GL_VERTEX_SHADER, vertexSource,
+    m_vertexShader = std::make_unique<GLShader>(canvas, GL_VERTEX_SHADER, vertexSource,
         "Vertex shader did not compile.");
 }
 
