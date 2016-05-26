@@ -8,10 +8,9 @@
 GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
     const std::string& shaderSource,
     const std::string& compileErrorString)
-    : m_canvas(&canvas)
 {
     // build the shader
-    m_canvas->SetContext();
+    canvas.SetContext();
     m_shader = glCreateShader(shaderType);
     const char *source = shaderSource.c_str();
     glShaderSource(m_shader, 1, &source, NULL);
@@ -21,8 +20,6 @@ GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
 
 GLShader::GLShader(GLShader&& shader)
 {
-    m_canvas = shader.m_canvas;
-    shader.m_canvas = nullptr;
     m_shader = shader.m_shader;
     shader.m_shader = 0;
 }

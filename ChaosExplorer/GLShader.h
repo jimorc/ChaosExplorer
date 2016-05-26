@@ -20,7 +20,7 @@ public:
 private:
     void CheckShaderCompileStatus(GLuint shader, const std::string& errorMsg);
 
-    ChaosPanel* m_canvas;
+//    ChaosPanel* m_canvas;
     GLuint m_shader;
 };
 
