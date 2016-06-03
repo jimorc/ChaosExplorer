@@ -19,7 +19,7 @@ public:
     virtual ~MandelJuliaPanel();
 
 protected:
-    virtual void DrawFractal(GLMandelJuliaShaderProgram* shaderProgram) {}
+    virtual void DrawFractal() {}
 
 private:
     virtual void OnPaint(wxPaintEvent& event) override;

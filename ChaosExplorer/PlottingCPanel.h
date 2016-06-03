@@ -28,8 +28,9 @@ public:
     virtual ~PlottingCPanel() {}
 
 protected:
-    virtual void DrawFractal(T* shaderProg) override
+    virtual void DrawFractal() override
     {
+        T* shaderProg = GetShaderProgram();
         // draw the image (well, draw the triangles for the display area)
         glUseProgram(shaderProg->GetProgramHandle());
         glBindVertexArray(GetVao());
@@ -61,8 +62,7 @@ private:
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // draw the Multibrot image (well, draw the triangles for the display area)
-        T* prog = GetShaderProgram();
-        DrawFractal(prog);
+        DrawFractal();
         DrawSquare();
 
         glFlush();

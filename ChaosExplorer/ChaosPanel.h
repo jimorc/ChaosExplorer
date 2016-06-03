@@ -102,7 +102,7 @@ public:
 
 
 protected:
-    virtual void DrawFractal(T* shaderProg) = 0;
+    virtual void DrawFractal() = 0;
     // call this from your child panel's constructor
     // If you call from ChaosPanel constructor, exception is thrown in OnPaint.
     void SetupTriangles()
