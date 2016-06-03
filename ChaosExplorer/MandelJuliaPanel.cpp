@@ -27,8 +27,6 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     // create popup menu
     CreatePopupMenu();
 
-    Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
-
     // set up GL stuff
     CreateShaderProgram();
     SetupTriangles();
@@ -44,23 +42,6 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
 
 MandelJuliaPanel::~MandelJuliaPanel()
 {
-}
-
-void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
-{
-    wxSize size = GetSize();
-    SetContext();
-    // set background to black
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // draw the Multibrot image (well, draw the triangles for the display area)
-    DrawFractal();
-    DrawSquare();
-
-    glFlush();
-    SwapBuffers();
-
-    SetStatusBarText();
 }
 
 void MandelJuliaPanel::CreatePopupMenu()
@@ -116,29 +97,4 @@ void MandelJuliaPanel::OnMenuOpen(wxMenuEvent& event)
     wxNotebook* noteBook = dynamic_cast<wxNotebook*>(GetParent());
     int tabCount = noteBook->GetPageCount();
     popup->Enable(ID_PRECLOSETAB, tabCount > 1);
-}
-
-void MandelJuliaPanel::SetStatusBarText()
-{
-    ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
-    wxStatusBar* statusBar = win->GetStatusBar();
-    std::complex<float> upperLeft = GetUpperLeft();
-    std::complex<float> lowerRight = GetLowerRight();
-    std::complex<float> c = GetC();
-    std::complex<float> power = GetPower();
-    std::wstringstream ss;
-    ss << L"C = " << c.real();
-    c.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(c.imag()) << L"i";
-    ss << L", Power = " << power.real();
-    power.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(power.imag()) << L"i";
-    ss << L", Upper Left = " << upperLeft.real();
-    upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(upperLeft.imag()) << L"i";
-    ss << L", Lower Right = " << lowerRight.real();
-    lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(lowerRight.imag()) << L"i";
-
-    statusBar->SetStatusText(ss.str().c_str());
 }

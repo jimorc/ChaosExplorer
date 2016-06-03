@@ -19,13 +19,9 @@ public:
     virtual ~MandelJuliaPanel();
 
 private:
-    virtual void OnPaint(wxPaintEvent& event) override;
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnDeleteSelection(wxCommandEvent& event);
     virtual void OnMenuOpen(wxMenuEvent& event);
     void CreatePopupMenu();
     void OnCloseTab();
-    void SetStatusBarText();
-
 };
-
