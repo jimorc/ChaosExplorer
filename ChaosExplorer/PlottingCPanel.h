@@ -25,7 +25,7 @@ public:
     virtual ~PlottingCPanel() {}
 
 protected:
-    void DrawFractal(GLShaderProgram* shaderProg)
+    virtual void DrawFractal(T* shaderProg) override
     {
         // draw the image (well, draw the triangles for the display area)
         glUseProgram(shaderProg->GetProgramHandle());

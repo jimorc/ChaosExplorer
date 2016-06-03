@@ -18,6 +18,9 @@ public:
         std::complex<float> lr = 2.0f - 2.0if);
     virtual ~MandelJuliaPanel();
 
+protected:
+    virtual void DrawFractal(GLMandelJuliaShaderProgram* shaderProgram) {}
+
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
     virtual void OnDrawFromSelection(wxCommandEvent& event);
