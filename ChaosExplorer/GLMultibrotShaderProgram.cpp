@@ -1,13 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLMultibrotShaderProgram.h"
 
-GLMultibrotShaderProgram::GLMultibrotShaderProgram(ChaosPanel& canvas)
-    : GLShaderProgram(canvas)
+GLMultibrotShaderProgram::GLMultibrotShaderProgram()
+    : GLShaderProgram()
 {
     // build and link the Multibrot shaders and program
-   canvas.SetContext();
-    BuildVertexShader(canvas);
-    BuildFragmentShader(canvas);
+    BuildVertexShader();
+    BuildFragmentShader();
     SetProgramHandle(glCreateProgram());
     glAttachShader(GetProgramHandle(), GetVertexShader()->GetShaderHandle());
     glAttachShader(GetProgramHandle(), m_fragmentShader->GetShaderHandle());
@@ -22,7 +21,7 @@ GLMultibrotShaderProgram::~GLMultibrotShaderProgram()
 {
 }
 
-void GLMultibrotShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
+void GLMultibrotShaderProgram::BuildFragmentShader()
 {
     // iPower calculates the complex power of a complex number.
     // Equation given in http://mathworld.wolfram.com/ComplexExponentiation.html
@@ -70,6 +69,6 @@ void GLMultibrotShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
         "	 OutColor = i == maxIterations ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
         "        color[i%50 - 1];"
         "}";
-    m_fragmentShader = std::make_unique<GLShader>(canvas, GL_FRAGMENT_SHADER, fragmentSource,
+    m_fragmentShader = std::make_unique<GLShader>(GL_FRAGMENT_SHADER, fragmentSource,
         "Multibrot fragment shader did not compile.");
 }

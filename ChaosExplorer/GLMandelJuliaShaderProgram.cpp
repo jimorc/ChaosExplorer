@@ -1,12 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLMandelJuliaShaderProgram.h"
 
-GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram(ChaosPanel& canvas)
-    : GLShaderProgram(canvas)
+GLMandelJuliaShaderProgram::GLMandelJuliaShaderProgram()
+    : GLShaderProgram()
 {
-    canvas.SetContext();
-    BuildVertexShader(canvas);
-    BuildFragmentShader(canvas);
+    BuildVertexShader();
+    BuildFragmentShader();
     SetProgramHandle(glCreateProgram());
     glAttachShader(GetProgramHandle(), GetVertexShader()->GetShaderHandle());
     glAttachShader(GetProgramHandle(), m_fragmentShader->GetShaderHandle());
@@ -21,7 +20,7 @@ GLMandelJuliaShaderProgram::~GLMandelJuliaShaderProgram()
 {
 }
 
-void GLMandelJuliaShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
+void GLMandelJuliaShaderProgram::BuildFragmentShader()
 {
     // iPower calculates the complex power of a complex number.
     // Equation given in http://mathworld.wolfram.com/ComplexExponentiation.html
@@ -67,6 +66,6 @@ void GLMandelJuliaShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
         "	 OutColor = i == 200 ? vec4(0.0f, 0.0f, 0.0f, 1.0f) : "
         "        color[i%50 - 1];"
         "}";
-    m_fragmentShader = std::make_unique<GLShader>(canvas, GL_FRAGMENT_SHADER, fragmentSource,
+    m_fragmentShader = std::make_unique<GLShader>(GL_FRAGMENT_SHADER, fragmentSource,
         "MandelJulia fragment shader did not compile.");
 }

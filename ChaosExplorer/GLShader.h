@@ -1,12 +1,11 @@
 #pragma once
 #include <string>
 #include <memory>
-#include "ChaosPanel.h"
 
 class GLShader
 {
 public:
-    GLShader(ChaosPanel& canvas, const GLenum shaderType,
+    GLShader(const GLenum shaderType,
         const std::string& shaderSource,
         const std::string& compileErrorString);
     GLShader(const GLShader&) = delete;

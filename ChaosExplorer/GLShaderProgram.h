@@ -2,20 +2,16 @@
 #include <string>
 #include <map>
 #include <memory>
-#include <string>
-#include <vector>
+#include <wx/wxprec.h>
 #if !defined(__gl_h_)
     #include <GL/glew.h>
 #endif
 #include "GLShader.h"
 
-class GLShader;
-class ChaosPanel;
-
 class GLShaderProgram
 {
 public:
-    GLShaderProgram(ChaosPanel& canvas);
+    GLShaderProgram();
     GLShaderProgram(const GLShaderProgram&) = delete;
     GLShaderProgram(GLShaderProgram&&);
     virtual ~GLShaderProgram();
@@ -32,7 +28,7 @@ public:
     GLint GetUniformHandle(const std::string& name) const;
 
 protected:
-    virtual void BuildVertexShader(ChaosPanel& canvas);
+    virtual void BuildVertexShader();
     void LoadUniformHandles();
 
 private:

@@ -48,7 +48,7 @@ MandelJuliaPanel::~MandelJuliaPanel()
 
 void MandelJuliaPanel::BuildShaderProgram()
 {
-    SetShaderProgram(new GLMandelJuliaShaderProgram(*this));
+    SetShaderProgram(new GLMandelJuliaShaderProgram());
 }
 
 void MandelJuliaPanel::OnPaint(wxPaintEvent& event)

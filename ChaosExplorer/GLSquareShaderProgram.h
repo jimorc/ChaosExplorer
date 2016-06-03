@@ -1,16 +1,16 @@
 #pragma once
+#include <wx/wxprec.h>
 #include "GLShaderProgram.h"
-#include "ChaosPanel.h"
 
 class GLSquareShaderProgram :
     public GLShaderProgram
 {
 public:
-    GLSquareShaderProgram(ChaosPanel& canvas);
+    GLSquareShaderProgram();
     virtual ~GLSquareShaderProgram();
 
 private:
-    void BuildFragmentShader(ChaosPanel& canvas);
+    void BuildFragmentShader();
 
     std::unique_ptr<GLShader> m_fragmentShader;
 };

@@ -62,9 +62,6 @@
     <ClCompile Include="GLShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChaosPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ChaosExplorerWindow.cpp" />
     <ClCompile Include="GLMultibrotShaderProgram.cpp">
       <Filter>Source Files</Filter>
@@ -76,9 +73,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MandelJuliaPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlottingCPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

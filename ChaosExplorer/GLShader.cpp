@@ -3,14 +3,12 @@
 #include <GL/glew.h>
 #endif
 #include "GLShader.h"
-#include "ChaosPanel.h"
 
-GLShader::GLShader(ChaosPanel& canvas, GLenum shaderType,
+GLShader::GLShader(GLenum shaderType,
     const std::string& shaderSource,
     const std::string& compileErrorString)
 {
     // build the shader
-    canvas.SetContext();
     m_shader = glCreateShader(shaderType);
     const char *source = shaderSource.c_str();
     glShaderSource(m_shader, 1, &source, NULL);

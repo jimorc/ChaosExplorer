@@ -5,16 +5,16 @@
 #include "wx/event.h"
 #include "wx/panel.h"
 #include "PlottingCPanel.h"
+#include "GLMultibrotShaderProgram.h"
 
 using namespace std::complex_literals;
 
-
-class MultibrotPanel;
+class MultibrotPanel;       // forward declaration
 
 using TimerHandler =  void(MultibrotPanel::*) (wxTimerEvent&);
 
 class MultibrotPanel :
-    public PlottingCPanel
+    public PlottingCPanel<GLMultibrotShaderProgram>
 {
 public:
     MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,

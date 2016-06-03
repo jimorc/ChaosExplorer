@@ -6,7 +6,6 @@
 //#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "GL/glew.h"
-#include "GLMultibrotShaderProgram.h"
 #include "GLSquareShaderProgram.h"
 #include "MultibrotPanel.h"
 #include "MandelJuliaPanel.h"
@@ -72,7 +71,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
-    : PlottingCPanel(parent, id, attribList, size, power, ul, lr),
+    : PlottingCPanel<GLMultibrotShaderProgram>(parent, id, attribList, size, power, ul, lr),
     m_zoomCount(0), m_powersCount(0), m_z0Count(0)
     {
         if (power.real() < 1.0f) {
@@ -130,7 +129,7 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
 void MultibrotPanel::BuildShaderProgram()
 {
-    SetShaderProgram(new GLMultibrotShaderProgram(*this));
+    SetShaderProgram(new GLMultibrotShaderProgram());
 }
 
 

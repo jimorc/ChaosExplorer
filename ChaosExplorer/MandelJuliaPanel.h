@@ -1,12 +1,13 @@
 #pragma once
 #include <complex>
 #include "ChaosPanel.h"
+#include "GLMandelJuliaShaderProgram.h"
 
 using namespace std::complex_literals;
 
 
 class MandelJuliaPanel :
-    public ChaosPanel
+    public ChaosPanel<GLMandelJuliaShaderProgram>
 {
 public:
     MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* attribList,

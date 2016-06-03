@@ -125,7 +125,6 @@
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp" />
     <ClCompile Include="ChaosExplorerWindow.cpp" />
-    <ClCompile Include="ChaosPanel.cpp" />
     <ClCompile Include="GLMandelJuliaShaderProgram.cpp" />
     <ClCompile Include="GLMultibrotShaderProgram.cpp" />
     <ClCompile Include="GLShader.cpp" />
@@ -133,7 +132,6 @@
     <ClCompile Include="GLSquareShaderProgram.cpp" />
     <ClCompile Include="MandelJuliaPanel.cpp" />
     <ClCompile Include="MultibrotPanel.cpp" />
-    <ClCompile Include="PlottingCPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

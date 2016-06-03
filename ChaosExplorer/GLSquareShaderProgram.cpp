@@ -1,15 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLSquareShaderProgram.h"
 
-
-
-GLSquareShaderProgram::GLSquareShaderProgram(ChaosPanel& canvas)
-    : GLShaderProgram(canvas)
+GLSquareShaderProgram::GLSquareShaderProgram()
+    : GLShaderProgram()
 {
     // build and link the square shaders and program
-    canvas.SetContext();
-    BuildVertexShader(canvas);
-    BuildFragmentShader(canvas);
+    BuildVertexShader();
+    BuildFragmentShader();
     SetProgramHandle(glCreateProgram());
     glAttachShader(GetProgramHandle(),GetVertexShader()->GetShaderHandle());
     glAttachShader(GetProgramHandle(), m_fragmentShader->GetShaderHandle());
@@ -22,7 +19,7 @@ GLSquareShaderProgram::~GLSquareShaderProgram()
 {
 }
 
-void GLSquareShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
+void GLSquareShaderProgram::BuildFragmentShader()
 {
     std::string fragmentSource =
         "#version 330 core\n"
@@ -31,6 +28,6 @@ void GLSquareShaderProgram::BuildFragmentShader(ChaosPanel& canvas)
         "{"
         "    OutColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);"
         "}";
-    m_fragmentShader = std::make_unique<GLShader>(canvas, GL_FRAGMENT_SHADER, fragmentSource,
+    m_fragmentShader = std::make_unique<GLShader>(GL_FRAGMENT_SHADER, fragmentSource,
         "Square fragment shader did not compile.");
 }

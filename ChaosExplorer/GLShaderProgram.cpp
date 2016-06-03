@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "GLShaderProgram.h"
 
-GLShaderProgram::GLShaderProgram(ChaosPanel& canvas) 
+GLShaderProgram::GLShaderProgram()
 {
 }
 
@@ -43,7 +43,7 @@ void GLShaderProgram::Link()
 
 // Vertex shader is common among the shader programs.
 // It can, however, be overridden if necessary.
-void GLShaderProgram::BuildVertexShader(ChaosPanel& canvas)
+void GLShaderProgram::BuildVertexShader()
 {
     std::string vertexSource =
         "#version 330 core\n"
@@ -52,7 +52,7 @@ void GLShaderProgram::BuildVertexShader(ChaosPanel& canvas)
         "{"
         "    gl_Position = position;"
         "}";
-    m_vertexShader = std::make_unique<GLShader>(canvas, GL_VERTEX_SHADER, vertexSource,
+    m_vertexShader = std::make_unique<GLShader>(GL_VERTEX_SHADER, vertexSource,
         "Vertex shader did not compile.");
 }
 
