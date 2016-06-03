@@ -102,7 +102,6 @@ public:
 
 
 protected:
-    virtual void BuildShaderProgram() = 0;
     // call this from your child panel's constructor
     // If you call from ChaosPanel constructor, exception is thrown in OnPaint.
     void SetupTriangles()
@@ -161,7 +160,7 @@ protected:
 
     GLShaderProgram* GetSquareShaderProgram() { return m_squareProgram.get(); }
     T* GetShaderProgram() { return m_program.get(); }
-    void SetShaderProgram(T* program) { m_program.reset(program); }
+    void CreateShaderProgram() { m_program.reset(new T()); }
     GLuint GetSquareVao() { return m_squareVao; }
     // call this from your child panel's constructor
     // If you call from ChaosPanel constructor, exception is thrown in OnPaint.

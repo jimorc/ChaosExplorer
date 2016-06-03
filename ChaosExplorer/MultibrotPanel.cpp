@@ -94,7 +94,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     Bind(wxEVT_PAINT, &MultibrotPanel::OnPaint, this);
 
     // set up GL stuff
-    BuildShaderProgram();
+    CreateShaderProgram();
     SetupTriangles();
     SetupSquareArrays();
     glUseProgram(GetShaderProgram()->GetProgramHandle());
@@ -125,13 +125,6 @@ void MultibrotPanel::OnPaint(wxPaintEvent& event)
 
     SetStatusBarText();
 }
-
-
-void MultibrotPanel::BuildShaderProgram()
-{
-    SetShaderProgram(new GLMultibrotShaderProgram());
-}
-
 
 void MultibrotPanel::CreatePopupMenu()
 {

@@ -24,9 +24,6 @@ public:
         std::complex<float> lr =  1.5f - 2.0if);
     virtual ~MultibrotPanel();
 
-protected:
-    virtual void BuildShaderProgram() override;
-
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
     virtual void OnRightButtonDown(wxMouseEvent& event) override;

@@ -18,9 +18,6 @@ public:
         std::complex<float> lr = 2.0f - 2.0if);
     virtual ~MandelJuliaPanel();
 
-protected:
-    virtual void BuildShaderProgram() override;
-
 private:
     virtual void OnPaint(wxPaintEvent& event) override;
     virtual void OnDrawFromSelection(wxCommandEvent& event);

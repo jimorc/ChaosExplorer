@@ -30,7 +30,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     Bind(wxEVT_PAINT, &MandelJuliaPanel::OnPaint, this);
 
     // set up GL stuff
-    BuildShaderProgram();
+    CreateShaderProgram();
     SetupTriangles();
     SetupSquareArrays();
     glUseProgram(GetShaderProgram()->GetProgramHandle());
@@ -44,11 +44,6 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
 
 MandelJuliaPanel::~MandelJuliaPanel()
 {
-}
-
-void MandelJuliaPanel::BuildShaderProgram()
-{
-    SetShaderProgram(new GLMandelJuliaShaderProgram());
 }
 
 void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
