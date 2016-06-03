@@ -54,15 +54,7 @@ void MandelJuliaPanel::OnPaint(wxPaintEvent& event)
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // draw the Multibrot image (well, draw the triangles for the display area)
-    glUseProgram(GetShaderProgram()->GetProgramHandle());
-    glBindVertexArray(GetVao());
-    GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(GetShaderProgram());
-    std::complex<float> upperLeft = GetUpperLeft();
-    std::complex<float> lowerRight = GetLowerRight();
-    glUniform2f(prog->GetUniformHandle("ul"), upperLeft.real(), upperLeft.imag());
-    glUniform2f(prog->GetUniformHandle("lr"), lowerRight.real(), lowerRight.imag());
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+    DrawFractal();
     DrawSquare();
 
     glFlush();
