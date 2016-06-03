@@ -6,6 +6,7 @@
 #include "wx/panel.h"
 #include "PlottingCPanel.h"
 #include "GLMultibrotShaderProgram.h"
+#include "MandelJuliaPanel.h"
 
 using namespace std::complex_literals;
 
@@ -14,7 +15,7 @@ class MultibrotPanel;       // forward declaration
 using TimerHandler =  void(MultibrotPanel::*) (wxTimerEvent&);
 
 class MultibrotPanel :
-    public PlottingCPanel<GLMultibrotShaderProgram>
+    public PlottingCPanel<GLMultibrotShaderProgram, MandelJuliaPanel>
 {
 public:
     MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attribList,
@@ -41,14 +42,12 @@ private:
     void AnimateZ0Real(wxTimerEvent& event);
     void OnAnimateZ0Imag(wxCommandEvent& event);
     void AnimateZ0Imag(wxTimerEvent& event);
-    virtual void OnJulia(wxCommandEvent& event);
     void CreatePopupMenu();
     wxMenu* CreateMultibrotSubMenu();
     void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);
     void StartTimer(const int timerInterval, TimerHandler handler);
     void StopAndReleaseTimer(TimerHandler handler);
 
-    std::complex<float> m_rightDownPoint;
 
     // rate at which the various animations run
     static const int m_iterationInterval = 1000 / 6;

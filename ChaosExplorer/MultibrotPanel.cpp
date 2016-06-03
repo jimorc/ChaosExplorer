@@ -71,7 +71,7 @@ MultibrotPanel::MultibrotPanel(wxWindow* parent, wxWindowID id, const int* attri
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
-    : PlottingCPanel<GLMultibrotShaderProgram>(parent, id, attribList, size, power, ul, lr),
+    : PlottingCPanel<GLMultibrotShaderProgram, MandelJuliaPanel>(parent, id, attribList, size, power, ul, lr),
     m_zoomCount(0), m_powersCount(0), m_z0Count(0)
     {
         if (power.real() < 1.0f) {
@@ -115,7 +115,7 @@ void MultibrotPanel::CreatePopupMenu()
     SetPopupMenu(popup);
     popup->AppendSubMenu(multiMenu, L"MultibrotPower");
     popup->AppendSeparator();
-    popup->Append(ID_JULIA, L"Julia Set");
+    AddOnJuliaMenuItem(popup);
     popup->Append(ID_DRAWFROMSELECTION, L"Draw From Selection");
     popup->Enable(ID_DRAWFROMSELECTION, false);
     popup->Append(ID_DELETESELECTION, L"Deselect Selection");
@@ -136,8 +136,6 @@ void MultibrotPanel::CreatePopupMenu()
     popup->AppendSeparator();
     popup->Append(ID_PRECLOSETAB, L"Close Tab");
     // bind the various events related to this menu
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnJulia,
-        this, ID_JULIA);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDrawFromSelection,
         this, ID_DRAWFROMSELECTION);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MultibrotPanel::OnDeleteSelection,
@@ -283,7 +281,7 @@ void MultibrotPanel::OnAnimateMagnification(wxCommandEvent& event)
     float deltaXY = lowerRight.real() - upperLeft.real();
     float x = upperLeft.real() + deltaXY *rightDown.x / size.x;
     float y = upperLeft.imag() - deltaXY * rightDown.y / size.y;
-    m_rightDownPoint = { x, y };
+    SetRightDownPoint(std::complex<float>( x, y ));
     upperLeft = { (x - deltaXY / 2.0f), (y + deltaXY / 2.0f) };
     lowerRight = { (x + deltaXY / 2.0f), (y - deltaXY / 2.0f) };
     SetUpperLeftLowerRight(upperLeft, lowerRight);
@@ -296,11 +294,12 @@ void MultibrotPanel::AnimateMagnification(wxTimerEvent& event)
 {
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
+    std::complex<float> rightDownPoint = GetRightDownPoint();
     ++m_zoomCount;
     if (m_zoomCount <= 500) {
         float deltaXY = (lowerRight.real() - upperLeft.real()) * 0.99f / 2.0f;
-        upperLeft = { (m_rightDownPoint.real() - deltaXY), (m_rightDownPoint.imag() + deltaXY) };
-        lowerRight = { (m_rightDownPoint.real() + deltaXY), (m_rightDownPoint.imag() - deltaXY) };
+        upperLeft = { (rightDownPoint.real() - deltaXY), (rightDownPoint.imag() + deltaXY) };
+        lowerRight = { (rightDownPoint.real() + deltaXY), (rightDownPoint.imag() - deltaXY) };
         SetUpperLeftLowerRight(upperLeft, lowerRight);
         Refresh();
     }
@@ -415,28 +414,3 @@ void MultibrotPanel::StopAndReleaseTimer(TimerHandler handler)
     wxEndBusyCursor();
 }
 
-void MultibrotPanel::OnJulia(wxCommandEvent& event)
-{
-    wxSize size = GetSize();
-    std::complex<float> upperLeft = GetUpperLeft();
-    std::complex<float> lowerRight = GetLowerRight();
-    wxPoint rightDown = GetRightDown();
-    float deltaXY = lowerRight.real() - upperLeft.real();
-    float x = upperLeft.real() + deltaXY * rightDown.x / size.x;
-    float y = upperLeft.imag() - deltaXY * rightDown.y / size.y;
-    m_rightDownPoint = { x, y };
-    
-    // create and display a new MandelJuliaPanel for the display
-    wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
-    if (nBook == nullptr) {
-        throw std::logic_error("Could not retrieve the Notebook for the new MandelJuliaPanel.");
-    }
-    try {
-        MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr,
-            size, GetPower(), m_rightDownPoint);
-        nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
-    }
-    catch (std::exception& e) {
-        wxMessageBox(e.what(), "Cannot create Julia Set");
-    }
-}

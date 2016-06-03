@@ -158,6 +158,8 @@ protected:
     void SetLeftUp(const wxPoint& leftUp) { m_leftUp = leftUp; }
     bool GetLeftButtonDown() { return m_leftButtonDown; }
     void SetLeftButtonDown(bool down) { m_leftButtonDown = down; }
+    std::complex<float> GetRightDownPoint() { return m_rightDownPoint; }
+    void SetRightDownPoint(std::complex<float>& point) { m_rightDownPoint = point; }
 
     GLShaderProgram* GetSquareShaderProgram() { return m_squareProgram.get(); }
     T* GetShaderProgram() { return m_program.get(); }
@@ -275,7 +277,7 @@ private:
 
     std::complex<float> m_upperLeft;
     std::complex<float> m_lowerRight;
-
+    std::complex<float> m_rightDownPoint;
     wxPoint m_rightDown;
     bool m_leftButtonDown;
     wxPoint m_leftDown;

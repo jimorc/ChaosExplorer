@@ -6,12 +6,12 @@
 
 using namespace std::complex_literals;
 
-template <typename T>
+template <typename T, typename U>
 class PlottingCPanel :
     public ChaosPanel<T>
 {
 public:
-    PlottingCPanel<T>(wxWindow* parent, wxWindowID id, const int* attribList,
+    PlottingCPanel<T, U>(wxWindow* parent, wxWindowID id, const int* attribList,
         const wxSize& size = { 800, 600 },
         std::complex<float> power = 2.0f,
         std::complex<float> ul = -2.5f + 2.0if,
@@ -20,14 +20,20 @@ public:
         m_maxIterations(4 * colors.size()),
         m_power(power), m_z0({ 0.0f, 0.0f })
     {
-        Bind(wxEVT_PAINT, &PlottingCPanel<T>::OnPaint, this);
-
-
+        // TODO: add check for U being a PlottingZ0Panel
+        Bind(wxEVT_PAINT, &PlottingCPanel<T, U>::OnPaint, this);
     }
 
     virtual ~PlottingCPanel() {}
 
 protected:
+    void AddOnJuliaMenuItem(wxMenu *menu)
+    {
+        menu->Append(ID_JULIA, L"Julia Set");
+        Bind(wxEVT_COMMAND_MENU_SELECTED, &PlottingCPanel::OnJulia,
+            this, ID_JULIA);
+    }
+
     virtual void DrawFractal() override
     {
         T* shaderProg = GetShaderProgram();
@@ -90,6 +96,32 @@ private:
         ss << abs(lowerRight.imag()) << L"i";
 
         statusBar->SetStatusText(ss.str().c_str());
+    }
+
+    void OnJulia(wxCommandEvent& event)
+    {
+        wxSize size = GetSize();
+        std::complex<float> upperLeft = GetUpperLeft();
+        std::complex<float> lowerRight = GetLowerRight();
+        wxPoint rightDown = GetRightDown();
+        float deltaXY = lowerRight.real() - upperLeft.real();
+        float x = upperLeft.real() + deltaXY * rightDown.x / size.x;
+        float y = upperLeft.imag() - deltaXY * rightDown.y / size.y;
+        SetRightDownPoint(std::complex<float>(x, y));
+
+        // create and display a new MandelJuliaPanel for the display
+        wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
+        if (nBook == nullptr) {
+            throw std::logic_error("Could not retrieve the Notebook for the new JuliaPanel.");
+        }
+        try {
+            U* mPanel = new U(nBook, wxID_ANY, nullptr,
+                size, GetPower(),GetRightDownPoint());
+            nBook->AddPage(mPanel, L"Julia Set", true);
+        }
+        catch (std::exception& e) {
+            wxMessageBox(e.what(), "Cannot create Julia Set");
+        }
     }
 
     int m_maxIterations;
