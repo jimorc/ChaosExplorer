@@ -17,7 +17,7 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     std::complex<float> c,
     std::complex<float> ul,
     std::complex<float> lr)
-    : ChaosPanel(parent, id, attribList, ul, lr, size), m_c(c), m_p(power)
+    : PlottingZ0Panel<GLMandelJuliaShaderProgram>(parent, id, attribList, size, power, c, ul, lr)
 {
     if (power.real() < 1.0f) {
         throw std::invalid_argument(
@@ -35,8 +35,8 @@ MandelJuliaPanel::MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* a
     SetupSquareArrays();
     glUseProgram(GetShaderProgram()->GetProgramHandle());
     GLMandelJuliaShaderProgram* prog = dynamic_cast<GLMandelJuliaShaderProgram*>(GetShaderProgram());
-    glUniform2f(prog->GetUniformHandle("c"), m_c.real(), m_c.imag());
-    glUniform2f(prog->GetUniformHandle("p"), m_p.real(), m_p.imag());
+    glUniform2f(prog->GetUniformHandle("c"), c.real(), c.imag());
+    glUniform2f(prog->GetUniformHandle("p"), power.real(), power.imag());
     glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
     glUniform4fv(prog->GetUniformHandle("color[0]"), colors.size() * 4, &colors[0].x);
 }
@@ -101,7 +101,7 @@ void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
     if (nBook == nullptr) {
         throw std::logic_error("Could not retrieve the Notebook for the new MandelJuliaPanel.");
     }
-    MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr, GetSize(), m_p, m_c, ul, lr);
+    MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), GetC(), ul, lr);
     nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
 }
 
@@ -132,13 +132,15 @@ void MandelJuliaPanel::SetStatusBarText()
     wxStatusBar* statusBar = win->GetStatusBar();
     std::complex<float> upperLeft = GetUpperLeft();
     std::complex<float> lowerRight = GetLowerRight();
+    std::complex<float> c = GetC();
+    std::complex<float> power = GetPower();
     std::wstringstream ss;
-    ss << L"C = " << m_c.real();
-    m_c.imag() > 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_c.imag()) << L"i";
-    ss << L", Power = " << m_p.real();
-    m_p.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
-    ss << abs(m_p.imag()) << L"i";
+    ss << L"C = " << c.real();
+    c.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(c.imag()) << L"i";
+    ss << L", Power = " << power.real();
+    power.imag() >= 0.0f ? ss << L" + " : ss << L" - ";
+    ss << abs(power.imag()) << L"i";
     ss << L", Upper Left = " << upperLeft.real();
     upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
     ss << abs(upperLeft.imag()) << L"i";

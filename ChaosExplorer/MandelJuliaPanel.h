@@ -1,13 +1,13 @@
 #pragma once
 #include <complex>
-#include "ChaosPanel.h"
+#include "PlottingZ0Panel.h"
 #include "GLMandelJuliaShaderProgram.h"
 
 using namespace std::complex_literals;
 
 
 class MandelJuliaPanel :
-    public ChaosPanel<GLMandelJuliaShaderProgram>
+    public PlottingZ0Panel<GLMandelJuliaShaderProgram>
 {
 public:
     MandelJuliaPanel(wxWindow* parent, wxWindowID id, const int* attribList,
@@ -30,7 +30,5 @@ private:
     void OnCloseTab();
     void SetStatusBarText();
 
-    std::complex<float> m_c;
-    std::complex<float> m_p;
 };
 

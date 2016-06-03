@@ -121,6 +121,7 @@
     <ClInclude Include="MandelJuliaPanel.h" />
     <ClInclude Include="MultibrotPanel.h" />
     <ClInclude Include="PlottingCPanel.h" />
+    <ClInclude Include="PlottingZ0Panel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp" />
