@@ -25,7 +25,6 @@ public:
     virtual ~MultibrotPanel();
 
 private:
-    virtual void OnPaint(wxPaintEvent& event) override;
     virtual void OnRightButtonDown(wxMouseEvent& event) override;
     virtual void OnDrawFromSelection(wxCommandEvent& event);
     virtual void OnDeleteSelection(wxCommandEvent& event);
@@ -43,7 +42,6 @@ private:
     void OnAnimateZ0Imag(wxCommandEvent& event);
     void AnimateZ0Imag(wxTimerEvent& event);
     virtual void OnJulia(wxCommandEvent& event);
-    void SetStatusBarText();
     void CreatePopupMenu();
     wxMenu* CreateMultibrotSubMenu();
     void AddItemToMenu(wxMenu* menu, const int menuId, std::wstring menuText, float power);

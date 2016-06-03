@@ -222,6 +222,7 @@ protected:
 
 
 private:
+    virtual void SetStatusBarText() = 0;
     virtual void OnPaint(wxPaintEvent& event) = 0;
     virtual void OnLeftButtonDown(wxMouseEvent& event)
     {

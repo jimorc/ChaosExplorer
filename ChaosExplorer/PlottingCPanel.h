@@ -20,6 +20,9 @@ public:
         m_maxIterations(4 * colors.size()),
         m_power(power), m_z0({ 0.0f, 0.0f })
     {
+        Bind(wxEVT_PAINT, &PlottingCPanel<T>::OnPaint, this);
+
+
     }
 
     virtual ~PlottingCPanel() {}
@@ -50,6 +53,45 @@ protected:
 
 
 private:
+    void OnPaint(wxPaintEvent& event)
+    {
+        wxSize size = GetSize();
+        SetContext();
+        // set background to black
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // draw the Multibrot image (well, draw the triangles for the display area)
+        T* prog = GetShaderProgram();
+        DrawFractal(prog);
+        DrawSquare();
+
+        glFlush();
+        SwapBuffers();
+
+        SetStatusBarText();
+    }
+
+    void SetStatusBarText() override
+    {
+        ChaosExplorerWindow* win = dynamic_cast<ChaosExplorerWindow*>(GetParent()->GetParent());
+        wxStatusBar* statusBar = win->GetStatusBar();
+        std::complex<float> upperLeft = GetUpperLeft();
+        std::complex<float> lowerRight = GetLowerRight();
+        std::wstringstream ss;
+        ss << L"Iterations = " << GetMaxIterations();
+        ss << L", Power = " << GetPower().real();
+        GetPower().imag() >= 0.0f ? ss << L" + " : ss << L" - ";
+        ss << abs(GetPower().imag()) << L"i";
+        ss << L", Upper Left = " << upperLeft.real();
+        upperLeft.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+        ss << abs(upperLeft.imag()) << L"i";
+        ss << L", Lower Right = " << lowerRight.real();
+        lowerRight.imag() > 0.0f ? ss << L" + " : ss << L" - ";
+        ss << abs(lowerRight.imag()) << L"i";
+
+        statusBar->SetStatusText(ss.str().c_str());
+    }
+
     int m_maxIterations;
     std::complex<float> m_z0;
     std::complex<float> m_power;
