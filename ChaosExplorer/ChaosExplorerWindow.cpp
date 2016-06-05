@@ -18,7 +18,7 @@ ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const 
     m_notebook = new wxNotebook(this, wxID_ANY, wxPoint(0, 0), wxDefaultSize, wxTop | wxNB_MULTILINE);
     MultibrotPanel* win = new MultibrotPanel(m_notebook, wxID_ANY, nullptr,
     { 800, 800 });
-    m_notebook->AddPage(win, L"Multibrot", true);
+    m_notebook->AddPage(win, L"z^p + c", true);
     m_notebook->Fit();
 
     Fit();
@@ -57,7 +57,7 @@ wxMenu* ChaosExplorerWindow::CreateFileMenu()
 wxMenu* ChaosExplorerWindow::CreateFractalMenu()
 {
     wxMenu* fractalMenu = new wxMenu;
-    fractalMenu->Append(ID_FRACTAL_MANDELBROT, L"Mandelbrot");
+    fractalMenu->Append(ID_FRACTAL_MANDELBROT, L"z^p + c");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnMandelbrot,
         this, ID_FRACTAL_MANDELBROT);
     fractalMenu->Append(ID_FRACTAL2, L"(z^3+1)/(1+cz^2)");
@@ -92,7 +92,7 @@ void ChaosExplorerWindow::OnMandelbrot(wxCommandEvent& event)
 {
     MultibrotPanel* win = new MultibrotPanel(m_notebook, wxID_ANY, nullptr,
     { 800, 800 });
-    m_notebook->AddPage(win, L"Multibrot", true);
+    m_notebook->AddPage(win, L"z^p + c", true);
 }
 
 void ChaosExplorerWindow::OnFractal2(wxCommandEvent& event)
