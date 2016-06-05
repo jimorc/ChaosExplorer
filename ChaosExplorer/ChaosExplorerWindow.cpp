@@ -100,7 +100,7 @@ void ChaosExplorerWindow::OnFractal2(wxCommandEvent& event)
     try {
         Fractal2Panel* win = new Fractal2Panel(m_notebook, wxID_ANY, nullptr,
         { 800, 800 });
-        m_notebook->AddPage(win, L"z^3/(1+cz^2)");
+        m_notebook->AddPage(win, L"(z^3+1)/(1+cz^2)");
         m_notebook->SetSelection(m_notebook->GetPageCount() - 1);
     }
     catch (std::exception& e) {

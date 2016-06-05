@@ -13,5 +13,11 @@ public:
         std::complex<float> ul = -2.0f + 2.0if,
         std::complex<float> lr = 2.0f - 2.0if);
     virtual ~Fractal2Panel();
+
+private:
+    void CreatePopupMenu();
+    void OnDrawFromSelection(wxCommandEvent& event);
+    void OnDeleteSelection(wxCommandEvent& event);
+    void OnMenuOpen(wxMenuEvent& event);
 };
 
