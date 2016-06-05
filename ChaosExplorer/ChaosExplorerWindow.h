@@ -22,6 +22,7 @@ private:
     wxMenu* CreateFractalMenu();
     void OnFileMenuOpen(wxMenuEvent& event);
     void OnMandelbrot(wxCommandEvent& event);
+    void OnFractal2(wxCommandEvent& event);
     wxNotebook* m_notebook;
     wxStatusBar* m_statusBar;
     wxMenuBar* m_mainMenuBar;

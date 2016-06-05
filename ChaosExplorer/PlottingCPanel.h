@@ -2,6 +2,7 @@
 #include "wx/wxprec.h"
 #include "GLShaderProgram.h"
 #include "ChaosPanel.h"
+#include "ChaosExplorerWindow.h"
 #include <complex>
 
 using namespace std::complex_literals;

@@ -51,6 +51,12 @@
     <ClInclude Include="PlottingZ0Panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GLFractal2ShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fractal2Panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
@@ -76,6 +82,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MandelJuliaPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFractal2ShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fractal2Panel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

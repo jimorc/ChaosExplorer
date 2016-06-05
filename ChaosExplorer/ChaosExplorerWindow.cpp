@@ -1,9 +1,11 @@
 #include "wx/wxprec.h"
 #include "ChaosExplorerWindow.h"
 #include "MultibrotPanel.h"
+#include "Fractal2Panel.h"
 
 const int ID_FILE_CLOSE_TAB = 2200;
 const int ID_FRACTAL_MANDELBROT = 2201;
+const int ID_FRACTAL2 = 2202;
 
 ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const wxString& title,
     const wxPoint& pos, const wxSize& size,
@@ -58,6 +60,9 @@ wxMenu* ChaosExplorerWindow::CreateFractalMenu()
     fractalMenu->Append(ID_FRACTAL_MANDELBROT, L"Mandelbrot");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnMandelbrot,
         this, ID_FRACTAL_MANDELBROT);
+    fractalMenu->Append(ID_FRACTAL2, L"(z^3+1)/(1+cz^2)");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnFractal2,
+        this, ID_FRACTAL2);
     return fractalMenu;
 }
 
@@ -88,4 +93,17 @@ void ChaosExplorerWindow::OnMandelbrot(wxCommandEvent& event)
     MultibrotPanel* win = new MultibrotPanel(m_notebook, wxID_ANY, nullptr,
     { 800, 800 });
     m_notebook->AddPage(win, L"Multibrot", true);
+}
+
+void ChaosExplorerWindow::OnFractal2(wxCommandEvent& event)
+{
+    try {
+        Fractal2Panel* win = new Fractal2Panel(m_notebook, wxID_ANY, nullptr,
+        { 800, 800 });
+        m_notebook->AddPage(win, L"z^3/(1+cz^2)");
+        m_notebook->SetSelection(m_notebook->GetPageCount() - 1);
+    }
+    catch (std::exception& e) {
+        wxMessageBox(e.what(), "Error creating Fractal2Panel", MB_OK, this);
+    }
 }
