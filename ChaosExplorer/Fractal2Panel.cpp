@@ -7,7 +7,7 @@ Fractal2Panel::Fractal2Panel(wxWindow* parent, wxWindowID id, const int* attribL
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
-    : PlottingCPanel<GLFractal2ShaderProgram, MandelJuliaPanel>(parent, id, attribList, size, power, ul, lr)
+    : PlottingCPanel<GLFractal2ShaderProgram, Fractal2JuliaPanel>(parent, id, attribList, size, power, ul, lr)
 {
     CreatePopupMenu();
     // set up GL stuff

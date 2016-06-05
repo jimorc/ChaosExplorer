@@ -113,7 +113,9 @@
     <ClInclude Include="ChaosExplorerApp.h" />
     <ClInclude Include="ChaosExplorerWindow.h" />
     <ClInclude Include="ChaosPanel.h" />
+    <ClInclude Include="Fractal2JuliaPanel.h" />
     <ClInclude Include="Fractal2Panel.h" />
+    <ClInclude Include="GLFractal2JuliaShaderProgram.h" />
     <ClInclude Include="GLFractal2ShaderProgram.h" />
     <ClInclude Include="GLMandelJuliaShaderProgram.h" />
     <ClInclude Include="GLMultibrotShaderProgram.h" />
@@ -128,7 +130,9 @@
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp" />
     <ClCompile Include="ChaosExplorerWindow.cpp" />
+    <ClCompile Include="Fractal2JuliaPanel.cpp" />
     <ClCompile Include="Fractal2Panel.cpp" />
+    <ClCompile Include="GLFractal2JuliaShaderProgram.cpp" />
     <ClCompile Include="GLFractal2ShaderProgram.cpp" />
     <ClCompile Include="GLMandelJuliaShaderProgram.cpp" />
     <ClCompile Include="GLMultibrotShaderProgram.cpp" />
