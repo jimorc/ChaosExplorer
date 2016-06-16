@@ -56,8 +56,6 @@ public:
         : wxGLCanvas(parent, id, attribList, wxDefaultPosition, size), m_popup(nullptr),
         m_rightDown({ 0, 0 }), m_leftButtonDown(false), m_leftDown({ 0, 0 }), m_leftUp({ 0, 0 })
     {
-//        static_assert(meta_detail::has_shader_handler(T(), 0), "Template type T must be derived from GLShaderProgram");
-//        static_assert(meta_detail::isBaseOf( T()), "Template type T must be derived from GLShaderProgram");
         static_assert(std::is_base_of<GLShaderProgram, T>::value, "T must be derived from GLShaderProgram");
         SetUpperLeftLowerRight(ul, lr);
         m_context = std::make_unique<wxGLContext>(this);

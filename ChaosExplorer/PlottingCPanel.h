@@ -1,11 +1,31 @@
 #pragma once
 #include "wx/wxprec.h"
+#include <type_traits>
 #include "GLShaderProgram.h"
 #include "ChaosPanel.h"
+#include "PlottingZ0Panel.h"
 #include "ChaosExplorerWindow.h"
 #include <complex>
 
 using namespace std::complex_literals;
+
+// From http://coliru.stacked-crooked.com/a/eaeac2b9008a97d9 in answer to 'is_base_of of generic type'
+// at http://stackoverflow.com/questions/32477691/is-base-of-of-generic-type/32489730#32489730
+template <template <typename...> class Base, typename Derived>
+struct is_base_of_template
+{
+    using U = typename std::remove_cv<Derived>::type;
+
+    template <typename... Args>
+    static std::true_type test(Base<Args...>*);
+
+    static std::false_type test(void*);
+
+    using type = decltype(test(std::declval<U*>()));
+};
+
+template <template <typename...> class Base, typename Derived>
+using is_base_of_template_t = typename is_base_of_template<Base, Derived>::type;
 
 template <typename T, typename U>
 class PlottingCPanel :
@@ -21,7 +41,7 @@ public:
         m_maxIterations(4 * colors.size()),
         m_power(power), m_z0({ 0.0f, 0.0f })
     {
-        // TODO: add check for U being a PlottingZ0Panel
+        static_assert( is_base_of_template_t< PlottingZ0Panel, U >::value, "U must be derived from PlottingZ0Panel" );
         Bind(wxEVT_PAINT, &PlottingCPanel<T, U>::OnPaint, this);
     }
 
