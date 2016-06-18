@@ -54,7 +54,7 @@ void Fractal4Panel::OnDrawFromSelection(wxCommandEvent& event)
     // create and display a new MultibrotPanel for the display
     wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
     if (nBook == nullptr) {
-        throw std::logic_error("Could not retrieve the Notebook for the new FractalPanel.");
+        throw std::logic_error("Could not retrieve the Notebook for the new Fractal4Panel.");
     }
     Fractal4Panel* mPanel = new Fractal4Panel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), ul, lr);
     nBook->AddPage(mPanel, L"z^3-z^2+z+c", true);

@@ -75,7 +75,7 @@ void MandelJuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
         throw std::logic_error("Could not retrieve the Notebook for the new MandelJuliaPanel.");
     }
     MandelJuliaPanel* mPanel = new MandelJuliaPanel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), GetC(), ul, lr);
-    nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
+    nBook->AddPage(mPanel, L"Julia Set", true);
 }
 
 void MandelJuliaPanel::OnDeleteSelection(wxCommandEvent& event)

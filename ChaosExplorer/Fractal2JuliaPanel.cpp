@@ -72,10 +72,10 @@ void Fractal2JuliaPanel::OnDrawFromSelection(wxCommandEvent& event)
     // create and display a new MultibrotPanel for the display
     wxNotebook* nBook = dynamic_cast<wxNotebook*>(GetParent());
     if (nBook == nullptr) {
-        throw std::logic_error("Could not retrieve the Notebook for the new MandelJuliaPanel.");
+        throw std::logic_error("Could not retrieve the Notebook for the new Fractal2JuliaPanel.");
     }
     Fractal2JuliaPanel* mPanel = new Fractal2JuliaPanel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), GetC(), ul, lr);
-    nBook->AddPage(mPanel, L"Mandelbrot-Julia", true);
+    nBook->AddPage(mPanel, L"Julia Set", true);
 }
 
 void Fractal2JuliaPanel::OnDeleteSelection(wxCommandEvent& event)

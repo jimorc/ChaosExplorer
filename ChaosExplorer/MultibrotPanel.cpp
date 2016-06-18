@@ -209,7 +209,7 @@ void MultibrotPanel::OnDrawFromSelection(wxCommandEvent& event)
         throw std::logic_error("Could not retrieve the Notebook for the new MultibrotPanel.");
     }
     MultibrotPanel* mPanel = new MultibrotPanel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), ul, lr);
-    nBook->AddPage(mPanel, L"Multibrot", true);
+    nBook->AddPage(mPanel, L"z^p + c", true);
 }
 
 void MultibrotPanel::OnMenuOpen(wxMenuEvent& event)
