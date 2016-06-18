@@ -8,6 +8,7 @@ const int ID_FILE_CLOSE_TAB = 2200;
 const int ID_FRACTAL_MANDELBROT = 2201;
 const int ID_FRACTAL2 = 2202;
 const int ID_FRACTAL3 = 2203;
+const int ID_FRACTAL4 = 2204;
 
 ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const wxString& title,
     const wxPoint& pos, const wxSize& size,
@@ -66,6 +67,9 @@ wxMenu* ChaosExplorerWindow::CreateFractalMenu()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnFractal2,
         this, ID_FRACTAL2);
     fractalMenu->Append(ID_FRACTAL3, L"c*e^z");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnFractal3,
+        this, ID_FRACTAL3);
+    fractalMenu->Append(ID_FRACTAL3, L"(z+sin(z))^2+c");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &ChaosExplorerWindow::OnFractal3,
         this, ID_FRACTAL3);
 

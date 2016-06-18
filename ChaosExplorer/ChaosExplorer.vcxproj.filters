@@ -75,6 +75,9 @@
     <ClInclude Include="Fractal3JuliaPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fractal4Panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
@@ -124,6 +127,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Fractal3JuliaPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fractal4Panel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

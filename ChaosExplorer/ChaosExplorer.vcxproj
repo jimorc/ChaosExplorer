@@ -117,6 +117,7 @@
     <ClInclude Include="Fractal2Panel.h" />
     <ClInclude Include="Fractal3JuliaPanel.h" />
     <ClInclude Include="Fractal3Panel.h" />
+    <ClInclude Include="Fractal4Panel.h" />
     <ClInclude Include="GLFractal2JuliaShaderProgram.h" />
     <ClInclude Include="GLFractal2ShaderProgram.h" />
     <ClInclude Include="GLFractal3JuliaShaderProgram.h" />
@@ -138,6 +139,7 @@
     <ClCompile Include="Fractal2Panel.cpp" />
     <ClCompile Include="Fractal3JuliaPanel.cpp" />
     <ClCompile Include="Fractal3Panel.cpp" />
+    <ClCompile Include="Fractal4Panel.cpp" />
     <ClCompile Include="GLFractal2JuliaShaderProgram.cpp" />
     <ClCompile Include="GLFractal2ShaderProgram.cpp" />
     <ClCompile Include="GLFractal3JuliaShaderProgram.cpp" />
