@@ -7,7 +7,7 @@ Fractal4Panel::Fractal4Panel(wxWindow* parent, wxWindowID id, const int* attribL
     std::complex<float> power,
     std::complex<float> ul,
     std::complex<float> lr)
-    : PlottingCPanel<GLFractal3ShaderProgram, Fractal3JuliaPanel>(parent, id, attribList, size, power, ul, lr)
+    : PlottingCPanel<GLFractal4ShaderProgram, Fractal4JuliaPanel>(parent, id, attribList, size, power, ul, lr)
 {
     CreatePopupMenu();
     // set up GL stuff
@@ -15,7 +15,7 @@ Fractal4Panel::Fractal4Panel(wxWindow* parent, wxWindowID id, const int* attribL
     SetupTriangles();
     SetupSquareArrays();
     glUseProgram(GetShaderProgram()->GetProgramHandle());
-    GLFractal3ShaderProgram* prog = dynamic_cast<GLFractal3ShaderProgram*>(GetShaderProgram());
+    GLFractal4ShaderProgram* prog = dynamic_cast<GLFractal4ShaderProgram*>(GetShaderProgram());
     glUniform2f(prog->GetUniformHandle("viewDimensions"), size.x, size.y);
     glUniform4fv(prog->GetUniformHandle("color[0]"), colors.size() * 4, &colors[0].x);
 }
@@ -57,7 +57,7 @@ void Fractal4Panel::OnDrawFromSelection(wxCommandEvent& event)
         throw std::logic_error("Could not retrieve the Notebook for the new FractalPanel.");
     }
     Fractal4Panel* mPanel = new Fractal4Panel(nBook, wxID_ANY, nullptr, GetSize(), GetPower(), ul, lr);
-    nBook->AddPage(mPanel, L"(z+sin(z))^2+c", true);
+    nBook->AddPage(mPanel, L"z^3-z^2+z+c", true);
 }
 
 void Fractal4Panel::OnMenuOpen(wxMenuEvent& event)

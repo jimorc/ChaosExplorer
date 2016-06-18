@@ -24,6 +24,7 @@ private:
     void OnMandelbrot(wxCommandEvent& event);
     void OnFractal2(wxCommandEvent& event);
     void OnFractal3(wxCommandEvent& event);
+    void OnFractal4(wxCommandEvent& event);
     wxNotebook* m_notebook;
     wxStatusBar* m_statusBar;
     wxMenuBar* m_mainMenuBar;

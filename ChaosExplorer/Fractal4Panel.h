@@ -1,10 +1,10 @@
 #pragma once
 #include "PlottingCPanel.h"
-#include "GLFractal3ShaderProgram.h"
-#include "Fractal3JuliaPanel.h"
+#include "GLFractal4ShaderProgram.h"
+#include "Fractal4JuliaPanel.h"
 
 class Fractal4Panel :
-    public PlottingCPanel<GLFractal3ShaderProgram, Fractal3JuliaPanel>
+    public PlottingCPanel<GLFractal4ShaderProgram, Fractal4JuliaPanel>
 {
 public:
     Fractal4Panel(wxWindow* parent, wxWindowID id, const int* attribList,

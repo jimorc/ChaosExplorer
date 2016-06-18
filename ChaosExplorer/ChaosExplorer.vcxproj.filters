@@ -78,6 +78,15 @@
     <ClInclude Include="Fractal4Panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GLFractal4ShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fractal4JuliaPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GLFractal4JuliaShaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChaosExplorerApp.cpp">
@@ -92,7 +101,6 @@
     <ClCompile Include="GLShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChaosExplorerWindow.cpp" />
     <ClCompile Include="GLMultibrotShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -130,6 +138,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Fractal4Panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFractal4ShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChaosExplorerWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Fractal4JuliaPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFractal4JuliaShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
