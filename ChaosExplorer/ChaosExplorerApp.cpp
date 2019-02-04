@@ -19,6 +19,7 @@
 #endif
 
 #pragma comment(lib, "glew32.lib")
+#pragma comment(lib, "OpenGL32.lib")
 
 
 ChaosExplorerApp::ChaosExplorerApp()
