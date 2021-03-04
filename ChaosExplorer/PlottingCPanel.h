@@ -1,5 +1,6 @@
 #pragma once
 #include "wx/wxprec.h"
+#include "wx/msgdlg.h"
 #include <type_traits>
 #include "GLShaderProgram.h"
 #include "ChaosPanel.h"

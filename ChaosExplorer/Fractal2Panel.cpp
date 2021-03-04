@@ -1,4 +1,5 @@
 #include "Fractal2Panel.h"
+#include "wx/menu.h"
 
 extern std::vector<glm::vec4> colors;
 

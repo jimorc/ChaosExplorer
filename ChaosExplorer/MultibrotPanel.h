@@ -4,6 +4,7 @@
 #include <chrono>
 #include "wx/event.h"
 #include "wx/panel.h"
+#include "wx/timer.h"
 #include "PlottingCPanel.h"
 #include "GLMultibrotShaderProgram.h"
 #include "MandelJuliaPanel.h"

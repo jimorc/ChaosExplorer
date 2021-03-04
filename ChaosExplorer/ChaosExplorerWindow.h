@@ -1,5 +1,6 @@
 #pragma once
 #include "wx/notebook.h"
+#include "wx/frame.h"
 
 class ChaosExplorerWindow :
     public wxFrame

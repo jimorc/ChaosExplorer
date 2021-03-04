@@ -1,9 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "wx/notebook.h"
+#include "wx/menu.h"
 #include <stdexcept>
 #include <vector>
 #include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "GL/glew.h"
 #include "GLSquareShaderProgram.h"

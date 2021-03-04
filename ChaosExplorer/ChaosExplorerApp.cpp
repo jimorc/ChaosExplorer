@@ -1,4 +1,5 @@
 #include "wx/wxprec.h"
+#include "wx/msgdlg.h"
 #include <string>
 #include "GL/glew.h"
 #include "ChaosExplorerApp.h"

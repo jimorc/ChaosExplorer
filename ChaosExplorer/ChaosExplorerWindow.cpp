@@ -1,4 +1,5 @@
-#include "wx/wxprec.h"
+//#include "wx/wxprec.h"
+#include "wx/menu.h"
 #include "ChaosExplorerWindow.h"
 #include "MultibrotPanel.h"
 #include "Fractal2Panel.h"
@@ -19,7 +20,7 @@ ChaosExplorerWindow::ChaosExplorerWindow(wxWindow* parent, wxWindowID id, const 
     m_statusBar = new wxStatusBar(this);
     SetStatusBar(m_statusBar);
     CreateMainMenu();
-    m_notebook = new wxNotebook(this, wxID_ANY, wxPoint(0, 0), wxDefaultSize, wxTop | wxNB_MULTILINE);
+    m_notebook = new wxNotebook(this, wxID_ANY, wxPoint(0, 0), wxDefaultSize, wxNB_TOP | wxNB_MULTILINE);
     MultibrotPanel* win = new MultibrotPanel(m_notebook, wxID_ANY, nullptr,
     { 800, 800 });
     m_notebook->AddPage(win, L"z^p + c", true);

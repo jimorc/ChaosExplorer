@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #endif
 #include "GLShader.h"
+#include <stdexcept>
 
 GLShader::GLShader(GLenum shaderType,
     const std::string& shaderSource,

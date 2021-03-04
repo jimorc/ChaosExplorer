@@ -1,4 +1,5 @@
 #include "wx/notebook.h"
+#include "wx/menu.h"
 #include <stdexcept>
 #include <vector>
 #include <glm/glm.hpp>

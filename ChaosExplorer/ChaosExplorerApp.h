@@ -1,4 +1,5 @@
 #pragma once
+#include "wx/app.h"
 class ChaosExplorerApp :
     public wxApp
 {
